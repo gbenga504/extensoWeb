@@ -1,14 +1,6 @@
 import React from "react";
+import styled from "styled-components";
 
-export default props => (
-  <span
-    {...props}
-    style={
-      props.style
-        ? { ...props.style, fontFamily: "Circular Medium" }
-        : { fontFamily: "Circular Medium" }
-    }
-  >
-    {props.children}
-  </span>
-);
+const Text = styled.span`font-family: "Circular Regular";`;
+
+export default props => <Text {...props}>{props.children}</Text>;
