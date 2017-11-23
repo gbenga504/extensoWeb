@@ -9,7 +9,9 @@ export default class Login extends React.PureComponent {
   render() {
     return (
         <Container>
-            
+            <div className="d-flex flex-column align-self-center">
+                
+            </div>
         </Container>
     )
   }
