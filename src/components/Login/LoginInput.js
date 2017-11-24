@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import Input from "../Input";
 
@@ -66,5 +67,12 @@ const LoginInput = props => (
     )}
   </div>
 );
+
+LoginInput.propTypes = {
+  style: PropTypes.object,
+  placeholderIcon: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  rightPlaceholderIcon: PropTypes.string
+};
 
 export default LoginInput;
