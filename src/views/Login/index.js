@@ -1,25 +1,29 @@
 import React from "react";
 import styled from "styled-components";
 
+import { LightText } from "../../components/AppText";
 import LayoutContainer from "../../containers/LayoutContainer";
 import Form from "../../components/Login/Form";
+import Colors from "../../assets/Colors";
 
 const Container = styled(LayoutContainer)`
-  background: #292931;
+  background: ${Colors.login.backgroundColor};
   padding: 0px 400px;
 `;
-const Title = styled.span`
+const Title = styled(LightText)`
   margin-left: 30px;
   margin-top: 20px;
-  color: #544a5a;
+  color: ${Colors.login.title};
   font-size: 40px;
-  font-family: "Circular Light";
 `;
 
 export default class Login extends React.PureComponent {
   render() {
     return (
-      <Container className="justify-content-center" color="#292931">
+      <Container
+        className="justify-content-center"
+        color={Colors.login.themeColor}
+      >
         <div
           className="d-flex flex-column align-self-center"
           style={{ width: "100%" }}

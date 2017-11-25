@@ -2,15 +2,16 @@ import React from "react";
 import styled from "styled-components";
 
 import LoginInput from "./LoginInput";
+import Colors from "../../assets/Colors";
 
 const Container = styled.div`
-  background-color: #423142;
+  background-color: ${Colors.login.formBackgroundColor};
   padding: 30px;
 
   &::after {
     content: "";
     position: absolute;
-    border-color: #423142;
+    border-color: ${Colors.login.formAfterColor};
     border-style: solid;
     border-width: 0px 20px 20px 0px;
     height: 0px;

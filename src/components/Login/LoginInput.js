@@ -4,19 +4,20 @@ import PropTypes from "prop-types";
 
 import Input from "../Input";
 import Icon from "../Icon";
+import Colors from "../../assets/Colors";
 
 const PlaceholderContainer = styled.div`
-  background: ${props => (props.rightPlaceholderIcon ? "#AD6BAD" : "#dedede")};
+  background: ${Colors.login.formInputLeftBackground};
   height: inherit;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
   width: 40px;
-  border-right: 1px solid #bdbdbd;
+  border-right: 1px solid ${Colors.login.formInputLeftBorder};
 `;
 const RightIconPlaceholderContainer = PlaceholderContainer.extend`
-  background: #ad6bad;
+  background: ${Colors.login.formInputRightBackground};
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 3px;
@@ -58,7 +59,7 @@ const LoginInput = props => (
         <Icon
           className={props.rightPlaceholderIcon}
           forceColor
-          style={{ color: "#fff" }}
+          style={{ color: Colors.login.formRightIcon }}
         />
       </RightIconPlaceholderContainer>
     )}

@@ -3,24 +3,31 @@ import styled from "styled-components";
 
 import { RegularText } from "./AppText";
 import Icon from "./Icon";
+import Colors from "../assets/Colors";
 
 const Container = styled.div`
   width: 70px;
-  background-color: #2f323e;
-  border-right: 1px solid #262a34;
+  background-color: ${Colors.dashboardNav.background};
+  border-right: 1px solid ${Colors.dashboardNav.border};
 `;
 const Section = styled.div`
   width: 70px;
   height: 70px;
   cursor: pointer;
-  background: ${props => (props.active ? "#E95656" : "#2f323e")};
+  background: ${props =>
+    props.active
+      ? Colors.dashboardNav.sectionActive
+      : Colors.dashboardNav.sectionUnactive};
 
   &:hover: {
   }
 `;
 const Title = styled(RegularText)`
   font-size: 13px;
-  color: ${props => (props.active ? "#fff" : "#535C69")};
+  color: ${props =>
+    props.active
+      ? Colors.dashboardNav.titleActive
+      : Colors.dashboardNav.titleUnactive};
   margin-top: -10px;
 `;
 
@@ -36,7 +43,7 @@ export default class DashboardNavigation extends React.PureComponent {
             className="ion-ios-home-outline"
             forceColor={true}
             size="30px"
-            style={{ color: "#fff" }}
+            style={{ color: Colors.dashboardNav.iconActive }}
           />
           <Title active>Home</Title>
         </Section>
@@ -45,7 +52,7 @@ export default class DashboardNavigation extends React.PureComponent {
             className="ion-ios-compose-outline"
             forceColor={true}
             size="30px"
-            style={{ color: "#535C69" }}
+            style={{ color: Colors.dashboardNav.iconUnactive }}
           />
           <Title>Post</Title>
         </Section>
@@ -54,7 +61,7 @@ export default class DashboardNavigation extends React.PureComponent {
             className="ion-ios-bookmarks-outline"
             forceColor={true}
             size="30px"
-            style={{ color: "#535C69" }}
+            style={{ color: Colors.dashboardNav.iconUnactive }}
           />
           <Title>Drafts</Title>
         </Section>
@@ -63,7 +70,7 @@ export default class DashboardNavigation extends React.PureComponent {
             className="ion-ios-paper-outline"
             forceColor={true}
             size="30px"
-            style={{ color: "#535C69" }}
+            style={{ color: Colors.dashboardNav.iconUnactive }}
           />
           <Title>Sections</Title>
         </Section>

@@ -3,9 +3,10 @@ import styled from "styled-components";
 
 import LayoutContainer from "../containers/LayoutContainer";
 import DashboardNavigation from "../components/DashboardNavigation";
+import Colors from "../assets/Colors";
 
 const Container = styled(LayoutContainer)`
-  background: #f4f7fa;
+  background: ${Colors.defaultThemeColor};
   padding: 0;
 `;
 
