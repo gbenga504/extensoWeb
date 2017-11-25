@@ -10,12 +10,12 @@ export default class LayoutContainer extends React.PureComponent {
   };
 
   static childContextTypes = {
-    themecolor: PropTypes.string
+    themeColor: PropTypes.string
   };
 
   getChildContext() {
     return {
-      themecolor: this.getThemeColor()
+      themeColor: this.getThemeColor()
     };
   }
 
