@@ -14,8 +14,8 @@ const Container = styled.div`
     border-style: solid;
     border-width: 0px 20px 20px 0px;
     height: 0px;
-    margin-top: 150px;
-    margin-left: -350px;
+    margin-top: 75px;
+    margin-left: -200px;
     transform: rotate(45deg);
   }
 `;
