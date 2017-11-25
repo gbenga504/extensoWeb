@@ -19,7 +19,7 @@ const Title = styled.span`
 export default class Login extends React.PureComponent {
   render() {
     return (
-      <Container className="justify-content-center">
+      <Container className="justify-content-center" color="#292931">
         <div
           className="d-flex flex-column align-self-center"
           style={{ width: "100%" }}

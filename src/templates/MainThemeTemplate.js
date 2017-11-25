@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import LayoutContainer from "../containers/LayoutContainer";
-
+import DashboardNavigation from "../components/DashboardNavigation";
 
 const Container = styled(LayoutContainer)`
   background: #f4f7fa;
@@ -12,9 +12,9 @@ const Container = styled(LayoutContainer)`
 export default class MainThemeTemplate extends React.PureComponent {
   render() {
     return (
-        <Container>
-            
-        </Container>
-    )
+      <Container>
+        <DashboardNavigation />
+      </Container>
+    );
   }
 }

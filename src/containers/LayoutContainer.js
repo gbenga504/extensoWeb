@@ -1,14 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const LayoutContainer = props => (
-  <div className={`d-flex ${props.className || ""}`} style={{ height: "100%" }}>
-    {props.children}
-  </div>
-);
+import Colors from "../assets/Colors";
 
-LayoutContainer.propTypes = {
-  className: PropTypes.string
-};
+export default class LayoutContainer extends React.PureComponent {
+  static propTypes = {
+    className: PropTypes.string,
+    color: PropTypes.string
+  };
 
-export default LayoutContainer;
+  static childContextTypes = {
+    themecolor: PropTypes.string
+  };
+
+  getChildContext() {
+    return {
+      themecolor: this.getThemeColor()
+    };
+  }
+
+  getThemeColor = () => {
+    const { color } = this.props;
+    if (color != null && typeof color !== "undefined") {
+      return color || Colors.defaultThemeColor;
+    }
+    return null;
+  };
+
+  render() {
+    return (
+      <div
+        className={`d-flex ${this.props.className || ""}`}
+        style={{ height: "100%" }}
+      >
+        {this.props.children}
+      </div>
+    );
+  }
+}
