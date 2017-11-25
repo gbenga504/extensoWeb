@@ -20,6 +20,12 @@ const Colors = {
     titleUnactive: "#535C69",
     iconActive: "#fff",
     iconUnactive: "#535C69"
+  },
+  dashboardHeader: {
+    background: "#fff",
+    border: "#F4F5F7",
+    sectionActive: "#15A4FA",
+    sectionUnactive: "transparent"
   }
 };
 
