@@ -32,48 +32,48 @@ const Title = styled(RegularText)`
 `;
 
 export default class DashboardNavigation extends React.PureComponent {
+  static defaults = {
+    path: [
+      { pathName: "/", title: "Home", iconName: "ion-ios-home-outline" },
+      { pathName: "/post", title: "Post", iconName: "ion-ios-compose-outline" },
+      {
+        pathName: "/drafts",
+        title: "Drafts",
+        iconName: "ion-ios-bookmarks-outline"
+      },
+      {
+        pathName: "/sections",
+        title: "Sections",
+        iconName: "ion-ios-paper-outline"
+      }
+    ]
+  };
+
   render() {
     return (
       <Container className="d-flex flex-column">
-        <Section
-          active
-          className="d-flex flex-column justify-content-center align-items-center"
-        >
-          <Icon
-            className="ion-ios-home-outline"
-            forceColor={true}
-            size="30px"
-            style={{ color: Colors.dashboardNav.iconActive }}
-          />
-          <Title active>Home</Title>
-        </Section>
-        <Section className="d-flex flex-column justify-content-center align-items-center">
-          <Icon
-            className="ion-ios-compose-outline"
-            forceColor={true}
-            size="30px"
-            style={{ color: Colors.dashboardNav.iconUnactive }}
-          />
-          <Title>Post</Title>
-        </Section>
-        <Section className="d-flex flex-column justify-content-center align-items-center">
-          <Icon
-            className="ion-ios-bookmarks-outline"
-            forceColor={true}
-            size="30px"
-            style={{ color: Colors.dashboardNav.iconUnactive }}
-          />
-          <Title>Drafts</Title>
-        </Section>
-        <Section className="d-flex flex-column justify-content-center align-items-center">
-          <Icon
-            className="ion-ios-paper-outline"
-            forceColor={true}
-            size="30px"
-            style={{ color: Colors.dashboardNav.iconUnactive }}
-          />
-          <Title>Sections</Title>
-        </Section>
+        {DashboardNavigation.defaults.path.map((path, i) => {
+          let isActive = path.pathName === this.props.location.pathname,
+            color = isActive
+              ? Colors.dashboardNav.iconActive
+              : Colors.dashboardNav.iconUnactive;
+          return (
+            <Section
+              onClick={() => this.props.history.push(path.pathName)}
+              key={i}
+              active={isActive}
+              className="d-flex flex-column justify-content-center align-items-center"
+            >
+              <Icon
+                className={path.iconName}
+                forceColor={true}
+                size="30px"
+                style={{ color }}
+              />
+              <Title active={isActive}>{path.title}</Title>
+            </Section>
+          );
+        })}
       </Container>
     );
   }
