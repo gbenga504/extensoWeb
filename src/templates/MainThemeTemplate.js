@@ -15,6 +15,7 @@ const Container = styled(LayoutContainer)`
 
 export default class MainThemeTemplate extends React.PureComponent {
   render() {
+    console.log(this.props);
     return (
       <Container>
         <DashboardNavigation />

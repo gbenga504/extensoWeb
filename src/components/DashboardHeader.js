@@ -36,6 +36,7 @@ const DashboardHeader = props => (
       <Icon className="ion-ios-search-strong" />
     </Section>
     <SearchBox
+      className="d-flex align-self-center"
       type="search"
       placeholder="Search for a post from the categories"
     />

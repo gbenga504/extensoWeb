@@ -23,9 +23,22 @@ const Colors = {
   },
   dashboardHeader: {
     background: "#fff",
-    border: "#F4F5F7",
+    border: "#dadfe3",
     sectionActive: "#15A4FA",
     sectionUnactive: "transparent"
+  },
+  card: {
+    background: "#fff",
+    border: "rgba(0, 0, 0, 0.09)",
+    boxShadow: "rgba(0, 0, 0, 0.04)",
+    imageContainerBackground: "#2f323e",
+    avatar: "#fff",
+    postBorder: "#dadfe3",
+    imageContainer: "#dadfe3",
+    delete: "#E95656"
+  },
+  home: {
+    counterBorder: "#dadfe3"
   }
 };
 
