@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import Colors from "../assets/Colors";
 import Icon from "./Icon";
@@ -25,7 +26,7 @@ const Section = styled.div`
 const SearchBox = Input.extend`height: 100%;`;
 
 const DashboardHeader = props => (
-  <Div {...props} className="d-flex" style={{ width: "100%" }}>
+  <Div className="d-flex" style={{ width: "100%" }}>
     <Section className="d-flex flex-column justify-content-center align-items-center">
       <Icon className="ion-ios-settings-strong" />
     </Section>
@@ -56,5 +57,14 @@ const DashboardHeader = props => (
       ))}
   </Div>
 );
+
+DashboardHeader.propTypes = {
+  iconArray: PropTypes.arrayOf(
+    PropTypes.shape({
+      lastIcon: PropTypes.bool,
+      name: PropTypes.string.isRequired
+    })
+  )
+};
 
 export default DashboardHeader;
