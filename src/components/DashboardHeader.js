@@ -46,9 +46,11 @@ const DashboardHeader = props => (
         <Section
           key={index}
           style={
-            icon.lastIcon && {
-              borderLeft: `1px solid ${Colors.dashboardHeader.border}`
-            }
+            icon.lastIcon
+              ? {
+                  borderLeft: `1px solid ${Colors.dashboardHeader.border}`
+                }
+              : {}
           }
           className="d-flex flex-column justify-content-center align-items-center"
         >
