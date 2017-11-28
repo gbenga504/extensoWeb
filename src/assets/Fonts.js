@@ -9,13 +9,17 @@ const Fonts = {
     sm: { fontSize: "12px" }
   },
   title: {
-    sm: { fontSize: "20px", lineHeight: "20px" }
+    sm: { fontSize: "20px", lineHeight: "24px" }
   },
   postBody: {
     sm: { fontSize: "16px", lineHeight: 1.5, textAlign: "justify" }
   },
   likesCount: {
     sm: { fontSize: "16px" }
+  },
+  content: {
+    title: { fontSize: "30px" },
+    body: { fontSize: "20px" }
   }
 };
 
