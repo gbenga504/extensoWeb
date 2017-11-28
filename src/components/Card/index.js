@@ -20,7 +20,8 @@ const Container = styled.div`
 export default class Card extends React.PureComponent {
   static PropTypes = {
     style: PropTypes.object,
-    className: PropTypes.string
+    className: PropTypes.string,
+    hideLikes: PropTypes.bool
   };
 
   render() {
@@ -31,7 +32,7 @@ export default class Card extends React.PureComponent {
       >
         <UserContentInformation />
         <Body isDisplayImageSet={true} />
-        <Footer />
+        <Footer hideLikes />
       </Container>
     );
   }

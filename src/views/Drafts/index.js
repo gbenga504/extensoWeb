@@ -4,13 +4,9 @@ import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import Card from "../../components/Card";
 
-export default class Home extends React.PureComponent {
+export default class Drafts extends React.PureComponent {
   static seedData = {
-    items: [
-      { number: 15, tag: "POSTS" },
-      { number: 4, tag: "CATEGORIES" },
-      { number: 300, tag: "LIKES" }
-    ]
+    items: [{ number: 15, tag: "POSTS" }]
   };
 
   defaults = {
@@ -21,13 +17,13 @@ export default class Home extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         <DashboardHeader iconArray={this.defaults.headerIcon} />
-        <Counter items={Home.seedData.items} />
+        <Counter items={Drafts.seedData.items} />
         <div
           className="d-flex flex-column align-items-center"
           style={{ padding: "0px 320px" }}
         >
-          <Card />
-          <Card />
+          <Card hideLikes />
+          <Card hideLikes />
         </div>
       </div>
     );

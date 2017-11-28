@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { BoldText } from "../AppText";
-import Colors from "../../assets/Colors";
+import { BoldText } from "./AppText";
+import Colors from "../assets/Colors";
 
 const Section = styled.div`
   height: 200px;

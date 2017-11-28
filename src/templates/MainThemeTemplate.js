@@ -9,6 +9,7 @@ import Colors from "../assets/Colors";
 import Home from "../views/Home";
 import Post from "../views/Post";
 import Content from "../views/Content";
+import Drafts from "../views/Drafts";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.defaultThemeColor};
@@ -25,6 +26,7 @@ export default class MainThemeTemplate extends React.PureComponent {
             <Route exact component={Home} path="/" />
             <Route exact component={Post} path="/post" />
             <Route exact component={Content} path="/content" />
+            <Route exact component={Drafts} path="/drafts" />
           </Switch>
         </div>
       </Container>

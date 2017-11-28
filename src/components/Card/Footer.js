@@ -10,10 +10,16 @@ const Footer = props => (
     className="d-flex justify-content-between align-items-center"
     style={{ marginTop: 10 }}
   >
-    <div className="d-flex">
-      <Icon className="ion-heart" size="30" />
-      <LightText style={{ ...Fonts.likesCount.sm, marginLeft: 5 }}>8</LightText>
-    </div>
+    {props.hideLikes ? (
+      <span />
+    ) : (
+      <div className="d-flex">
+        <Icon className="ion-heart" size="30" />
+        <LightText style={{ ...Fonts.likesCount.sm, marginLeft: 5 }}>
+          8
+        </LightText>
+      </div>
+    )}
     <div className="d-flex">
       <Icon className="ion-edit" size="30" style={{ cursor: "pointer" }} />
       <Icon
