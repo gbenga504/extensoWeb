@@ -11,6 +11,7 @@ import Post from "../views/Post";
 import Content from "../views/Content";
 import Drafts from "../views/Drafts";
 import Section from "../views/Section";
+import Search from "../views/Search";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.defaultThemeColor};
@@ -29,6 +30,7 @@ export default class MainThemeTemplate extends React.PureComponent {
             <Route exact component={Content} path="/content" />
             <Route exact component={Drafts} path="/drafts" />
             <Route exact component={Section} path="/sections" />
+            <Route exact component={Search} path="/search" />
           </Switch>
         </div>
       </Container>

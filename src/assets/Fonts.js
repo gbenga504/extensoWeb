@@ -23,7 +23,8 @@ const Fonts = {
   },
   section: {
     select: { fontSize: "14px" }
-  }
+  },
+  search: { title: { fontSize: "25px" } }
 };
 
 export default Fonts;
