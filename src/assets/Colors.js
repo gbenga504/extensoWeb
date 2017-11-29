@@ -39,6 +39,12 @@ const Colors = {
   },
   home: {
     counterBorder: "#dadfe3"
+  },
+  section: {
+    selectCategoryButton: "#E95656",
+    selectCategoryText: "#fff",
+    selectCategoryDropdown: "#fff",
+    selectCategoryItemBorder: "#f5f5f5"
   }
 };
 

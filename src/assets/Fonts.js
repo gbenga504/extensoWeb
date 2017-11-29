@@ -20,6 +20,9 @@ const Fonts = {
   content: {
     title: { fontSize: "30px" },
     body: { fontSize: "20px" }
+  },
+  section: {
+    select: { fontSize: "14px" }
   }
 };
 
