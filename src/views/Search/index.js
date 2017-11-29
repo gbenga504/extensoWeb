@@ -4,6 +4,7 @@ import DashboardHeader from "../../components/DashboardHeader";
 import Card from "../../components/Card";
 import { RegularText } from "../../components/AppText";
 import Fonts from "../../assets/Fonts";
+import { CircularSpinner } from "../../components/Loaders";
 
 export default class Search extends React.PureComponent {
   defaults = {
@@ -23,6 +24,7 @@ export default class Search extends React.PureComponent {
           <div className="d-flex flex-column align-items-center">
             <Card />
             <Card />
+            <CircularSpinner style={{ marginTop: 50 }} />
           </div>
         </div>
       </div>

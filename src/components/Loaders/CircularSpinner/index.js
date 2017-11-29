@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import "./index.css";
+import Colors from "../../../assets/Colors";
 
 const CircularSpinner = props => (
   <div
@@ -31,7 +32,7 @@ CircularSpinner.defaultProps = {
   display: "block",
   size: "30",
   thickness: "3",
-  color: "#2c8482"
+  color: `${Colors.spinner}`
 };
 
 export default CircularSpinner;

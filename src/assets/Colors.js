@@ -45,7 +45,8 @@ const Colors = {
     selectCategoryText: "#fff",
     selectCategoryDropdown: "#fff",
     selectCategoryItemBorder: "#f5f5f5"
-  }
+  },
+  spinner: "#E95656"
 };
 
 export default Colors;
