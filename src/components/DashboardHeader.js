@@ -16,35 +16,41 @@ const Section = styled.div`
   height: 70px;
   cursor: pointer;
   border-right: 1px solid ${Colors.dashboardHeader.border};
-  background: ${props =>
-    props.active
-      ? Colors.dashboardHeader.sectionActive
-      : Colors.dashboardHeader.sectionUnactive};
-  &:hover: {
+  background: ${props => Colors.dashboardHeader[props.name]};
+  &:hover {
+    background: ${props => Colors.dashboardHeader.hover[props.name]};
   }
 `;
 const SearchBox = Input.extend`height: 100%;`;
 
 const DashboardHeader = props => (
   <Div className="d-flex" style={{ width: "100%" }}>
-    <Section className="d-flex flex-column justify-content-center align-items-center">
-      <Icon className="ion-ios-settings-strong" />
-    </Section>
-    <Section
-      style={{ borderRight: `1px solid #fff` }}
-      className="d-flex flex-column justify-content-center align-items-center"
-    >
-      <Icon className="ion-ios-search-strong" />
-    </Section>
-    <SearchBox
-      className="d-flex align-self-center"
-      type="search"
-      placeholder="Search for a post from the categories"
-    />
+    {!props.hideSearch ? (
+      <div className="d-flex" style={{ width: "100%" }}>
+        <Section className="d-flex flex-column justify-content-center align-items-center">
+          <Icon className="ion-ios-settings-strong" />
+        </Section>
+        <Section
+          style={{ borderRight: `1px solid #fff` }}
+          className="d-flex flex-column justify-content-center align-items-center"
+        >
+          <Icon className="ion-ios-search-strong" />
+        </Section>
+        <SearchBox
+          className="d-flex align-self-center"
+          type="search"
+          placeholder="Search for a post from the categories"
+        />
+      </div>
+    ) : (
+      <div className="d-flex" style={{ width: "100%" }} />
+    )}
+
     {props.iconArray &&
       props.iconArray.map((icon, index) => (
         <Section
           key={index}
+          name={icon.segmentName}
           style={
             icon.lastIcon
               ? {
@@ -54,7 +60,7 @@ const DashboardHeader = props => (
           }
           className="d-flex flex-column justify-content-center align-items-center"
         >
-          <Icon className={icon.name} />
+          <Icon forceColor className={icon.name} style={{ color: "#fff" }} />
         </Section>
       ))}
   </Div>
@@ -64,9 +70,11 @@ DashboardHeader.propTypes = {
   iconArray: PropTypes.arrayOf(
     PropTypes.shape({
       lastIcon: PropTypes.bool,
-      name: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired,
+      segmentName: PropTypes.string.isRequired
     })
-  )
+  ),
+  hideSearch: PropTypes.bool
 };
 
 export default DashboardHeader;

@@ -14,7 +14,7 @@ export default class Home extends React.PureComponent {
   };
 
   defaults = {
-    headerIcon: [{ name: "ion-power", lastIcon: true }]
+    headerIcon: [{ name: "ion-power", lastIcon: true, segmentName: "logout" }]
   };
 
   render() {

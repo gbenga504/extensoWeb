@@ -24,7 +24,11 @@ const Fonts = {
   section: {
     select: { fontSize: "14px" }
   },
-  search: { title: { fontSize: "25px" } }
+  search: { title: { fontSize: "25px" } },
+  post: {
+    titleBox: { fontSize: "30px", fontFamily: "Circular Medium" },
+    postBox: { fontSize: "20px" }
+  }
 };
 
 export default Fonts;

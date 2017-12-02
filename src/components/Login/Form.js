@@ -7,7 +7,8 @@ import Colors from "../../assets/Colors";
 const Container = styled.div`
   background-color: ${Colors.login.formBackgroundColor};
   padding: 30px;
-
+`;
+const Password = styled(LoginInput)`
   &::after {
     content: "";
     position: absolute;
@@ -15,8 +16,8 @@ const Container = styled.div`
     border-style: solid;
     border-width: 0px 20px 20px 0px;
     height: 0px;
-    margin-top: 75px;
-    margin-left: -200px;
+    margin-top: 59px;
+    margin-left: 70px;
     transform: rotate(45deg);
   }
 `;
@@ -28,7 +29,7 @@ const Form = props => (
       placeholder="Enter your username"
       type="text"
     />
-    <LoginInput
+    <Password
       placeholderIcon="ion-key"
       placeholder="Enter your password"
       type="password"

@@ -35,7 +35,7 @@ const PlaceholderInput = Input.extend`
 `;
 const LoginInput = props => (
   <div
-    className="d-flex"
+    className={`d-flex ${props.className}`}
     style={
       props.style
         ? { height: "40px", width: "100%", ...props.style }
@@ -70,7 +70,8 @@ LoginInput.propTypes = {
   style: PropTypes.object,
   placeholderIcon: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  rightPlaceholderIcon: PropTypes.string
+  rightPlaceholderIcon: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default LoginInput;

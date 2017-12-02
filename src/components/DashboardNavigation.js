@@ -19,7 +19,11 @@ const Section = styled.div`
       ? Colors.dashboardNav.sectionActive
       : Colors.dashboardNav.sectionUnactive};
 
-  &:hover: {
+  &:hover {
+    background: ${props =>
+      props.active
+        ? Colors.dashboardNav.hover
+        : Colors.dashboardNav.sectionUnactive};
   }
 `;
 const Title = styled(RegularText)`

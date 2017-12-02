@@ -18,15 +18,16 @@ const Title = styled(LightText)`
 `;
 
 export default class Login extends React.PureComponent {
+  state = {
+    height: window.innerHeight
+  };
+
   render() {
     return (
-      <Container
-        className="justify-content-center"
-        color={Colors.login.themeColor}
-      >
+      <Container color={Colors.login.themeColor}>
         <div
-          className="d-flex flex-column align-self-center"
-          style={{ width: "100%" }}
+          className="d-flex flex-column justify-content-center"
+          style={{ width: "100%", height: this.state.height }}
         >
           <Form />
           <Title>SIGN IN</Title>

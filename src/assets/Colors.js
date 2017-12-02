@@ -19,13 +19,16 @@ const Colors = {
     titleActive: "#fff",
     titleUnactive: "#535C69",
     iconActive: "#fff",
-    iconUnactive: "#535C69"
+    iconUnactive: "#535C69",
+    hover: "#d23d3df7"
   },
   dashboardHeader: {
     background: "#fff",
     border: "#dadfe3",
-    sectionActive: "#15A4FA",
-    sectionUnactive: "transparent"
+    logout: "#E95656",
+    hover: {
+      logout: "#d23d3df7"
+    }
   },
   card: {
     background: "#fff",
@@ -46,7 +49,9 @@ const Colors = {
     selectCategoryDropdown: "#fff",
     selectCategoryItemBorder: "#f5f5f5"
   },
-  spinner: "#E95656"
+  spinner: "#E95656",
+  postInputBorder: "#eee",
+  postBackground: "#fff"
 };
 
 export default Colors;

@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
-import Colors from "../../assets/Colors";
-import { LightText } from "../AppText";
-import Icon from "../Icon";
-import Fonts from "../../assets/Fonts";
+import Colors from "../assets/Colors";
+import { LightText } from "./AppText";
+import Icon from "./Icon";
+import Fonts from "../assets/Fonts";
 
 const Button = styled.div`
   width: inherit;
@@ -28,28 +29,35 @@ const Item = styled.div`
 `;
 
 export default class SelectCategory extends React.PureComponent {
-  state = { isDropdownVisible: false };
+  state = { isDropdownVisible: false, value: "Select a Category" };
 
   static defaults = {
     categories: [{ name: "Innovation" }, { name: "Jobs" }, { name: "Home" }]
   };
 
-  toggleDropdown = () => {
-    this.setState({ isDropdownVisible: !this.state.isDropdownVisible });
+  static propTypes = {
+    className: PropTypes.string
+  };
+
+  toggleDropdown = value => {
+    this.setState({
+      isDropdownVisible: !this.state.isDropdownVisible,
+      value: value || this.state.value
+    });
   };
 
   render() {
     const display = this.state.isDropdownVisible ? "block" : "none";
     return (
       <div
-        className="d-flex flex-column"
+        className={`d-flex flex-column ${this.props.className || ""}`}
         style={{ width: 200, height: "100%" }}
       >
         <Button
-          onClick={this.toggleDropdown}
+          onClick={() => this.toggleDropdown(this.state.value)}
           className="d-flex justify-content-between align-items-center"
         >
-          <Title style={Fonts.section.select}>Select a category</Title>
+          <Title style={Fonts.section.select}>{this.state.value}</Title>
           <Icon
             className="ion-ios-arrow-down"
             forceColor={true}
@@ -60,7 +68,7 @@ export default class SelectCategory extends React.PureComponent {
           {SelectCategory.defaults.categories.map((category, i) => (
             <Item
               key={i}
-              onClick={this.toggleDropdown}
+              onClick={() => this.toggleDropdown(category.name)}
               className="d-flex justify-content-center align-items-center"
             >
               <LightText>{category.name}</LightText>

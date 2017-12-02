@@ -3,7 +3,7 @@ import React from "react";
 import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import Card from "../../components/Card";
-import SelectCategory from "../../components/Section/SelectCategory";
+import SelectCategory from "../../components/SelectCategory";
 
 export default class Section extends React.PureComponent {
   static seedData = {
