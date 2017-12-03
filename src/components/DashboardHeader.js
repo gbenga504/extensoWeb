@@ -10,6 +10,9 @@ const Div = styled.div`
   background: ${Colors.dashboardHeader.background};
   border-bottom: 1px solid ${Colors.dashboardHeader.border};
   height: 70px;
+  position: fixed;
+  width: 100%;
+  z-index: 1000000
 `;
 const Section = styled.div`
   width: 70px;
@@ -24,7 +27,7 @@ const Section = styled.div`
 const SearchBox = Input.extend`height: 100%;`;
 
 const DashboardHeader = props => (
-  <Div className="d-flex" style={{ width: "100%" }}>
+  <Div className="d-flex">
     {!props.hideSearch ? (
       <div className="d-flex" style={{ width: "100%" }}>
         <Section className="d-flex flex-column justify-content-center align-items-center">
@@ -54,7 +57,8 @@ const DashboardHeader = props => (
           style={
             icon.lastIcon
               ? {
-                  borderLeft: `1px solid ${Colors.dashboardHeader.border}`
+                  borderLeft: `1px solid ${Colors.dashboardHeader.border}`,
+                  marginRight: 70
                 }
               : {}
           }

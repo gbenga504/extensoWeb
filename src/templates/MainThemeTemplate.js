@@ -23,7 +23,7 @@ export default class MainThemeTemplate extends React.PureComponent {
     return (
       <Container>
         <DashboardNavigation {...this.props} />
-        <div className="d-flex" style={{ width: "100%" }}>
+        <div className="d-flex" style={{ width: "100%", marginLeft: 70 }}>
           <Switch>
             <Route exact component={Home} path="/" />
             <Route exact component={Post} path="/post" />

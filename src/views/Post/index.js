@@ -2,6 +2,7 @@ import React from "react";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import Form from "../../components/Post/Form";
+import ContentPadder from "../../containers/ContentPadder";
 
 export default class Post extends React.PureComponent {
   state = {
@@ -9,7 +10,9 @@ export default class Post extends React.PureComponent {
   };
 
   defaults = {
-    headerIcon: [{ name: "ion-paper-airplane", lastIcon: true }]
+    headerIcon: [
+      { name: "ion-paper-airplane", lastIcon: true, segmentName: "post" }
+    ]
   };
 
   render() {
@@ -19,7 +22,9 @@ export default class Post extends React.PureComponent {
         style={{ width: "100%", height: "auto" }}
       >
         <DashboardHeader hideSearch iconArray={this.defaults.headerIcon} />
-        <Form />
+        <ContentPadder className="flex-column">
+          <Form />
+        </ContentPadder>
       </div>
     );
   }

@@ -7,6 +7,8 @@ import Colors from "../assets/Colors";
 
 const Container = styled.div`
   width: 70px;
+  position: fixed;
+  height: 100%;
   background-color: ${Colors.dashboardNav.background};
   border-right: 1px solid ${Colors.dashboardNav.border};
 `;

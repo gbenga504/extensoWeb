@@ -30,8 +30,8 @@ CircularSpinner.propTypes = {
 
 CircularSpinner.defaultProps = {
   display: "block",
-  size: "30",
-  thickness: "3",
+  size: 30,
+  thickness: 3,
   color: `${Colors.spinner}`
 };
 

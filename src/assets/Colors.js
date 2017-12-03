@@ -26,8 +26,14 @@ const Colors = {
     background: "#fff",
     border: "#dadfe3",
     logout: "#E95656",
+    trash: "#E95656",
+    edit: "#1976d2",
+    post: "#1976d2",
     hover: {
-      logout: "#d23d3df7"
+      logout: "#d23d3df7",
+      trash: "#d23d3df7",
+      edit: "#0d47a1",
+      post: "#0d47a1"
     }
   },
   card: {

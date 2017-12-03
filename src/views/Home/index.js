@@ -3,6 +3,7 @@ import React from "react";
 import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import Card from "../../components/Card";
+import ContentPadder from "../../containers/ContentPadder";
 
 export default class Home extends React.PureComponent {
   static seedData = {
@@ -21,14 +22,16 @@ export default class Home extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         <DashboardHeader iconArray={this.defaults.headerIcon} />
-        <Counter items={Home.seedData.items} />
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ padding: "0px 320px" }}
-        >
-          <Card />
-          <Card />
-        </div>
+        <ContentPadder className="flex-column">
+          <Counter items={Home.seedData.items} />
+          <div
+            className="d-flex flex-column align-items-center"
+            style={{ padding: "0px 320px" }}
+          >
+            <Card />
+            <Card />
+          </div>
+        </ContentPadder>
       </div>
     );
   }
