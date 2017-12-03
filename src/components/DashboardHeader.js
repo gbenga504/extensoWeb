@@ -12,10 +12,11 @@ const Div = styled.div`
   height: 70px;
   position: fixed;
   width: 100%;
-  z-index: 1000000
+  z-index: 1000000;
 `;
 const Section = styled.div`
   width: 70px;
+
   height: 70px;
   cursor: pointer;
   border-right: 1px solid ${Colors.dashboardHeader.border};
