@@ -57,7 +57,31 @@ const Colors = {
   },
   spinner: "#E95656",
   postInputBorder: "#eee",
-  postBackground: "#fff"
+  postBackground: "#fff",
+  rainbowLoader: {
+    red: "#e57373",
+    orange: "#ffb74d",
+    yellow: "#fff176",
+    green: "#81c784",
+    blue: "#64b5f6",
+    indigo: "#7986cb",
+    blender: {
+      red: "#ef5350",
+      orange: "#ffcc80",
+      yellow: "#fff59d",
+      green: "#a5d6a7",
+      blue: "#90caf9",
+      indigo: "#9fa8da"
+    },
+    gradient: {
+      red: "#ffcdd2",
+      orange: "#ffe0b2",
+      yellow: "#fff9c4",
+      green: "#c8e6c9",
+      blue: "#bbdefb",
+      indigo: "#c5cae9"
+    }
+  }
 };
 
 export default Colors;
