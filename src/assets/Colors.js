@@ -9,7 +9,8 @@ const Colors = {
     formInputRightBackground: "#AD6BAD",
     formInputLeftBackground: "#dedede",
     formInputLeftBorder: "#bdbdbd",
-    formRightIcon: "#fff"
+    formRightIcon: "#fff",
+    formLoginSpinnerIcon: "#ad55ad"
   },
   dashboardNav: {
     background: "#2f323e",

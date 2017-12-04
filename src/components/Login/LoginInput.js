@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import Input from "../Input";
 import Icon from "../Icon";
+import { CircularSpinner } from "../Loaders";
 import Colors from "../../assets/Colors";
 
 const PlaceholderContainer = styled.div`
@@ -48,19 +49,28 @@ const LoginInput = props => (
     <PlaceholderInput
       className="d-flex"
       type={props.type}
+      onChange={props.onChange}
       placeholder={props.placeholder}
       rightPlaceholderIcon={props.rightPlaceholderIcon || undefined}
     />
     {props.rightPlaceholderIcon && (
       <RightIconPlaceholderContainer
+        onClick={props.onSubmit}
         className="d-flex align-items-center justify-content-center"
         rightPlaceholderIcon={props.rightPlaceholderIcon || undefined}
       >
-        <Icon
-          className={props.rightPlaceholderIcon}
-          forceColor
-          style={{ color: Colors.login.formRightIcon }}
-        />
+        {props.rightPlaceholderType === "icon" ? (
+          <Icon
+            className={props.rightPlaceholderIcon}
+            forceColor
+            style={{ color: Colors.login.formRightIcon }}
+          />
+        ) : (
+          <CircularSpinner
+            size={15}
+            color={`${Colors.login.formLoginSpinnerIcon}`}
+          />
+        )}
       </RightIconPlaceholderContainer>
     )}
   </div>
@@ -71,7 +81,10 @@ LoginInput.propTypes = {
   placeholderIcon: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   rightPlaceholderIcon: PropTypes.string,
-  className: PropTypes.string
+  rightPlaceholderType: PropTypes.string,
+  className: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func
 };
 
 export default LoginInput;

@@ -10,8 +10,8 @@ const Container = styled.div`
   height: 3px;
 `;
 const translateRainbow = keyframes`
-  0% {margin-left: -70%}
-  100%{margin-left: 0%}
+  0% {transform: translateX(-90%)}
+  100%{transform: translateX(0%)}
 `;
 const ColorPigment = styled.div`
   width: 100%;

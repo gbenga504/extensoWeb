@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
+import { LoginUtils } from "../../utils";
 import LoginInput from "./LoginInput";
 import Colors from "../../assets/Colors";
 
@@ -22,21 +24,46 @@ const Password = styled(LoginInput)`
   }
 `;
 
-const Form = props => (
-  <Container className="d-flex flex-column align-items-center justify-content-center">
-    <LoginInput
-      placeholderIcon="ion-person"
-      placeholder="Enter your username"
-      type="text"
-    />
-    <Password
-      placeholderIcon="ion-key"
-      placeholder="Enter your password"
-      type="password"
-      style={{ marginTop: 10 }}
-      rightPlaceholderIcon="ion-ios-arrow-forward"
-    />
-  </Container>
-);
+export default class Form extends React.PureComponent {
+  state = {
+    username: "",
+    password: "",
+    isLoading: false
+  };
 
-export default Form;
+  static propTypes = {
+    isLoading: PropTypes.func
+  };
+
+  login = () => {
+    let { username, password } = this.state;
+    LoginUtils.loginValidation(username, password);
+    this.setState({ isLoading: true }, () =>
+      this.props.isLoading(this.state.isLoading)
+    );
+  };
+
+  render() {
+    let { isLoading } = this.state;
+    return (
+      <Container className="d-flex flex-column align-items-center justify-content-center">
+        <LoginInput
+          placeholderIcon="ion-person"
+          placeholder="Enter your username"
+          type="text"
+          onChange={ev => this.setState({ username: ev.target.value })}
+        />
+        <Password
+          placeholderIcon="ion-key"
+          placeholder="Enter your password"
+          type="password"
+          style={{ marginTop: 10 }}
+          rightPlaceholderType={isLoading ? "button" : "icon"}
+          rightPlaceholderIcon="ion-ios-arrow-forward"
+          onChange={ev => this.setState({ password: ev.target.value })}
+          onSubmit={this.login}
+        />
+      </Container>
+    );
+  }
+}
