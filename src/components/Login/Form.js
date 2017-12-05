@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { LoginUtils } from "../../utils";
 import LoginInput from "./LoginInput";
 import Colors from "../../assets/Colors";
+import { ToolTip } from "../PopOver";
 
 const Container = styled.div`
   background-color: ${Colors.login.formBackgroundColor};
@@ -28,7 +29,11 @@ export default class Form extends React.PureComponent {
   state = {
     username: "",
     password: "",
-    isLoading: false
+    isLoading: false,
+    isTooltipVisible: false,
+    tooltipMessage: "",
+    tooltipPosition: "",
+    toolTippedElement: null
   };
 
   static propTypes = {
@@ -37,23 +42,42 @@ export default class Form extends React.PureComponent {
 
   login = () => {
     let { username, password } = this.state;
-    LoginUtils.loginValidation(username, password);
-    this.setState({ isLoading: true }, () =>
-      this.props.isLoading(this.state.isLoading)
-    );
+    if (LoginUtils.loginValidation(username, password)) {
+      this.setState({ isLoading: true }, () =>
+        this.props.isLoading(this.state.isLoading)
+      );
+    } else {
+      this.setState(
+        {
+          isTooltipVisible: true,
+          tooltipMessage: "Oops, check your details",
+          tooltipPosition: "tooltip-position-top",
+          toolTippedElement: "username"
+        },
+        () => setTimeout(() => this.setState({ isTooltipVisible: false }), 3000)
+      );
+    }
   };
 
   render() {
-    let { isLoading } = this.state;
+    let {
+      isLoading,
+      toolTippedElement,
+      isTooltipVisible,
+      tooltipMessage,
+      tooltipPosition
+    } = this.state;
     return (
       <Container className="d-flex flex-column align-items-center justify-content-center">
         <LoginInput
+          className={toolTippedElement === "username" ? "data-tooltip" : ""}
           placeholderIcon="ion-person"
           placeholder="Enter your username"
           type="text"
           onChange={ev => this.setState({ username: ev.target.value })}
         />
         <Password
+          className={toolTippedElement === "password" ? "data-tooltip" : ""}
           placeholderIcon="ion-key"
           placeholder="Enter your password"
           type="password"
@@ -63,6 +87,9 @@ export default class Form extends React.PureComponent {
           onChange={ev => this.setState({ password: ev.target.value })}
           onSubmit={this.login}
         />
+        {isTooltipVisible && (
+          <ToolTip dataPosition={tooltipPosition} title={tooltipMessage} />
+        )}
       </Container>
     );
   }

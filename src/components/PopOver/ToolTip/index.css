@@ -1,0 +1,48 @@
+.data-tooltip-message {
+  width: 200px;
+  height: 30px;
+  text-align: center;
+  color: #fff;
+  background: #e95656;
+  position: absolute;
+  font-size: 13px;
+  border-radius: 3px;
+  padding: 3px;
+  z-index: 1000;
+  margin-left: -100px;
+  left: 50%;
+}
+
+.tooltip-position-top {
+  bottom: 130%;
+}
+
+.tooltip-position-bottom {
+  top: 130%;
+}
+
+.tooltip-position-top:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #e95656 transparent transparent transparent;
+}
+
+.tooltip-position-bottom:after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #e95656 transparent;
+}
+
+.data-tooltip {
+  position: relative;
+}
