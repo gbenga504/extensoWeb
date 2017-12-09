@@ -1,2 +1,4 @@
 import { LoginUtils } from "./LoginUtils";
-export { LoginUtils };
+import { GeneralBasedUtils } from "./GeneralBasedUtils";
+
+export { LoginUtils, GeneralBasedUtils };

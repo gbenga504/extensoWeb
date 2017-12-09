@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Switch, Route } from "react-router-dom";
 
+import { GeneralBasedUtils } from "../utils";
 import LayoutContainer from "../containers/LayoutContainer";
 import DashboardNavigation from "../components/DashboardNavigation";
 import Colors from "../assets/Colors";
@@ -22,10 +23,19 @@ export default class MainThemeTemplate extends React.PureComponent {
   render() {
     return (
       <Container>
-        <DashboardNavigation {...this.props} />
+        <DashboardNavigation
+          {...GeneralBasedUtils.sanitizeProps(this.props, ["route"])}
+        />
         <div className="d-flex" style={{ width: "100%", marginLeft: 70 }}>
           <Switch>
-            <Route exact component={Home} path="/" />
+            <Route
+              exact
+              render={props => {
+                let newProps = { ...props, route: this.props.route };
+                return <Home {...newProps} />;
+              }}
+              path="/"
+            />
             <Route exact component={Post} path="/post" />
             <Route exact component={Content} path="/content" />
             <Route exact component={Drafts} path="/drafts" />
