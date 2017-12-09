@@ -1,20 +1,19 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React from "react";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
 
-import Login from "./views/Login";
-import MainThemeTemplate from "./templates/MainThemeTemplate";
+import AppRoutes from "./Routes";
+import { appReducer } from "./reducers";
 
-class App extends Component {
-  render() {
-    return (
-      <Router>
-        <Switch>
-          <Route exact component={Login} path="/login" />
-          <Route component={MainThemeTemplate} path="/" />
-        </Switch>
-      </Router>
-    );
-  }
-}
+const store = createStore(
+  combineReducers({
+    ...appReducer
+  }),
+  {}
+);
 
-export default App;
+export default () => (
+  <Provider store={store}>
+    <AppRoutes />
+  </Provider>
+);
