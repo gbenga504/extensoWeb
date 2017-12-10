@@ -28,16 +28,55 @@ const composer = (method, { props, name, options }) => {
 
         componentDidMount() {
           if (method.toUpperCase() === "GET") {
-            this.setLoadingDataState();
-            let params =
+            let fetchPolicy =
               typeof options === "function"
-                ? options(this.props).variables
-                : options.variables;
-            XMLHttp(method, params)
-              .then(data => this.setSuccessDataState(data))
-              .catch(error => this.setErrorDataState(error));
+                ? options(this.props).fetchPolicy
+                : options.fetchPolicy || "cache-first";
+            switch (fetchPolicy) {
+              case "network-only":
+                this.setLoadingDataState();
+                this.refetchQuery({});
+                break;
+              case "cache-only":
+                this.setInitialStateAfterMount();
+                break;
+              case "cache-and-network":
+                this.setInitialStateAfterMount();
+                this.setLoadingDataState();
+                this.refetchQuery({});
+                break;
+              case "cache-first":
+                if (this.props.queryDatas[`${name}`]) {
+                  this.setInitialStateAfterMount();
+                } else {
+                  this.setLoadingDataState();
+                  this.refetchQuery({});
+                }
+                break;
+            }
           }
         }
+
+        setInitialStateAfterMount = () => {
+          this.setState({
+            [`${name}`]: {
+              ...this.state[`${name}`],
+              loading: false,
+              isInitialDataSet: true,
+              result: this.props.queryDatas[`${name}`]
+            }
+          });
+        };
+
+        refetchQuery = ({ variables }) => {
+          let params =
+            variables || typeof options === "function"
+              ? options(this.props).variables
+              : options.variables;
+          XMLHttp(method, params)
+            .then(data => data => this.setSuccessDataState(data))
+            .catch(error => this.setErrorDataState(error));
+        };
 
         setLoadingDataState = () => {
           this.setState({
@@ -148,7 +187,8 @@ const composer = (method, { props, name, options }) => {
             .then(result => {
               this.props.route.setRouteDatas(goto, {
                 result,
-                fetchMore: this.fetchMore
+                fetchMore: this.fetchMore,
+                refetchQuery: this.refetchQuery
               });
               setTimeout(() => {
                 setTimeout(
@@ -194,13 +234,15 @@ const composer = (method, { props, name, options }) => {
                 props({
                   [`${name}`]: {
                     ...this.state[`${name}`],
-                    fetchMore: this.fetchMore
+                    fetchMore: this.fetchMore,
+                    refetchQuery: this.refetchQuery
                   }
                 });
               passedProps = this.buildProps(customProps, {
                 [`${name}`]: {
                   ...this.state[`${name}`],
-                  fetchMore: this.fetchMore
+                  fetchMore: this.fetchMore,
+                  refetchQuery: this.refetchQuery
                 }
               });
               break;
