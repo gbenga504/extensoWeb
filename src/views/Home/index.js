@@ -20,6 +20,10 @@ class Home extends React.PureComponent {
     headerIcon: [{ name: "ion-power", lastIcon: true, segmentName: "logout" }]
   };
 
+  componentDidMount() {
+    console.log(this.props);
+  }
+
   render() {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
@@ -39,22 +43,20 @@ class Home extends React.PureComponent {
   }
 }
 
-const HomeWithData = composer("POST", {
-  name: "home_post",
+const HomeWithData = composer("Push", {
+  name: "home_push",
   options: { variables: { url: "http://www.facebook.com" } },
-  props: ({ home_post, mutate }) => ({
-    formPoster: formVar => mutate({ variables: formVar }),
-    rice: home_post
+  props: ({ push }) => ({
+    pusher: variables => push({}, "maria")
   })
 })(
   composer("get", {
     name: "home_get",
-    variables: props => ({
-      url: "google.com",
-      timeout: props.currentUser
-    }),
-    props: ({ home_get }) => ({
-      dodo: home_get
+    options: props => ({
+      variables: {
+        url: "google.com",
+        timeout: props.currentUser
+      }
     })
   })(Home)
 );

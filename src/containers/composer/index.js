@@ -16,6 +16,7 @@ const composer = (method, { props, name, options }) => {
   function decorateClass(WrappedComponent) {
     return connect(state => ({
       progressState: state.dataLoadProgress,
+      routeDatas: state.routeDatas,
       queryDatas: state.queryDatas
     }))(
       class extends React.PureComponent {
@@ -74,8 +75,28 @@ const composer = (method, { props, name, options }) => {
               ? options(this.props).variables
               : options.variables;
           XMLHttp(method, params)
+            .then(data => this.setSuccessDataState(data))
+            .catch(error => this.setErrorDataState(error));
+        };
+
+        refetchPageContent = ({ variables }) => {
+          let params =
+            variables || typeof arguments[0] === "function"
+              ? arguments[0](this.props).variables
+              : arguments[0].variables;
+          arguments[1]("GET", params)
             .then(data => data => this.setSuccessDataState(data))
             .catch(error => this.setErrorDataState(error));
+        };
+
+        refetchQueries = arrayOfVariables => {
+          arrayOfVariables.forEach(variables => {
+            XMLHttp("GET", variables)
+              .then(data => {
+                this.props.route.setQueryDatas(variables.name, data);
+              })
+              .catch(error => console.warn(error));
+          });
         };
 
         setLoadingDataState = () => {
@@ -119,7 +140,7 @@ const composer = (method, { props, name, options }) => {
         mutate = variablesConfig => {
           let params =
             (variablesConfig && variablesConfig.variables) ||
-            typeof options.variables === "function"
+            typeof options === "function"
               ? options(this.props).variables
               : options.variables;
 
@@ -132,6 +153,11 @@ const composer = (method, { props, name, options }) => {
                   loading: false
                 }
               });
+              typeof options === "function"
+                ? options(this.props).refetchQueries &&
+                  this.refetchQueries(options(this.props).refetchQueries)
+                : options.refetchQueries &&
+                  this.refetchQueries(options.refetchQueries);
               return Promise.resolve(data);
             })
             .catch(error => {
@@ -157,15 +183,37 @@ const composer = (method, { props, name, options }) => {
                 let newResult = updateQuery(this.state[`${name}`].result, {
                   fetchMoreResult: data
                 });
-                this.setSuccessDataState(
-                  newResult,
-                  () =>
-                    method.toUpperCase() === "GET"
-                      ? this.props.route.setQueryDatas(name, newResult)
-                      : this.props.route.setRouteDatas(
-                          this.props.history.location.pathname,
-                          newResult
-                        )
+                this.setSuccessDataState(newResult, () =>
+                  this.props.route.setQueryDatas(name, newResult)
+                );
+              })
+              .catch(error => this.setErrorDataState(error));
+          } else {
+            throw new Error("[updateQuery] is needed in [data.fetchMore]");
+          }
+        };
+
+        fetchMorePageContent = ({ variables, updateQuery }) => {
+          if (updateQuery) {
+            let variablesConfig =
+              variables || typeof arguments[0] === "function"
+                ? arguments[0](this.props).variables
+                : arguments[0].variables;
+            this.setLoadingDataState();
+            arguments[1]("GET", variablesConfig)
+              .then(data => {
+                let newResult = updateQuery(
+                  this.props.routeDatas[this.props.history.location.pathname]
+                    .result,
+                  {
+                    fetchMoreResult: data
+                  }
+                );
+                this.setSuccessDataState(newResult, () =>
+                  this.props.route.setRouteDatas(
+                    "this.props.history.location.pathname",
+                    newResult
+                  )
                 );
               })
               .catch(error => this.setErrorDataState(error));
@@ -185,10 +233,21 @@ const composer = (method, { props, name, options }) => {
 
           XMLHttp("GET", params, this.calculateProgress)
             .then(result => {
+              let refetchPageContent = this.refetchPageContent.bind(
+                  this,
+                  options,
+                  XMLHttp
+                ),
+                fetchMorePageContent = this.fetchMorePageContent.bind(
+                  this.options,
+                  XMLHttp
+                );
               this.props.route.setRouteDatas(goto, {
                 result,
-                fetchMore: this.fetchMore,
-                refetchQuery: this.refetchQuery
+                fetchMorePageContent: ({ variables, updateQuery }) =>
+                  fetchMorePageContent({ variables, updateQuery }),
+                refetchPageContent: ({ variables }) =>
+                  refetchPageContent({ variables })
               });
               setTimeout(() => {
                 setTimeout(
