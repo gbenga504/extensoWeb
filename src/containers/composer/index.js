@@ -10,8 +10,8 @@ import { GeneralBasedUtils } from "../../utils";
 import XMLHttp from "./httpRequest";
 import DefiniteProgressBar from "./DefiniteProgressBar";
 
-const composer = (method, { props, name, variables, options }) => {
-  Throwable.initThrowable(method, { name, options, variables });
+const composer = (method, { props, name, options }) => {
+  Throwable.initThrowable(method, { name, options });
 
   function decorateClass(WrappedComponent) {
     return connect(state => ({
@@ -24,9 +24,9 @@ const composer = (method, { props, name, variables, options }) => {
           if (method.toUpperCase() === "GET") {
             this.setLoadingDataState();
             let params =
-              typeof variables === "function"
-                ? variables(this.props)
-                : variables;
+              typeof options === "function"
+                ? options(this.props).variables
+                : options.variables;
             XMLHttp(method, params)
               .then(data => this.setSuccessDataState(data))
               .catch(error => this.setErrorDataState(error));
@@ -66,7 +66,7 @@ const composer = (method, { props, name, variables, options }) => {
           let params =
             (variablesConfig && variablesConfig.variables) ||
             typeof options.variables === "function"
-              ? options.variables(this.props)
+              ? options(this.props).variables
               : options.variables;
 
           this.setLoadingDataState();
@@ -80,9 +80,9 @@ const composer = (method, { props, name, variables, options }) => {
 
         push = (variablesConfig, goto) => {
           let params =
-            variablesConfig || typeof variables === "function"
-              ? variables(this.props)
-              : variables;
+            variablesConfig || typeof options === "function"
+              ? options(this.props).variables
+              : options.variables;
 
           XMLHttp("GET", params, this.calculateProgress)
             .then(result => {
