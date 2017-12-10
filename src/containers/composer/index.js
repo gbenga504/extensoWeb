@@ -45,7 +45,7 @@ const composer = (method, { props, name, options }) => {
                 this.setLoadingDataState();
                 this.refetchQuery({});
                 break;
-              case "cache-first":
+              default:
                 if (this.props.queryDatas[`${name}`]) {
                   this.setInitialStateAfterMount();
                 } else {
