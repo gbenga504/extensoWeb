@@ -24,3 +24,13 @@ export const routeDatas = (state = {}, action) => {
       return state;
   }
 };
+
+export const queryDatas = (state = {}, action) => {
+  switch (action.type) {
+    case types.SET_QUERY_DATAS:
+      return { ...state, [`${action.queryName}`]: action.queryDatas };
+      break;
+    default:
+      return state;
+  }
+};

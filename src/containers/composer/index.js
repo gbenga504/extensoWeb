@@ -15,7 +15,8 @@ const composer = (method, { props, name, options }) => {
 
   function decorateClass(WrappedComponent) {
     return connect(state => ({
-      progressState: state.dataLoadProgress
+      progressState: state.dataLoadProgress,
+      queryDatas: state.queryDatas
     }))(
       class extends React.PureComponent {
         constructor(props) {
@@ -51,6 +52,7 @@ const composer = (method, { props, name, options }) => {
           let initialDataSettings = {};
           if (method.toUpperCase() === "GET") {
             initialDataSettings = { isInitialDataSet: true };
+            this.props.route.setQueryDatas(name, data);
           }
           this.setState({
             [`${name}`]: {
@@ -81,8 +83,28 @@ const composer = (method, { props, name, options }) => {
 
           this.setLoadingDataState();
           XMLHttp(method, params)
-            .then(data => this.setSuccessDataState(data))
-            .catch(error => this.setErrorDataState(error));
+            .then(data => {
+              this.setState({
+                [`${name}`]: {
+                  ...this.state[`${name}`],
+                  loading: false
+                }
+              });
+              return Promise.resolve(data);
+            })
+            .catch(error => {
+              this.setState({
+                [`${name}`]: {
+                  ...this.state[`${name}`],
+                  loading: false
+                }
+              });
+              return Promise.reject(error);
+            });
+        };
+
+        fetchMore = ({ variables, updateQuery }) => {
+          
         };
 
         calculateProgress = computed =>
@@ -114,12 +136,18 @@ const composer = (method, { props, name, options }) => {
             customProps.length === undefined
           ) {
             return {
-              ...GeneralBasedUtils.sanitizeProps(this.props, ["progressState"]),
+              ...GeneralBasedUtils.sanitizeProps(this.props, [
+                "progressState",
+                "queryDatas"
+              ]),
               ...customProps
             };
           }
           return {
-            ...GeneralBasedUtils.sanitizeProps(this.props, ["progressState"]),
+            ...GeneralBasedUtils.sanitizeProps(this.props, [
+              "progressState",
+              "queryDatas"
+            ]),
             ...defaultAdditionalProps
           };
         };
@@ -144,9 +172,12 @@ const composer = (method, { props, name, options }) => {
               customProps =
                 props &&
                 typeof props === "function" &&
-                props({ mutate: this.mutate, ...this.state });
+                props({
+                  mutate: this.mutate,
+                  [`${name}`]: { loading: this.state[`${name}`].loading }
+                });
               passedProps = this.buildProps(customProps, {
-                ...this.state,
+                [`${name}`]: { loading: this.state[`${name}`].loading },
                 mutate: this.mutate
               });
               break;

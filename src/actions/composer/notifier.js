@@ -4,12 +4,10 @@ import * as types from "./types";
  * @param {number} progress
  * @function sets the load progress bar state of each page loading state  
  */
-export const setProgressState = progress => {
-  return {
-    type: types.SET_PAGE_LOAD_PROGRESS,
-    progress
-  };
-};
+export const setProgressState = progress => ({
+  type: types.SET_PAGE_LOAD_PROGRESS,
+  progress
+});
 
 export const completeProgressState = progress => dispatch => {
   let start = window.performance.now(),
@@ -32,8 +30,14 @@ export const completeProgressState = progress => dispatch => {
 
 export const setRouteDatas = (routeName, routeDatas) => {
   return {
-    types: types.SET_ROUTE_DATAS,
+    type: types.SET_ROUTE_DATAS,
     routeName,
     routeDatas
   };
 };
+
+export const setQueryDatas = (queryName, queryDatas) => ({
+  type: types.SET_QUERY_DATAS,
+  queryName,
+  queryDatas
+});
