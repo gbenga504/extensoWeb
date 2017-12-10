@@ -18,7 +18,12 @@ const composer = (method, { props, name, options }) => {
       progressState: state.dataLoadProgress
     }))(
       class extends React.PureComponent {
-        state = { [`${name}`]: {} };
+        constructor(props) {
+          super(props);
+          let initialDataSettings =
+            method.toUpperCase() === "GET" ? { isInitialDataSet: false } : {};
+          this.state = { [`${name}`]: { ...initialDataSettings } };
+        }
 
         componentDidMount() {
           if (method.toUpperCase() === "GET") {
@@ -43,9 +48,14 @@ const composer = (method, { props, name, options }) => {
         };
 
         setSuccessDataState = data => {
+          let initialDataSettings = {};
+          if (method.toUpperCase() === "GET") {
+            initialDataSettings = { isInitialDataSet: true };
+          }
           this.setState({
             [`${name}`]: {
               ...this.state[`${name}`],
+              ...initialDataSettings,
               loading: false,
               result: data
             }
