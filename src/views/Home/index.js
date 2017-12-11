@@ -43,23 +43,15 @@ class Home extends React.PureComponent {
   }
 }
 
-const HomeWithData = composer("Push", {
-  name: "home_push",
-  options: { variables: { url: "http://www.facebook.com" } },
-  props: ({ push }) => ({
-    pusher: variables => push({}, "maria")
+const HomeWithData = composer("get", {
+  name: "home_get",
+  options: props => ({
+    variables: {
+      url: "google.com",
+      timeout: props.currentUser
+    }
   })
-})(
-  composer("get", {
-    name: "home_get",
-    options: props => ({
-      variables: {
-        url: "google.com",
-        timeout: props.currentUser
-      }
-    })
-  })(Home)
-);
+})(Home);
 
 function mapStateToProps(state) {
   return { currentUser: 5 };
