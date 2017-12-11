@@ -58,6 +58,10 @@ const composer = (method, { props, name, options }) => {
           }
         }
 
+        componentWillReceiveProps(nextProps) {
+          console.log("next props updated", nextProps);
+        }
+
         setInitialStateAfterMount = () => {
           this.setState({
             [`${name}`]: {
@@ -260,24 +264,44 @@ const composer = (method, { props, name, options }) => {
             .catch(err => null);
         };
 
+        sanitizeCoreReduxComposerProps = props => {
+          let newRoute = Object.keys(props.route).reduce((acc, value) => {
+            if (
+              !acc[value] &&
+              value !== "setProgressState" &&
+              value !== "completeProgressState" &&
+              value !== "setRouteDatas" &&
+              value !== "setQueryDatas"
+            ) {
+              acc[value] = props.route[value];
+            }
+            return acc;
+          }, {});
+          return { ...props, route: newRoute };
+        };
+
         buildProps = (customProps, defaultAdditionalProps) => {
           if (
             typeof customProps === "object" &&
             customProps.length === undefined
           ) {
             return {
-              ...GeneralBasedUtils.sanitizeProps(this.props, [
-                "progressState",
-                "queryDatas"
-              ]),
+              ...this.sanitizeCoreReduxComposerProps(
+                GeneralBasedUtils.sanitizeProps(this.props, [
+                  "progressState",
+                  "queryDatas"
+                ])
+              ),
               ...customProps
             };
           }
           return {
-            ...GeneralBasedUtils.sanitizeProps(this.props, [
-              "progressState",
-              "queryDatas"
-            ]),
+            ...this.sanitizeCoreReduxComposerProps(
+              GeneralBasedUtils.sanitizeProps(this.props, [
+                "progressState",
+                "queryDatas"
+              ])
+            ),
             ...defaultAdditionalProps
           };
         };
