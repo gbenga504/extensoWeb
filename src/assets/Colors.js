@@ -59,6 +59,10 @@ const Colors = {
   spinner: "#E95656",
   postInputBorder: "#eee",
   postBackground: "#fff",
+  postSavedTexxt: {
+    normal: "#616161",
+    error: "#E95656"
+  },
   rainbowLoader: {
     red: "#e57373",
     orange: "#ffb74d",

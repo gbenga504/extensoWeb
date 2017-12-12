@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import Colors from "../../assets/Colors";
+import { BoldText } from "../AppText";
 import SelectCategory from "../SelectCategory";
 import Title from "./Title";
 import Body from "./Body";
@@ -20,10 +22,15 @@ export default class Form extends React.PureComponent {
         className="d-flex flex-column"
         style={{ marginTop: 50, padding: "0px 200px" }}
       >
-        <Category
-          title={this.state.category}
-          onCategorySelected={category => this.setState({ category })}
-        />
+        <div className="d-flex justify-content-between">
+          <Category
+            title={this.state.category}
+            onCategorySelected={category => this.setState({ category })}
+          />
+          <BoldText style={{ color: Colors.postSavedTexxt.normal }}>
+            ...Saving
+          </BoldText>
+        </div>
         <Title
           value={this.state.titleHTML}
           onChange={ev => this.setState({ titleHTML: ev.target.value })}
