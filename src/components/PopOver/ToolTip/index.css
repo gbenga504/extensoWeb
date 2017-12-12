@@ -1,5 +1,5 @@
 .data-tooltip-message {
-  width: 200px;
+  width: 300px;
   height: 30px;
   text-align: center;
   color: #fff;
@@ -9,7 +9,7 @@
   border-radius: 3px;
   padding: 3px;
   z-index: 1000;
-  margin-left: -100px;
+  margin-left: -150px;
   left: 50%;
 }
 
