@@ -9,11 +9,30 @@ const TitleBox = Input.extend`
   border: 1px solid ${Colors.postInputBorder};
   margin-top: 40px;
   margin-left: 50px;
+
+  &::-webkit-input-placeholder {
+    color: #bdbdbd;
+  }
+
+  &::-moz-placeholder {
+    color: #bdbdbd;
+  }
+
+  &::-ms-input-placeholder {
+    color: #bdbdbd;
+  }
+
+  &:-moz-placeholder {
+    color: #bdbdbd;
+  }
 `;
 
 const Title = props => (
   <div className="d-flex">
-    <TitleBox style={Fonts.post.titleBox} />
+    <TitleBox
+      style={Fonts.post.titleBox}
+      placeholder="Enter the title of your post"
+    />
   </div>
 );
 

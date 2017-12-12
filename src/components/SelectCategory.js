@@ -29,21 +29,26 @@ const Item = styled.div`
 `;
 
 export default class SelectCategory extends React.PureComponent {
-  state = { isDropdownVisible: false, value: "Select a Category" };
+  state = { isDropdownVisible: false };
 
   static defaults = {
     categories: [{ name: "Innovation" }, { name: "Jobs" }, { name: "Home" }]
   };
 
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    title: PropTypes.string,
+    onCategorySelected: PropTypes.func.isRequired
   };
 
   toggleDropdown = value => {
-    this.setState({
-      isDropdownVisible: !this.state.isDropdownVisible,
-      value: value || this.state.value
-    });
+    this.setState(
+      {
+        isDropdownVisible: !this.state.isDropdownVisible
+      },
+      () =>
+        this.props.onCategorySelected && this.props.onCategorySelected(value)
+    );
   };
 
   render() {
@@ -54,10 +59,13 @@ export default class SelectCategory extends React.PureComponent {
         style={{ width: 200, height: "100%" }}
       >
         <Button
-          onClick={() => this.toggleDropdown(this.state.value)}
+          onClick={() => this.toggleDropdown(this.props.title)}
           className="d-flex justify-content-between align-items-center"
         >
-          <Title style={Fonts.section.select}>{this.state.value}</Title>
+          <Title style={Fonts.section.select}>
+            {(this.props.title.trim().length > 0 && this.props.title) ||
+              "Select a Category"}
+          </Title>
           <Icon
             className="ion-ios-arrow-down"
             forceColor={true}
