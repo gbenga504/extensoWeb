@@ -27,59 +27,76 @@ const Section = styled.div`
 `;
 const SearchBox = Input.extend`height: 100%;`;
 
-const DashboardHeader = props => (
-  <Div className="d-flex">
-    {!props.hideSearch ? (
-      <div className="d-flex" style={{ width: "100%" }}>
-        <Section className="d-flex flex-column justify-content-center align-items-center">
-          <Icon className="ion-ios-settings-strong" />
-        </Section>
-        <Section
-          style={{ borderRight: `1px solid #fff` }}
-          className="d-flex flex-column justify-content-center align-items-center"
-        >
-          <Icon className="ion-ios-search-strong" />
-        </Section>
-        <SearchBox
-          className="d-flex align-self-center"
-          type="search"
-          placeholder="Search for a post from the categories"
-        />
-      </div>
-    ) : (
-      <div className="d-flex" style={{ width: "100%" }} />
-    )}
+class DashboardHeader extends React.PureComponent {
+  static propTypes = {
+    iconArray: PropTypes.arrayOf(
+      PropTypes.shape({
+        lastIcon: PropTypes.bool,
+        name: PropTypes.string.isRequired,
+        segmentName: PropTypes.string.isRequired
+      })
+    ),
+    hideSearch: PropTypes.bool,
+    onSearch: PropTypes.func
+  };
 
-    {props.iconArray &&
-      props.iconArray.map((icon, index) => (
-        <Section
-          key={index}
-          name={icon.segmentName}
-          style={
-            icon.lastIcon
-              ? {
-                  borderLeft: `1px solid ${Colors.dashboardHeader.border}`,
-                  marginRight: 70
-                }
-              : {}
-          }
-          className="d-flex flex-column justify-content-center align-items-center"
-        >
-          <Icon forceColor className={icon.name} style={{ color: "#fff" }} />
-        </Section>
-      ))}
-  </Div>
-);
+  search = ev => {
+    if (ev.keyCode === 13) {
+      let { onSearch } = this.props;
+      onSearch && onSearch(ev.target.value);
+    }
+  };
 
-DashboardHeader.propTypes = {
-  iconArray: PropTypes.arrayOf(
-    PropTypes.shape({
-      lastIcon: PropTypes.bool,
-      name: PropTypes.string.isRequired,
-      segmentName: PropTypes.string.isRequired
-    })
-  ),
-  hideSearch: PropTypes.bool
-};
+  render() {
+    return (
+      <Div className="d-flex">
+        {!this.props.hideSearch ? (
+          <div className="d-flex" style={{ width: "100%" }}>
+            <Section className="d-flex flex-column justify-content-center align-items-center">
+              <Icon className="ion-ios-settings-strong" />
+            </Section>
+            <Section
+              style={{ borderRight: `1px solid #fff` }}
+              className="d-flex flex-column justify-content-center align-items-center"
+            >
+              <Icon className="ion-ios-search-strong" />
+            </Section>
+            <SearchBox
+              className="d-flex align-self-center"
+              type="search"
+              onKeyUp={this.search}
+              placeholder="Search for a post from the categories"
+            />
+          </div>
+        ) : (
+          <div className="d-flex" style={{ width: "100%" }} />
+        )}
+
+        {this.props.iconArray &&
+          this.props.iconArray.map((icon, index) => (
+            <Section
+              key={index}
+              name={icon.segmentName}
+              style={
+                icon.lastIcon
+                  ? {
+                      borderLeft: `1px solid ${Colors.dashboardHeader.border}`,
+                      marginRight: 70
+                    }
+                  : {}
+              }
+              className="d-flex flex-column justify-content-center align-items-center"
+            >
+              <Icon
+                forceColor
+                className={icon.name}
+                style={{ color: "#fff" }}
+              />
+            </Section>
+          ))}
+      </Div>
+    );
+  }
+}
 
 export default DashboardHeader;
