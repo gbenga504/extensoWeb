@@ -37,7 +37,14 @@ export default class MainThemeTemplate extends React.PureComponent {
               path="/"
             />
             <Route exact component={Post} path="/post" />
-            <Route exact component={Content} path="/content" />
+            <Route
+              exact
+              render={props => {
+                let newProps = { ...props, route: this.props.route };
+                return <Content {...newProps} />;
+              }}
+              path="/content"
+            />
             <Route exact component={Drafts} path="/drafts" />
             <Route exact component={Section} path="/sections" />
             <Route exact component={Search} path="/search" />

@@ -18,7 +18,14 @@ export const dataLoadProgress = (state = { progress: 0 }, action) => {
 export const routeDatas = (state = {}, action) => {
   switch (action.type) {
     case types.SET_ROUTE_DATAS:
-      return { ...state, [`${action.routeName}`]: action.routeDatas };
+      let previousRouteData = state[action.routeName] || {};
+      return {
+        ...state,
+        [`${action.routeName}`]: {
+          ...previousRouteData,
+          ...action.routeDatas
+        }
+      };
       break;
     default:
       return state;

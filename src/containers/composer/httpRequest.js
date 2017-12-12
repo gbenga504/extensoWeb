@@ -1,64 +1,81 @@
 export default (method, config, progressCallback = null) => {
   return new Promise((resolve, reject) => {
-    let httpRequest = null,
-      configuration = config || {};
-
-    if (method.toUpperCase() === "POST" && !configuration.formRef) {
-      throw new Error("The form data for the request must be provided");
-    }
-
-    if (window.XMLHttpRequest) {
-      httpRequest = new XMLHttpRequest();
-    } else if (window.ActiveXObject) {
-      httpRequest = new window.ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-    httpRequest.onreadystatechange = function() {
-      try {
-        if (httpRequest.status === 200 && httpRequest.readyState === 4) {
-          let result = JSON.parse(httpRequest.responseText);
-          return resolve({ success: true, message: result });
+    if (progressCallback) {
+      let i = 0,
+        sum = 0;
+      let timeIndex = setInterval(() => {
+        if (i < 5) {
+          sum = sum + 20;
+          progressCallback(sum / 100);
+        } else {
+          resolve({ success: true, data: "I love you" });
+          clearInterval(timeIndex);
         }
-      } catch (err) {
-        return reject({ success: false, message: err });
-      }
-    };
+        i = i + 1;
+      }, 100);
+    }
 
-    httpRequest.onprogress = function(oEvent) {
-      if (oEvent.lengthComputable) {
-        let computed = oEvent.loaded / oEvent.total;
-        progressCallback && progressCallback(computed);
-      }
-    };
+    // let httpRequest = null,
+    //   configuration = config || {};
 
-    httpRequest.onerror = function() {
-      return reject({
-        success: false,
-        message: "An error just occurred"
-      });
-    };
+    // if (method.toUpperCase() === "POST" && !configuration.formRef) {
+    //   throw new Error("The form data for the request must be provided");
+    // }
 
-    httpRequest.onabort = function() {
-      return reject({
-        success: false,
-        message: "The request was aborted"
-      });
-    };
+    // if (window.XMLHttpRequest) {
+    //   httpRequest = new XMLHttpRequest();
+    // } else if (window.ActiveXObject) {
+    //   httpRequest = new window.ActiveXObject("Microsoft.XMLHTTP");
+    // }
 
-    httpRequest.timeout = configuration.timeout || 100000;
+    // httpRequest.onreadystatechange = function() {
+    //   try {
+    //     if (httpRequest.status === 200 && httpRequest.readyState === 4) {
+    //       let result = JSON.parse(httpRequest.responseText);
+    //       resolve({ success: true, message: result });
+    //     }
+    //   } catch (err) {
+    //     reject({ success: false, message: err });
+    //   }
+    // };
 
-    let GET_URL =
-      configuration.url +
-      (/\?/.test(configuration.url) ? "&" : "?") +
-      Date.now();
+    // httpRequest.onprogress = function(oEvent) {
+    //   if (oEvent.lengthComputable) {
+    //     let computed = oEvent.loaded / oEvent.total;
+    //     progressCallback && progressCallback(computed);
+    //   }
+    // };
 
-    httpRequest.open(
-      method.toUpperCase(),
-      method.toUpperCase() !== "GET" ? configuration.url : GET_URL,
-      true
-    );
-    httpRequest.send(
-      method.toUpperCase() !== "GET" ? new FormData(configuration.formRef) : null
-    );
+    // httpRequest.onerror = function() {
+    //   reject({
+    //     success: false,
+    //     message: "An error just occurred"
+    //   });
+    // };
+
+    // httpRequest.onabort = function() {
+    //   reject({
+    //     success: false,
+    //     message: "The request was aborted"
+    //   });
+    // };
+
+    // httpRequest.timeout = configuration.timeout || 100000;
+
+    // let GET_URL =
+    //   configuration.url +
+    //   (/\?/.test(configuration.url) ? "&" : "?") +
+    //   Date.now();
+
+    // httpRequest.open(
+    //   method.toUpperCase(),
+    //   method.toUpperCase() !== "GET" ? configuration.url : GET_URL,
+    //   true
+    // );
+    // httpRequest.send(
+    //   method.toUpperCase() !== "GET"
+    //     ? new FormData(configuration.formRef)
+    //     : null
+    // );
   });
 };

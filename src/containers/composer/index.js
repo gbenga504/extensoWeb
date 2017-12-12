@@ -23,19 +23,23 @@ const composer = (method, { props, name, options }) => {
         constructor(props) {
           super(props);
           let initialDataSettings =
-            method.toUpperCase() === "GET" ? { isInitialDataSet: false } : {};
+            method.toUpperCase() === "GET" || method.toUpperCase() === "CONNECT"
+              ? { isInitialDataSet: false }
+              : {};
           this.state = { [`${name}`]: { ...initialDataSettings } };
         }
 
         componentDidMount() {
-          if (method.toUpperCase() === "GET") {
+          if (
+            method.toUpperCase() === "GET" ||
+            method.toUpperCase() === "CONNECT"
+          ) {
             let fetchPolicy =
               typeof options === "function"
                 ? options(this.props).fetchPolicy
                 : options.fetchPolicy || "cache-first";
             switch (fetchPolicy) {
               case "network-only":
-                this.setLoadingDataState();
                 this.refetchQuery({});
                 break;
               case "cache-only":
@@ -43,14 +47,16 @@ const composer = (method, { props, name, options }) => {
                 break;
               case "cache-and-network":
                 this.setInitialStateAfterMount();
-                this.setLoadingDataState();
                 this.refetchQuery({});
                 break;
               default:
-                if (this.props.queryDatas[`${name}`]) {
+                let { location: { pathname } } = this.props;
+                if (
+                  this.props.queryDatas[name] ||
+                  this.props.routeDatas[pathname]
+                ) {
                   this.setInitialStateAfterMount();
                 } else {
-                  this.setLoadingDataState();
                   this.refetchQuery({});
                 }
                 break;
@@ -58,48 +64,18 @@ const composer = (method, { props, name, options }) => {
           }
         }
 
-        componentWillReceiveProps(nextProps) {
-          console.log("next props updated", nextProps);
-        }
-
         setInitialStateAfterMount = () => {
+          let { location: { pathname } } = this.props;
           this.setState({
             [`${name}`]: {
               ...this.state[`${name}`],
               loading: false,
               isInitialDataSet: true,
-              result: this.props.queryDatas[`${name}`]
+              result:
+                method.toUpperCase() === "GET"
+                  ? this.props.queryDatas[name]
+                  : this.props.routeDatas[pathname]
             }
-          });
-        };
-
-        refetchQuery = ({ variables }) => {
-          let params =
-            variables || typeof options === "function"
-              ? options(this.props).variables
-              : options.variables;
-          XMLHttp(method, params)
-            .then(data => this.setSuccessDataState(data))
-            .catch(error => this.setErrorDataState(error));
-        };
-
-        refetchPageContent = ({ variables }) => {
-          let params =
-            variables || typeof arguments[0] === "function"
-              ? arguments[0](this.props).variables
-              : arguments[0].variables;
-          arguments[1]("GET", params)
-            .then(data => data => this.setSuccessDataState(data))
-            .catch(error => this.setErrorDataState(error));
-        };
-
-        refetchQueries = arrayOfVariables => {
-          arrayOfVariables.forEach(variables => {
-            XMLHttp("GET", variables)
-              .then(data => {
-                this.props.route.setQueryDatas(variables.name, data);
-              })
-              .catch(error => console.warn(error));
           });
         };
 
@@ -117,6 +93,10 @@ const composer = (method, { props, name, options }) => {
           if (method.toUpperCase() === "GET") {
             initialDataSettings = { isInitialDataSet: true };
             this.props.route.setQueryDatas(name, data);
+          } else if (method.toUpperCase() === "CONNECT") {
+            initialDataSettings = { isInitialDataSet: true };
+            let { location: { pathname } } = this.props;
+            this.props.route.setRouteDatas(pathname, data);
           }
           this.setState(
             {
@@ -141,15 +121,47 @@ const composer = (method, { props, name, options }) => {
           });
         };
 
+        getHttpParams = config => {
+          let params = undefined;
+          if (config) {
+            params = config;
+          } else {
+            params =
+              typeof options === "function"
+                ? options(this.props).variables
+                : options.variables;
+          }
+          return params;
+        };
+
+        refetchQuery = config => {
+          this.setLoadingDataState();
+          let params = this.getHttpParams(config);
+
+          XMLHttp(method, params)
+            .then(data => {
+              this.setSuccessDataState(data);
+            })
+            .catch(error => {
+              this.setErrorDataState(error);
+            });
+        };
+
+        refetchQueries = arrayOfVariables => {
+          arrayOfVariables.forEach(variables => {
+            XMLHttp("GET", variables)
+              .then(data => {
+                this.props.route.setQueryDatas(variables.name, data);
+              })
+              .catch(error => console.warn(error));
+          });
+        };
+
         mutate = variablesConfig => {
-          let params =
-            (variablesConfig && variablesConfig.variables) ||
-            typeof options === "function"
-              ? options(this.props).variables
-              : options.variables;
+          let params = this.getHttpParams(variablesConfig);
 
           this.setLoadingDataState();
-          XMLHttp(method, params)
+          return XMLHttp(method, params)
             .then(data => {
               this.setState({
                 [`${name}`]: {
@@ -162,7 +174,7 @@ const composer = (method, { props, name, options }) => {
                   this.refetchQueries(options(this.props).refetchQueries)
                 : options.refetchQueries &&
                   this.refetchQueries(options.refetchQueries);
-              return Promise.resolve(data);
+              return data;
             })
             .catch(error => {
               this.setState({
@@ -171,54 +183,31 @@ const composer = (method, { props, name, options }) => {
                   loading: false
                 }
               });
-              return Promise.reject(error);
+              return error;
             });
         };
 
-        fetchMore = ({ variables, updateQuery }) => {
-          if (updateQuery) {
-            let variablesConfig =
-              variables || typeof options === "function"
-                ? options(this.props).variables
-                : options.variables;
+        fetchMore = config => {
+          if (config.updateQuery) {
+            let variablesConfig = this.getHttpParams(config.variables);
+
             this.setLoadingDataState();
             XMLHttp(method, variablesConfig)
               .then(data => {
-                let newResult = updateQuery(this.state[`${name}`].result, {
-                  fetchMoreResult: data
-                });
-                this.setSuccessDataState(newResult, () =>
-                  this.props.route.setQueryDatas(name, newResult)
-                );
-              })
-              .catch(error => this.setErrorDataState(error));
-          } else {
-            throw new Error("[updateQuery] is needed in [data.fetchMore]");
-          }
-        };
+                let newResult = config.updateQuery(
+                    this.state[`${name}`].result,
+                    {
+                      fetchMoreResult: data
+                    }
+                  ),
+                  { location: { pathname } } = this.props,
+                  operationToRun =
+                    method.toUpperCase() === "GET"
+                      ? () => this.props.route.setQueryDatas(name, newResult)
+                      : () =>
+                          this.props.route.setRouteDatas(pathname, newResult);
 
-        fetchMorePageContent = ({ variables, updateQuery }) => {
-          if (updateQuery) {
-            let variablesConfig =
-              variables || typeof arguments[0] === "function"
-                ? arguments[0](this.props).variables
-                : arguments[0].variables;
-            this.setLoadingDataState();
-            arguments[1]("GET", variablesConfig)
-              .then(data => {
-                let newResult = updateQuery(
-                  this.props.routeDatas[this.props.history.location.pathname]
-                    .result,
-                  {
-                    fetchMoreResult: data
-                  }
-                );
-                this.setSuccessDataState(newResult, () =>
-                  this.props.route.setRouteDatas(
-                    "this.props.history.location.pathname",
-                    newResult
-                  )
-                );
+                this.setSuccessDataState(newResult, operationToRun);
               })
               .catch(error => this.setErrorDataState(error));
           } else {
@@ -227,38 +216,20 @@ const composer = (method, { props, name, options }) => {
         };
 
         calculateProgress = computed =>
-          this.props.setProgressState(computed * 50);
+          this.props.route.setProgressState(computed * 50);
 
-        push = (variablesConfig, goto) => {
-          let params =
-            variablesConfig || typeof options === "function"
-              ? options(this.props).variables
-              : options.variables;
+        push = optionsConfig => {
+          let params = this.getHttpParams(optionsConfig.variables);
 
           XMLHttp("GET", params, this.calculateProgress)
             .then(result => {
-              let refetchPageContent = this.refetchPageContent.bind(
-                  this,
-                  options,
-                  XMLHttp
-                ),
-                fetchMorePageContent = this.fetchMorePageContent.bind(
-                  this.options,
-                  XMLHttp
-                );
-              this.props.route.setRouteDatas(goto, {
-                result,
-                fetchMorePageContent: ({ variables, updateQuery }) =>
-                  fetchMorePageContent({ variables, updateQuery }),
-                refetchPageContent: ({ variables }) =>
-                  refetchPageContent({ variables })
-              });
+              this.props.route.setRouteDatas(optionsConfig.goto, result);
               setTimeout(() => {
                 setTimeout(
                   () => this.props.route.completeProgressState(50),
                   10
                 );
-                this.props.history.push(goto);
+                this.props.history.push(optionsConfig.goto);
               }, 10);
             })
             .catch(err => null);
@@ -268,10 +239,10 @@ const composer = (method, { props, name, options }) => {
           let newRoute = Object.keys(props.route).reduce((acc, value) => {
             if (
               !acc[value] &&
-              value !== "setProgressState" &&
-              value !== "completeProgressState" &&
-              value !== "setRouteDatas" &&
-              value !== "setQueryDatas"
+              (value !== "setProgressState" &&
+                value !== "completeProgressState" &&
+                value !== "setRouteDatas" &&
+                value !== "setQueryDatas")
             ) {
               acc[value] = props.route[value];
             }
@@ -289,7 +260,8 @@ const composer = (method, { props, name, options }) => {
               ...this.sanitizeCoreReduxComposerProps(
                 GeneralBasedUtils.sanitizeProps(this.props, [
                   "progressState",
-                  "queryDatas"
+                  "queryDatas",
+                  "routeDatas"
                 ])
               ),
               ...customProps
@@ -299,41 +271,68 @@ const composer = (method, { props, name, options }) => {
             ...this.sanitizeCoreReduxComposerProps(
               GeneralBasedUtils.sanitizeProps(this.props, [
                 "progressState",
-                "queryDatas"
+                "queryDatas",
+                "routeDatas"
               ])
             ),
             ...defaultAdditionalProps
           };
         };
 
+        composeCustomProps = sanitizedProps => {
+          let customProps =
+            props &&
+            typeof props === "function" &&
+            props({
+              [`${name}`]: {
+                ...this.state[`${name}`],
+                fetchMore: this.fetchMore,
+                refetchQuery: this.refetchQuery
+              },
+              ...sanitizedProps
+            });
+          return customProps;
+        };
+
         sanitizePassedProps = () => {
           let passedProps = {},
-            customProps = [];
+            customProps = [],
+            sanitizedProps = GeneralBasedUtils.sanitizeProps(this.props, [
+              "progressState",
+              "queryDatas",
+              "routeDatas",
+              "route"
+            ]);
           switch (method.toUpperCase()) {
             case "GET":
-              customProps =
-                props &&
-                typeof props === "function" &&
-                props({
+              passedProps = this.buildProps(
+                this.composeCustomProps(sanitizedProps),
+                {
                   [`${name}`]: {
                     ...this.state[`${name}`],
                     fetchMore: this.fetchMore,
                     refetchQuery: this.refetchQuery
                   }
-                });
-              passedProps = this.buildProps(customProps, {
-                [`${name}`]: {
-                  ...this.state[`${name}`],
-                  fetchMore: this.fetchMore,
-                  refetchQuery: this.refetchQuery
                 }
-              });
+              );
+              break;
+            case "CONNECT":
+              passedProps = this.buildProps(
+                this.composeCustomProps(sanitizedProps),
+                {
+                  [`${name}`]: {
+                    ...this.state[`${name}`],
+                    fetchMore: this.fetchMore,
+                    refetchQuery: this.refetchQuery
+                  }
+                }
+              );
               break;
             case "PUSH":
               customProps =
                 props &&
                 typeof props === "function" &&
-                props({ push: this.push });
+                props({ push: this.push, ...sanitizedProps });
               passedProps = this.buildProps(customProps, { push: this.push });
               break;
             default:
@@ -342,6 +341,7 @@ const composer = (method, { props, name, options }) => {
                 typeof props === "function" &&
                 props({
                   mutate: this.mutate,
+                  ...sanitizedProps,
                   [`${name}`]: { loading: this.state[`${name}`].loading }
                 });
               passedProps = this.buildProps(customProps, {

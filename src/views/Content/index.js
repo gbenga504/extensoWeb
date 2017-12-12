@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import { connect } from "react-redux";
+import { composer } from "../../containers/composer";
 import { RegularText, LightText } from "../../components/AppText";
 import ContentPadder from "../../containers/ContentPadder";
 import Fonts from "../../assets/Fonts";
@@ -12,13 +14,21 @@ const Container = styled.div`padding: 20px 100px;`;
 const CardContainer = styled.div`margin: 100px 0px;`;
 const OtherContent = styled(ContentCard)`margin: 0px 20px;`;
 
-export default class Content extends React.PureComponent {
+class Content extends React.PureComponent {
   defaults = {
     headerIcon: [
       { name: "ion-edit", lastIcon: false, segmentName: "edit" },
       { name: "ion-ios-trash", lastIcon: true, segmentName: "trash" }
     ]
   };
+
+  componentDidMount() {
+    console.log(this.props);
+  }
+
+  componentDidUpdate() {
+    console.log("i updated", this.props);
+  }
 
   render() {
     return (
@@ -47,3 +57,19 @@ export default class Content extends React.PureComponent {
     );
   }
 }
+
+const ContentWithData = composer("connect", {
+  name: "connector",
+  options: {
+    variables: {
+      url: "badooJay.com",
+      timeout: 100000
+    }
+  }
+})(Content);
+
+function mapStateToProps(state) {
+  return { currentBaba: 10 };
+}
+
+export default connect(mapStateToProps)(ContentWithData);
