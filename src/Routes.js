@@ -12,7 +12,14 @@ class AppRoute extends Component {
     return (
       <Router>
         <Switch>
-          <Route exact component={Login} path="/login" />
+          <Route
+            exact
+            render={props => {
+              let newProps = { ...props, route: { ...this.props } };
+              return <Login {...newProps} />;
+            }}
+            path="/login"
+          />
           <Route
             path="/"
             render={props => {

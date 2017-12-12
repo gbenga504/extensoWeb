@@ -48,6 +48,7 @@ const LoginInput = props => (
     </PlaceholderContainer>
     <PlaceholderInput
       className="d-flex"
+      name={props.name}
       type={props.type}
       onChange={props.onChange}
       placeholder={props.placeholder}
@@ -84,7 +85,8 @@ LoginInput.propTypes = {
   rightPlaceholderType: PropTypes.string,
   className: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func
+  onSubmit: PropTypes.func,
+  name: PropTypes.string.isRequired
 };
 
 export default LoginInput;

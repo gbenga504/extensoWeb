@@ -15,7 +15,8 @@ const ProgressContainer = styled.div`
   position: fixed;
   width: 100%;
   background: #e0e0e0;
-  display: ${props => (props.progress < 100 ? "block" : "none")};
+  display: ${props =>
+    props.progress < 100 && props.progress > 1 ? "block" : "none"};
   height: 3px;
   z-index: 1000001;
 `;

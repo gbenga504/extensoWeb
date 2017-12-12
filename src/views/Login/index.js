@@ -36,7 +36,10 @@ export default class Login extends React.PureComponent {
           }}
         >
           {this.state.isLoading && <RainbowLoader />}
-          <Form isLoading={isLoading => this.setState({ isLoading })} />
+          <Form
+            isLoading={isLoading => this.setState({ isLoading })}
+            {...this.props}
+          />
           <Title>SIGN IN</Title>
         </div>
       </Container>

@@ -20,6 +20,10 @@ class Home extends React.PureComponent {
     headerIcon: [{ name: "ion-power", lastIcon: true, segmentName: "logout" }]
   };
 
+  componentDidUpdate() {
+    console.log(this.props);
+  }
+
   render() {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
@@ -39,11 +43,11 @@ class Home extends React.PureComponent {
   }
 }
 
-const HomeWithData = composer("push", {
-  name: "pusher",
+const HomeWithData = composer("connect", {
+  name: "connector",
   options: props => ({
     variables: {
-      url: "google.com"
+      url: ""
     }
   })
 })(Home);

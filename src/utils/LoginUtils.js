@@ -1,6 +1,6 @@
 export const LoginUtils = {
   loginValidation: (username, password) => {
-    let pattern = /[^\s@]+@[^\s@.]+\.[^\s@]+/;
+    let pattern = /^[a-zA-Z]{1,}$/;
     return pattern.test(username) && password.length > 3;
   }
 };
