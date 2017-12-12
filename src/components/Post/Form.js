@@ -24,12 +24,18 @@ export default class Form extends React.PureComponent {
           title={this.state.category}
           onCategorySelected={category => this.setState({ category })}
         />
-        <Title />
-        <Body />
+        <Title
+          value={this.state.titleHTML}
+          onChange={ev => this.setState({ titleHTML: ev.target.value })}
+        />
+        <Body
+          value={this.state.bodyHTML}
+          onChange={text => this.setState({ bodyHTML: text })}
+        />
 
+        <input type="hidden" value={this.state.category} name="category" />
         <input type="hidden" value={this.state.titleHTML} name="title" />
         <input type="hidden" value={this.state.bodyHTML} name="body" />
-        <input type="hidden" value={this.state.category} name="category" />
       </form>
     );
   }

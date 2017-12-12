@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Input from "../Input";
 import Colors from "../../assets/Colors";
@@ -30,10 +31,17 @@ const TitleBox = Input.extend`
 const Title = props => (
   <div className="d-flex">
     <TitleBox
+      value={props.value}
+      onChange={props.onChange}
       style={Fonts.post.titleBox}
       placeholder="Enter the title of your post"
     />
   </div>
 );
+
+Title.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+};
 
 export default Title;

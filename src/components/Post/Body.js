@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import Editor from "react-medium-editor";
 import "medium-editor/dist/css/medium-editor.css";
 import "medium-editor/dist/css/themes/default.css";
@@ -66,10 +67,15 @@ const Body = props => (
       style={{ ...Fonts.post.postBox, minHeight: 335 }}
       className="postBox"
       data-placeholder="Write your post"
-      onChange={() => null}
-      text=""
+      onChange={props.onChange}
+      text={props.value || ""}
     />
   </div>
 );
+
+Body.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired
+};
 
 export default Body;

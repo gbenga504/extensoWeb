@@ -22,14 +22,6 @@ class Content extends React.PureComponent {
     ]
   };
 
-  componentDidMount() {
-    console.log(this.props);
-  }
-
-  componentDidUpdate() {
-    console.log("i updated", this.props);
-  }
-
   render() {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
