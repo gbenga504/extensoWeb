@@ -1,11 +1,11 @@
 import React from "react";
 
-import { connect } from "react-redux";
 import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import Card from "../../components/Card";
 import ContentPadder from "../../containers/ContentPadder";
 import { composer } from "../../containers/composer";
+import { CircularSpinner } from "../../components/Loaders";
 
 class Home extends React.PureComponent {
   static seedData = {
@@ -24,32 +24,63 @@ class Home extends React.PureComponent {
     console.log(this.props);
   }
 
+  renderActualData = () => {
+    let { all_news: { result }, likes_count } = this.props;
+    return (
+      <ContentPadder className="flex-column">
+        <Counter
+          items={(likes_count.result && likes_count.result.message[0]) || {}}
+        />
+        <div
+          className="d-flex flex-column align-items-center"
+          style={{ padding: "0px 320px" }}
+        >
+          {result && result.message && result.message.length !== 0 ? (
+            <Card />
+          ) : (
+            <span>No data </span>
+          )}
+        </div>
+      </ContentPadder>
+    );
+  };
+
   render() {
+    let { all_news: { loading, isInitialDataSet } } = this.props;
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         <DashboardHeader iconArray={this.defaults.headerIcon} />
-        <ContentPadder className="flex-column">
-          <Counter items={Home.seedData.items} />
-          <div
-            className="d-flex flex-column align-items-center a"
-            style={{ padding: "0px 320px" }}
-          >
-            <Card />
-            <Card />
-          </div>
-        </ContentPadder>
+        {!isInitialDataSet && loading ? (
+          <CircularSpinner
+            size={50}
+            className="align-self-center"
+            style={{ marginTop: 200 }}
+          />
+        ) : (
+          this.renderActualData()
+        )}
       </div>
     );
   }
 }
 
-const HomeWithData = composer("connect", {
-  name: "connector",
+const HomeWithData = composer("get", {
+  name: "all_news",
   options: props => ({
     variables: {
-      url: ""
-    }
+      url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/9"
+    },
+    fetchPolicy: "network-only"
   })
-})(Home);
+})(
+  composer("get", {
+    name: "likes_count",
+    options: props => ({
+      variables: {
+        url: "https://agro-extenso.herokuapp.com/api/v1/post-count/all/"
+      }
+    })
+  })(Home)
+);
 
 export default HomeWithData;

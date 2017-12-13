@@ -6,7 +6,7 @@ import Colors from "../../../assets/Colors";
 
 const CircularSpinner = props => (
   <div
-    className="circular-spinner"
+    className={`circular-spinner ${props.className}`}
     style={{
       display: `${props.display}`,
       width: `${props.size}px`,
@@ -21,6 +21,7 @@ const CircularSpinner = props => (
 );
 
 CircularSpinner.propTypes = {
+  className: PropTypes.string,
   display: PropTypes.string,
   size: PropTypes.number,
   thickness: PropTypes.number,

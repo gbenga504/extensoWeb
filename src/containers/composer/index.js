@@ -40,14 +40,14 @@ const composer = (method, { props, name, options }) => {
                 : options.fetchPolicy || "cache-first";
             switch (fetchPolicy) {
               case "network-only":
-                this.refetchQuery({});
+                this.refetchQuery(undefined);
                 break;
               case "cache-only":
                 this.setInitialStateAfterMount();
                 break;
               case "cache-and-network":
                 this.setInitialStateAfterMount();
-                this.refetchQuery({});
+                this.refetchQuery(undefined);
                 break;
               default:
                 let { location: { pathname } } = this.props;
@@ -57,7 +57,7 @@ const composer = (method, { props, name, options }) => {
                 ) {
                   this.setInitialStateAfterMount();
                 } else {
-                  this.refetchQuery({});
+                  this.refetchQuery(undefined);
                 }
                 break;
             }
@@ -138,7 +138,7 @@ const composer = (method, { props, name, options }) => {
           this.setLoadingDataState();
           let params = this.getHttpParams(config);
 
-          XMLHttp(method, params)
+          XMLHttp("GET", params)
             .then(data => {
               this.setSuccessDataState(data);
             })
@@ -192,7 +192,7 @@ const composer = (method, { props, name, options }) => {
             let variablesConfig = this.getHttpParams(config.variables);
 
             this.setLoadingDataState();
-            XMLHttp(method, variablesConfig)
+            XMLHttp("GET", variablesConfig)
               .then(data => {
                 let newResult = config.updateQuery(
                     this.state[`${name}`].result,
@@ -235,46 +235,26 @@ const composer = (method, { props, name, options }) => {
             .catch(err => null);
         };
 
-        sanitizeCoreReduxComposerProps = props => {
-          let newRoute = Object.keys(props.route).reduce((acc, value) => {
-            if (
-              !acc[value] &&
-              (value !== "setProgressState" &&
-                value !== "completeProgressState" &&
-                value !== "setRouteDatas" &&
-                value !== "setQueryDatas")
-            ) {
-              acc[value] = props.route[value];
-            }
-            return acc;
-          }, {});
-          return { ...props, route: newRoute };
-        };
-
         buildProps = (customProps, defaultAdditionalProps) => {
           if (
             typeof customProps === "object" &&
             customProps.length === undefined
           ) {
             return {
-              ...this.sanitizeCoreReduxComposerProps(
-                GeneralBasedUtils.sanitizeProps(this.props, [
-                  "progressState",
-                  "queryDatas",
-                  "routeDatas"
-                ])
-              ),
+              ...GeneralBasedUtils.sanitizeProps(this.props, [
+                "progressState",
+                "queryDatas",
+                "routeDatas"
+              ]),
               ...customProps
             };
           }
           return {
-            ...this.sanitizeCoreReduxComposerProps(
-              GeneralBasedUtils.sanitizeProps(this.props, [
-                "progressState",
-                "queryDatas",
-                "routeDatas"
-              ])
-            ),
+            ...GeneralBasedUtils.sanitizeProps(this.props, [
+              "progressState",
+              "queryDatas",
+              "routeDatas"
+            ]),
             ...defaultAdditionalProps
           };
         };

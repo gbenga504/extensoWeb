@@ -11,28 +11,32 @@ const Section = styled.div`
   border-right: 1px solid ${Colors.home.counterBorder};
   border-bottom: 1px solid ${Colors.home.counterBorder};
 `;
-
-const Counter = props => (
-  <div className="d-flex">
-    {props.items.map((item, i) => (
-      <Section
-        key={i}
-        className="d-flex flex-column justify-content-center align-items-center"
-      >
-        <BoldText style={{ fontSize: "50px" }}>{item.number}</BoldText>
-        <BoldText style={{ fontSize: "13px" }}>{item.tag}</BoldText>
-      </Section>
-    ))}
-  </div>
-);
+const CATEGORIES = {
+  category_count: "CATEGORIES",
+  posts_count: "POSTS",
+  likes_count: "LIKES"
+};
+const Counter = props => {
+  return (
+    <div className="d-flex">
+      {Object.keys(props.items).map((item, i) => (
+        <Section
+          key={i}
+          className="d-flex flex-column justify-content-center align-items-center"
+        >
+          <BoldText style={{ fontSize: "50px" }}>{props.items[item]}</BoldText>
+          <BoldText style={{ fontSize: "13px" }}>{CATEGORIES[item]}</BoldText>
+        </Section>
+      ))}
+    </div>
+  );
+};
 
 Counter.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      number: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-      tag: PropTypes.string.isRequired
-    })
-  )
+  items: PropTypes.shape({
+    category_count: PropTypes.string,
+    posts_count: PropTypes.string,
+    likes_count: PropTypes.string
+  })
 };
 export default Counter;
