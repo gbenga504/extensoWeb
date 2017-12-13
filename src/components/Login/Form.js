@@ -71,13 +71,19 @@ class Form extends React.PureComponent {
           formRef: this.form
         })
         .then(result => {
-          let { message: { status, data } } = result,
+          let { success, message: { status, data } } = result,
             { history: { push } } = this.props;
-          if (status === "error") {
-            this.setToolTipVisibility(data, "username", "tooltip-position-top");
-          } else {
+          if (success === true && status === "success") {
             localStorage.setItem("jwt", data);
             push("/");
+          } else if (success === false && typeof result.message === "string") {
+            this.setToolTipVisibility(
+              result.message,
+              "username",
+              "tooltip-position-top"
+            );
+          } else {
+            this.setToolTipVisibility(data, "username", "tooltip-position-top");
           }
         })
         .catch(err =>

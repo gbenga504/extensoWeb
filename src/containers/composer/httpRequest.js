@@ -34,7 +34,7 @@ export default (method, config, progressCallback = null) => {
     httpRequest.onerror = function() {
       reject({
         success: false,
-        message: "An error just occurred"
+        message: "Oops, a network error occurred"
       });
     };
 
