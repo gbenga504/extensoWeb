@@ -1,5 +1,6 @@
 const Colors = {
   defaultThemeColor: "#F4F7FA",
+  noNewsColor: "#424242",
   login: {
     backgroundColor: "#292931",
     title: "#544a5a",
