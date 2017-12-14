@@ -48,10 +48,6 @@ class DashboardHeader extends React.PureComponent {
     }
   };
 
-  componentDidMount() {
-    console.log(this.props.iconArray);
-  }
-
   render() {
     return (
       <Div className="d-flex">
@@ -81,6 +77,7 @@ class DashboardHeader extends React.PureComponent {
           this.props.iconArray.map((icon, index) => (
             <Section
               key={index}
+              onClick={icon.onClick}
               name={icon.segmentName}
               style={
                 icon.lastIcon
