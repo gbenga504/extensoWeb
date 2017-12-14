@@ -102,6 +102,7 @@ const composer = (method, { props, name, options }) => {
             {
               [`${name}`]: {
                 ...this.state[`${name}`],
+                error: undefined,
                 ...initialDataSettings,
                 loading: false,
                 result: data
