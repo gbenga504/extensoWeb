@@ -33,7 +33,8 @@ class DashboardHeader extends React.PureComponent {
       PropTypes.shape({
         lastIcon: PropTypes.bool,
         name: PropTypes.string.isRequired,
-        segmentName: PropTypes.string.isRequired
+        segmentName: PropTypes.string.isRequired,
+        onClick: PropTypes.func.isRequired
       })
     ),
     hideSearch: PropTypes.bool,
@@ -46,6 +47,10 @@ class DashboardHeader extends React.PureComponent {
       onSearch && onSearch(ev.target.value);
     }
   };
+
+  componentDidMount() {
+    console.log(this.props.iconArray);
+  }
 
   render() {
     return (
