@@ -21,7 +21,16 @@ export default class Card extends React.PureComponent {
   static PropTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
-    hideLikes: PropTypes.bool
+    hideLikes: PropTypes.bool,
+    items: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      category: PropTypes.string,
+      tags: PropTypes.arrayOf(PropTypes.string),
+      drafts: PropTypes.bool,
+      created_at: PropTypes.string.isRequired,
+      likes_count: PropTypes.string
+    }).isRequired
   };
 
   render() {
