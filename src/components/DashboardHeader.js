@@ -34,7 +34,8 @@ class DashboardHeader extends React.PureComponent {
         lastIcon: PropTypes.bool,
         name: PropTypes.string.isRequired,
         segmentName: PropTypes.string.isRequired,
-        onClick: PropTypes.func.isRequired
+        onClick: PropTypes.func.isRequired,
+        cursorAllowed: PropTypes.bool
       })
     ),
     hideSearch: PropTypes.bool,
@@ -83,7 +84,11 @@ class DashboardHeader extends React.PureComponent {
                 icon.lastIcon
                   ? {
                       borderLeft: `1px solid ${Colors.dashboardHeader.border}`,
-                      marginRight: 70
+                      marginRight: 70,
+                      cursor:
+                        icon.cursorAllowed || icon.cursorAllowed === undefined
+                          ? "pointer"
+                          : "not-allowed"
                     }
                   : {}
               }

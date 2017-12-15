@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import { connect } from "react-redux";
 import { composer } from "../../containers/composer";
 import { RegularText, LightText } from "../../components/AppText";
 import ContentPadder from "../../containers/ContentPadder";
@@ -21,6 +20,10 @@ class Content extends React.PureComponent {
       { name: "ion-ios-trash", lastIcon: true, segmentName: "trash" }
     ]
   };
+
+  componentDidMount() {
+    console.log(this.props);
+  }
 
   render() {
     return (
@@ -51,17 +54,12 @@ class Content extends React.PureComponent {
 }
 
 const ContentWithData = composer("connect", {
-  name: "connector",
+  name: "content_data",
   options: {
     variables: {
-      url: "badooJay.com",
-      timeout: 100000
+      url: "https://agro-extenso.herokuapp.com/api/v1/admin/post/"
     }
   }
 })(Content);
 
-function mapStateToProps(state) {
-  return { currentBaba: 10 };
-}
-
-export default connect(mapStateToProps)(ContentWithData);
+export default ContentWithData;
