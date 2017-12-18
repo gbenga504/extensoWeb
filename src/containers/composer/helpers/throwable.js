@@ -3,6 +3,7 @@ export const Throwable = {
     if (method.toUpperCase() !== "CONNECT") {
       if (typeof options === "function") {
         if (
+          method.toUpperCase() === "GET" &&
           !options({}).variables &&
           typeof options({}).variables !== "object" &&
           options({}).variables.length !== undefined
@@ -13,6 +14,7 @@ export const Throwable = {
         }
       } else {
         if (
+          method.toUpperCase() === "GET" &&
           !options.variables &&
           typeof options.variables !== "object" &&
           options.variables.length !== undefined

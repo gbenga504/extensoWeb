@@ -14,13 +14,14 @@ const Category = styled(SelectCategory)`margin-left: 50px;`;
 export default class Form extends React.PureComponent {
   constructor(props) {
     super(props);
+    let { data } = props;
     this.state = {
-      uuid: uuid(),
+      uuid: data.id || uuid(),
       token: localStorage.getItem("jwt"),
-      bodyHTML: "",
-      titleHTML: "",
-      category: "",
-      tags: ""
+      bodyHTML: data.content || "",
+      titleHTML: data.title || "",
+      category: data.category || "",
+      tags: data.tags || ""
     };
     this.timer = undefined;
   }
@@ -29,7 +30,17 @@ export default class Form extends React.PureComponent {
     draftStatusText: PropTypes.string.isRequired,
     draft: PropTypes.bool.isRequired,
     onSaveDraft: PropTypes.func.isRequired,
-    initFormRef: PropTypes.func.isRequired
+    initFormRef: PropTypes.func.isRequired,
+    data: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string.isRequired),
+      draft: PropTypes.bool,
+      created_at: PropTypes.string.isRequired,
+      likes_count: PropTypes.string
+    })
   };
 
   componentDidMount() {

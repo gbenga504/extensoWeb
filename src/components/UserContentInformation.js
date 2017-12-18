@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import moment from "moment";
 
 import Colors from "../assets/Colors";
 import Fonts from "../assets/Fonts";
@@ -22,7 +23,10 @@ class UserContentInformation extends React.PureComponent {
 
   static propTypes = {
     hideDetails: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
+    category: PropTypes.string,
+    createdAt: PropTypes.string,
+    content: PropTypes.string
   };
 
   static defaults = {
@@ -37,6 +41,9 @@ class UserContentInformation extends React.PureComponent {
     ]
   };
 
+  permutateReadingTime = () =>
+    Math.floor(parseInt(this.props.content.length) / 150);
+
   render() {
     return (
       <div className="d-flex" style={this.props.style}>
@@ -48,13 +55,16 @@ class UserContentInformation extends React.PureComponent {
             Admin{" "}
             {!this.props.hideDetails && (
               <span style={{ color: this.state.categoryColor }}>
-                <sup>.</sup>In Innovation
+                <sup>.</sup>In {this.props.category}
               </span>
             )}
           </RegularText>
           {!this.props.hideDetails && (
             <LightText style={Fonts.timePosted.sm}>
-              On September 14 <sup>.</sup> 4 mins Read
+              {`On ${moment(this.props.createdAt).format(
+                "MMMM DD, YYYY"
+              )}`}{" "}
+              <sup>.</sup> {this.permutateReadingTime()} mins Read
             </LightText>
           )}
         </div>

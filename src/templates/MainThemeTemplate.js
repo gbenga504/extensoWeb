@@ -20,6 +20,11 @@ const Container = styled(LayoutContainer)`
 `;
 
 export default class MainThemeTemplate extends React.PureComponent {
+  state = {
+    expired:
+      Date.now() - parseInt(localStorage.getItem("jwt_date_gotten")) > 82800000
+  };
+
   render() {
     return (
       <Container>
@@ -27,31 +32,35 @@ export default class MainThemeTemplate extends React.PureComponent {
           {...GeneralBasedUtils.sanitizeProps(this.props, ["route"])}
         />
         <div className="d-flex" style={{ width: "100%", marginLeft: 70 }}>
-          {localStorage.getItem("jwt") ? (
+          {this.state.expired || !localStorage.getItem("jwt") ? (
+            <Redirect to="/login" />
+          ) : (
             <Switch>
               <Route
-                exact
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
                   return <Home {...newProps} />;
                 }}
                 path="/"
               />
-              <Route exact component={Post} path="/post" />
               <Route
-                exact
+                render={props => {
+                  let newProps = { ...props, route: this.props.route };
+                  return <Post {...newProps} />;
+                }}
+                path="/post/:postId"
+              />
+              <Route
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
                   return <Content {...newProps} />;
                 }}
-                path="/content"
+                path="/content/:postId"
               />
-              <Route exact component={Drafts} path="/drafts" />
-              <Route exact component={Section} path="/sections" />
-              <Route exact component={Search} path="/search" />
+              <Route component={Drafts} path="/drafts" />
+              <Route component={Section} path="/sections" />
+              <Route component={Search} path="/search" />
             </Switch>
-          ) : (
-            <Redirect to="/login" />
           )}
         </div>
       </Container>

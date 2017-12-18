@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
+import PageContentViewer from "../../containers/PageContentViewer";
 import { composer } from "../../containers/composer";
 import DashboardHeader from "../../components/DashboardHeader";
 import Form from "../../components/Post/Form";
@@ -7,10 +9,34 @@ import ContentPadder from "../../containers/ContentPadder";
 import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
 
 class Post extends React.PureComponent {
-  state = {
-    draftStatusText: "",
-    draft: true
+  constructor(props) {
+    super(props);
+    let { content: { item } } = this.props;
+    this.state = {
+      draftStatusText: "",
+      draft: (item && item.draft) || true
+    };
+  }
+
+  static propTypes = {
+    content: PropTypes.shape({
+      item: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        content: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        tags: PropTypes.arrayOf(PropTypes.string.isRequired),
+        draft: PropTypes.bool,
+        created_at: PropTypes.string.isRequired,
+        likes_count: PropTypes.string
+      }).isRequired
+    })
   };
+
+  componentWillReceiveProps(nextProps) {
+    let { content: { item } } = nextProps;
+    this.setState({ draft: item && item.draft });
+  }
 
   generateHeaderIcon = () => [
     {
@@ -26,10 +52,7 @@ class Post extends React.PureComponent {
     this.setState({ draftStatusText: "Saving...", draft: isDraft }, () => {
       setTimeout(() => {
         this.props
-          .post({
-            url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/",
-            formRef: this.form
-          })
+          .post(this.form)
           .then(result => {
             let { success, message } = result;
             if (!success) {
@@ -37,10 +60,7 @@ class Post extends React.PureComponent {
             } else {
               this.setState({ draftStatusText: "Saved" });
               if (!this.state.draft && message && message.status) {
-                this.props.gotoContentPage("/content", {
-                  url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${message
-                    .data.id}`
-                });
+                this.props.routeToContent(message.data.id);
               }
             }
           })
@@ -51,53 +71,89 @@ class Post extends React.PureComponent {
 
   render() {
     let { draftStatusText, draft } = this.state,
-      { loading } = this.props;
+      { content: { loading, error, item } } = this.props;
     return (
       <div
         className="d-flex flex-column"
         style={{ width: "100%", height: "auto" }}
       >
-        {!draft && loading && <IndefiniteProgressBar />}
+        {!draft && this.props.loading && <IndefiniteProgressBar />}
         <DashboardHeader hideSearch iconArray={this.generateHeaderIcon()} />
-        <ContentPadder className="flex-column">
-          <Form
-            draftStatusText={draftStatusText}
-            draft={draft}
-            onSaveDraft={this.savePost}
-            initFormRef={(formRef, uuid) => {
-              this.form = formRef;
-              this.postId = uuid;
-            }}
-          />
-        </ContentPadder>
+        <PageContentViewer
+          loading={loading}
+          error={error}
+          renderItem={
+            <ContentPadder className="flex-column">
+              <Form
+                draftStatusText={draftStatusText}
+                draft={draft}
+                data={item}
+                onSaveDraft={this.savePost}
+                initFormRef={(formRef, uuid) => {
+                  this.form = formRef;
+                  this.postId = uuid;
+                }}
+              />
+            </ContentPadder>
+          }
+        />
       </div>
     );
   }
 }
 
-const PostWithMutation = composer("post", {
-  name: "post_news",
+const PostWithMutation = composer("connect", {
+  name: "post_contents",
   options: props => ({
     variables: {
-      url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/"
+      url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${props.match
+        .params.postId}`
     }
   }),
-  props: ({ mutate, post_news: { loading } }) => ({
-    post: mutate,
-    loading
+  props: ({ post_contents: { loading, error, result } }) => ({
+    content: {
+      loading,
+      error,
+      item: result && result.data
+    }
   })
 })(
-  composer("push", {
-    name: "push_to_content",
+  composer("post", {
+    name: "post_news",
     options: props => ({
       variables: {
-        url: "https://agro-extenso.herokuapp.com/api/v1/admin/post/"
+        url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/"
       }
     }),
-    props: ({ push }) => ({
-      gotoContentPage: push
+    props: ({ mutate, post_news: { loading } }) => ({
+      post: formRef =>
+        mutate({
+          variables: {
+            url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/",
+            formRef
+          }
+        }),
+      loading
     })
-  })(Post)
+  })(
+    composer("push", {
+      name: "push_to_content",
+      options: props => ({
+        variables: {
+          url: "https://agro-extenso.herokuapp.com/api/v1/admin/post/"
+        }
+      }),
+      props: ({ push }) => ({
+        routeToContent: id =>
+          push({
+            goto: `/content/${id}`,
+            variables: {
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${id}`
+            }
+          })
+      })
+    })(Post)
+  )
 );
 
 export default PostWithMutation;

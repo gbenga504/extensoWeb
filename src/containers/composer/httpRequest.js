@@ -3,10 +3,6 @@ export default (method, config, progressCallback = null) => {
     let httpRequest = null,
       configuration = config || {};
 
-    if (method.toUpperCase() === "POST" && !configuration.formRef) {
-      throw new Error("The form data for the request must be provided");
-    }
-
     if (window.XMLHttpRequest) {
       httpRequest = new XMLHttpRequest();
     } else if (window.ActiveXObject) {
@@ -57,10 +53,18 @@ export default (method, config, progressCallback = null) => {
       method.toUpperCase() !== "GET" ? configuration.url : GET_URL,
       true
     );
-    httpRequest.send(
-      method.toUpperCase() !== "GET"
-        ? new FormData(configuration.formRef)
-        : null
-    );
+
+    /**
+     * HIGHLY DANGEROUS AND MESSY ; DO NOT ENGAGE 
+     * This is serious monkey patching
+     */
+    let token = localStorage.getItem("jwt"),
+      formData = null;
+    if (method.toUpperCase() !== "GET") {
+      formData = new FormData(configuration.formRef || null);
+      formData.set("token", token);
+    }
+
+    httpRequest.send(method.toUpperCase() !== "GET" ? formData : null);
   });
 };

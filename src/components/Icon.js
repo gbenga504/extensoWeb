@@ -11,7 +11,8 @@ class I extends React.PureComponent {
     forceColor: PropTypes.bool,
     size: PropTypes.string,
     style: PropTypes.object,
-    className: PropTypes.string
+    className: PropTypes.string,
+    onClick: PropTypes.func
   };
 
   composeStyle = () => {
@@ -21,8 +22,24 @@ class I extends React.PureComponent {
     return { ...this.props.style, color: this.context.themeColor };
   };
 
+  runOnClick = ev => {
+    let { onClick } = this.props;
+    if (onClick) {
+      ev.stopPropagation();
+      onClick();
+    } else {
+      return null;
+    }
+  };
+
   render() {
-    return <i className={this.props.className} style={this.composeStyle()} />;
+    return (
+      <i
+        className={this.props.className}
+        onClick={this.runOnClick}
+        style={this.composeStyle()}
+      />
+    );
   }
 }
 

@@ -66,15 +66,13 @@ class Form extends React.PureComponent {
     let { username, password } = this.state;
     if (LoginUtils.loginValidation(username, password)) {
       this.props
-        .login({
-          url: "https://agro-extenso.herokuapp.com/api/v1/admin/login",
-          formRef: this.form
-        })
+        .login(this.form)
         .then(result => {
           let { success, message: { status, data } } = result,
             { history: { push } } = this.props;
           if (success === true && status === "success") {
             localStorage.setItem("jwt", data);
+            localStorage.setItem("jwt_date_gotten", Date.now());
             push("/");
           } else if (success === false && typeof result.message === "string") {
             this.setToolTipVisibility(
@@ -109,7 +107,7 @@ class Form extends React.PureComponent {
         tooltipMessage,
         tooltipPosition
       } = this.state,
-      { loading } = this.props;
+      { login_post: { loading } } = this.props;
     return (
       <Container
         className="d-flex flex-column align-items-center justify-content-center"
@@ -146,13 +144,14 @@ class Form extends React.PureComponent {
 
 const LoginWithMutation = composer("POST", {
   name: "login_post",
-  options: {
-    variables: {
-      url: "https://agro-extenso.herokuapp.com/api/v1/admin/login"
-    }
-  },
   props: ({ mutate, login_post }) => ({
-    login: mutate,
+    login: formRef =>
+      mutate({
+        variables: {
+          url: "https://agro-extenso.herokuapp.com/api/v1/admin/login",
+          formRef
+        }
+      }),
     login_post
   })
 })(Form);

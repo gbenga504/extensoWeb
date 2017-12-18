@@ -15,6 +15,7 @@ const Container = styled.div`
   border: 1px solid ${Colors.card.border};
   margin: 25px 0px;
   width: 100%;
+  cursor: pointer;
 `;
 
 export default class Card extends React.PureComponent {
@@ -23,25 +24,40 @@ export default class Card extends React.PureComponent {
     className: PropTypes.string,
     hideLikes: PropTypes.bool,
     items: PropTypes.shape({
+      id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       content: PropTypes.string.isRequired,
       category: PropTypes.string,
-      tags: PropTypes.arrayOf(PropTypes.string),
-      drafts: PropTypes.bool,
+      tags: PropTypes.string,
+      draft: PropTypes.bool,
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string
     }).isRequired
   };
 
+  static contextTypes = {
+    onViewContent: PropTypes.func.isRequired
+  };
+  
   render() {
+    let {
+      item: { category, created_at, content, title, likes_count, id },
+      className,
+      style
+    } = this.props;
     return (
       <Container
-        className={`d-flex flex-column ${this.props.className}`}
-        style={this.props.style}
+        onClick={ev => this.context.onViewContent(id)}
+        className={`d-flex flex-column ${className}`}
+        style={style}
       >
-        <UserContentInformation />
-        <Body isDisplayImageSet={true} />
-        <Footer hideLikes />
+        <UserContentInformation
+          category={category}
+          createdAt={created_at}
+          content={content}
+        />
+        <Body isDisplayImageSet={true} title={title} content={content} />
+        <Footer hideLikes likesCount={likes_count} id={id} />
       </Container>
     );
   }

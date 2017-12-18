@@ -32,6 +32,7 @@ export default class PageContentViewer extends React.PureComponent {
   render() {
     let { error, loading, renderItem } = this.props,
       { height } = this.state;
+
     return (
       <div className="d-flex" style={{ height }}>
         <div className="d-flex flex-column" style={{ width: "100%" }}>

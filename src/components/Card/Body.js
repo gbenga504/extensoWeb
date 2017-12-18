@@ -15,6 +15,10 @@ const ImageContainer = styled.div`
   background: ${Colors.card.imageContainer};
 `;
 
+const createContentInnerHTML = content => ({
+  __html: `${content}...`
+});
+
 const Body = props => (
   <Container className="d-flex flex-column">
     {props.isDisplayImageSet && (
@@ -23,17 +27,19 @@ const Body = props => (
       </ImageContainer>
     )}
     <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
-      Thinking Compression (500mb to 20mb) Huh!
+      {props.title}
     </RegularText>
-    <LightText style={{ ...Fonts.postBody.sm, marginTop: 15 }}>
-      Disclaimer: This article was written to abstract all the mathematical
-      complexities involved in explaining what's possible and what's not...
-    </LightText>
+    <LightText
+      style={{ ...Fonts.postBody.sm, marginTop: 15 }}
+      dangerouslySetInnerHTML={createContentInnerHTML(props.content)}
+    />
   </Container>
 );
 
 Body.propTypes = {
-  isDisplayImageSet: PropTypes.bool
+  isDisplayImageSet: PropTypes.bool,
+  title: PropTypes.string,
+  content: PropTypes.string
 };
 
 export default Body;
