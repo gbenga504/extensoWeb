@@ -9,6 +9,10 @@ import { composer } from "../../containers/composer";
 import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
 
 class Home extends React.PureComponent {
+  state = {
+    hasNextPage: true
+  };
+
   generateHeaderIcon = () => [
     {
       name: "ion-power",
@@ -33,9 +37,27 @@ class Home extends React.PureComponent {
       .catch(error => console.log(error));
   };
 
+  fetchMore = pageNumber => {
+    let { contents: { fetchMore } } = this.props;
+    fetchMore({
+      variables: {
+        url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/${pageNumber}`
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (fetchMoreResult.message.length === 0) {
+          this.setState({ hasNextPage: false });
+        }
+        return {
+          ...fetchMoreResult,
+          message: [...previousResult.message, ...fetchMoreResult.message]
+        };
+      }
+    });
+  };
+
   render() {
     let {
-      contents: { loading, isInitialDataSet, error, items, fetchMore },
+      contents: { loading, isInitialDataSet, error, items },
       likes,
       routeTo,
       deletionStatus
@@ -55,11 +77,11 @@ class Home extends React.PureComponent {
               <Counter items={(likes && likes[0]) || {}} />
               <List
                 dataArray={items && items.message}
-                onLoadMore={fetchMore}
+                onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
                 onDelete={this.deletePost}
-                onViewContent={id => routeTo("/content/", id)}
+                hasNextPage={this.state.hasNextPage}
               />
             </ContentPadder>
           }
@@ -80,16 +102,7 @@ const HomeWithData = composer("get", {
     all_news: { fetchMore, result, loading, error, isInitialDataSet }
   }) => ({
     contents: {
-      fetchMore: pageNumber =>
-        fetchMore({
-          variables: {
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/${pageNumber}`
-          },
-          updateQuery: (previousResult, { fetchMoreResult }) => ({
-            ...fetchMoreResult,
-            message: [...previousResult.message, ...fetchMoreResult.message]
-          })
-        }),
+      fetchMore,
       items: result,
       loading,
       error,

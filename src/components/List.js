@@ -35,6 +35,7 @@ export default class List extends React.PureComponent {
     onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onViewContent: PropTypes.func.isRequired,
+    hasNextPage: PropTypes.bool.isRequired,
     style: PropTypes.object
   };
 
@@ -69,7 +70,12 @@ export default class List extends React.PureComponent {
         window.scrollY + window.innerHeight >=
         GLOBAL_CONTAINER.scrollHeight
       ) {
-        this.props.onLoadMore(this.state.pageCount);
+        let { hasNextPage } = this.props;
+        if (hasNextPage) {
+          this.props.onLoadMore(this.state.pageCount);
+        } else {
+          return;
+        }
       }
     };
   };
@@ -79,7 +85,7 @@ export default class List extends React.PureComponent {
       styles = style
         ? { padding: "0px 320px", ...this.props.style }
         : { padding: "0px 320px" };
-        
+
     return (
       <div className="d-flex flex-column align-items-center" style={styles}>
         {dataArray.length > 0 ? (
