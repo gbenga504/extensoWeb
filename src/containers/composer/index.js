@@ -4,6 +4,7 @@
  */
 import React from "react";
 import { connect } from "react-redux";
+import _ from "lodash";
 
 import { Throwable } from "./helpers/throwable";
 import { GeneralBasedUtils } from "../../utils";
@@ -60,6 +61,29 @@ const composer = (method, { props, name, options, skip }) => {
                   this.refetchQuery(undefined);
                 }
                 break;
+            }
+          }
+        }
+
+        componentWillReceiveProps(nextProps) {
+          let { location: { pathname } } = this.props,
+            nextPropsComparismData =
+              method.toUpperCase() === "GET"
+                ? nextProps.queryDatas[name]
+                : nextProps.routeDatas[pathname];
+
+          if (nextPropsComparismData) {
+            if (
+              !_.isEqual(nextPropsComparismData, this.state[`${name}`].result)
+            ) {
+              this.setState({
+                [`${name}`]: {
+                  ...this.state[`${name}`],
+                  loading: false,
+                  isInitialDataSet: true,
+                  result: nextPropsComparismData
+                }
+              });
             }
           }
         }
@@ -175,7 +199,8 @@ const composer = (method, { props, name, options, skip }) => {
               typeof options === "function"
                 ? options(this.props).refetchQueries &&
                   this.refetchQueries(options(this.props).refetchQueries)
-                : options && options.refetchQueries &&
+                : options &&
+                  options.refetchQueries &&
                   this.refetchQueries(options.refetchQueries);
               return data;
             })

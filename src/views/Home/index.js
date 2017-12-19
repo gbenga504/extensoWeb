@@ -118,7 +118,7 @@ const HomeWithData = composer("get", {
       }
     }),
     props: ({ likes_count: { result } }) => ({
-      likes: result
+      likes: result && result.message
     })
   })(
     composer("push", {
@@ -138,8 +138,12 @@ const HomeWithData = composer("get", {
         options: {
           refetchQueries: [
             {
-              name: "all_news",
+              name: "likes_count",
               url: "https://agro-extenso.herokuapp.com/api/v1/post-count/all/"
+            },
+            {
+              name: "all_news",
+              url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/0"
             }
           ]
         },

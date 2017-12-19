@@ -32,22 +32,24 @@ export default class Card extends React.PureComponent {
       draft: PropTypes.bool,
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string
-    }).isRequired
+    }).isRequired,
+    onViewContent: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
   };
 
-  static contextTypes = {
-    onViewContent: PropTypes.func.isRequired
-  };
-  
   render() {
     let {
       item: { category, created_at, content, title, likes_count, id },
       className,
-      style
+      style,
+      onViewContent,
+      onEdit,
+      onDelete
     } = this.props;
     return (
       <Container
-        onClick={ev => this.context.onViewContent(id)}
+        onClick={ev => onViewContent(id)}
         className={`d-flex flex-column ${className}`}
         style={style}
       >
@@ -57,7 +59,13 @@ export default class Card extends React.PureComponent {
           content={content}
         />
         <Body isDisplayImageSet={true} title={title} content={content} />
-        <Footer hideLikes likesCount={likes_count} id={id} />
+        <Footer
+          hideLikes
+          likesCount={likes_count}
+          id={id}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       </Container>
     );
   }

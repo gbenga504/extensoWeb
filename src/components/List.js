@@ -34,24 +34,10 @@ export default class List extends React.PureComponent {
     loading: PropTypes.bool.isRequired,
     onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onViewContent: PropTypes.func.isRequired,
+    onViewContent: PropTypes.func,
     hasNextPage: PropTypes.bool.isRequired,
     style: PropTypes.object
   };
-
-  static childContextTypes = {
-    onEdit: PropTypes.func,
-    onViewContent: PropTypes.func,
-    onDelete: PropTypes.func
-  };
-
-  getChildContext() {
-    return {
-      onEdit: this.props.onEdit,
-      onViewContent: this.props.onViewContent,
-      onDelete: this.props.onDelete
-    };
-  }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.dataArray, this.props.dataArray)) {
@@ -81,7 +67,14 @@ export default class List extends React.PureComponent {
   };
 
   render() {
-    const { dataArray, style, loading } = this.props,
+    const {
+        dataArray,
+        style,
+        loading,
+        onViewContent,
+        onEdit,
+        onDelete
+      } = this.props,
       styles = style
         ? { padding: "0px 320px", ...this.props.style }
         : { padding: "0px 320px" };
@@ -89,7 +82,15 @@ export default class List extends React.PureComponent {
     return (
       <div className="d-flex flex-column align-items-center" style={styles}>
         {dataArray.length > 0 ? (
-          dataArray.map((item, i) => <Card key={i} item={item} />)
+          dataArray.map((item, i) => (
+            <Card
+              key={i}
+              item={item}
+              onViewContent={onViewContent}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))
         ) : (
           <BoldText
             style={{
