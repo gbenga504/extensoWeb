@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import { composer } from "../../containers/composer";
+import { WarningModal } from "../../components/PopOver";
 import PageContentViewer from "../../containers/PageContentViewer";
 import { RegularText, LightText } from "../../components/AppText";
 import ContentPadder from "../../containers/ContentPadder";
@@ -17,6 +18,14 @@ const CardContainer = styled.div`margin: 100px 0px;`;
 const OtherContent = styled(ContentCard)`margin: 0px 20px;`;
 
 class Content extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDeleteWarningVisible: false,
+      warningId: props.match.params.postId
+    };
+  }
+
   generateHeaderIcon = () => [
     {
       name: "ion-edit",
@@ -25,7 +34,7 @@ class Content extends React.PureComponent {
       onClick: () => {
         this.props.deletionStatus.loading
           ? () => null
-          : this.props.routeTo(this.props.match.params.postId);
+          : this.props.routeTo("/post/", this.props.match.params.postId);
       },
       cursorAllowed: this.props.deletionStatus.loading ? false : true
     },
@@ -33,7 +42,7 @@ class Content extends React.PureComponent {
       name: "ion-ios-trash",
       lastIcon: true,
       segmentName: "trash",
-      onClick: this.deletePost,
+      onClick: () => this.setState({ isDeleteWarningVisible: true }),
       cursorAllowed: this.props.deletionStatus.loading ? false : true
     }
   ];
@@ -54,29 +63,39 @@ class Content extends React.PureComponent {
   };
 
   deletePost = () => {
+    this.setState({ isDeleteWarningVisible: false });
     this.props
       .deletePost()
       .then(result => {
         let { message } = result;
         if (message && message.status === "success") {
-          window.location.href = window.location.host;
+          this.props.route.setReportNotification({
+            id: Date.now(),
+            message: "Post was deleted successfully"
+          });
+          this.props.history.push("/");
         }
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(error =>
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Error in deleting the post"
+        })
+      );
   };
 
   createContentInnerHTML = content => ({
-    __html: `${content}...`
+    __html: content
   });
 
   render() {
     let {
         content: { loading, error, item },
         otherContents: { result },
-        deletionStatus
+        deletionStatus,
+        routeTo
       } = this.props,
+      { isDeleteWarningVisible, warningId } = this.state,
       newItem = item || {},
       { category, created_at, content, title } = newItem;
 
@@ -118,13 +137,26 @@ class Content extends React.PureComponent {
                     {result &&
                       result.message.map((item, i) => {
                         if (parseInt(i) <= 1) {
-                          return <OtherContent key={i} item={item} />;
+                          return (
+                            <OtherContent
+                              key={i}
+                              item={item}
+                              onViewContent={id => routeTo("/content/", id)}
+                            />
+                          );
                         }
                         return null;
                       })}
                   </CardContainer>
                 </Container>
               </div>
+              <WarningModal
+                isVisible={isDeleteWarningVisible}
+                id={warningId}
+                onRequestDelete={this.deletePost}
+                onRequestClose={() =>
+                  this.setState({ isDeleteWarningVisible: false })}
+              />
             </ContentPadder>
           }
         />
@@ -169,9 +201,9 @@ const ContentWithData = composer("connect", {
         }
       }),
       props: ({ push }) => ({
-        routeTo: id =>
+        routeTo: (link, id) =>
           push({
-            goto: `/post/${id}`,
+            goto: `${link}${id}`,
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${id}`
             }
@@ -184,7 +216,13 @@ const ContentWithData = composer("connect", {
           variables: {
             url: `https://agro-extenso.herokuapp.com/api/v1/admin/delete/${props
               .match.params.postId}`
-          }
+          },
+          refetchQueries: [
+            {
+              name: "all_news",
+              url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/0"
+            }
+          ]
         }),
         props: ({ delete_content, mutate }) => ({
           deletionStatus: {

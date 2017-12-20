@@ -47,6 +47,13 @@ class MainThemeTemplate extends React.PureComponent {
                 path="/post/:postId"
               />
               <Route
+                path="/sections/:section"
+                render={props => {
+                  let newProps = { ...props, route: this.props.route };
+                  return <Section {...newProps} />;
+                }}
+              />
+              <Route
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
                   return <Post {...newProps} />;
@@ -68,7 +75,6 @@ class MainThemeTemplate extends React.PureComponent {
                 path="/"
               />
               <Route component={Drafts} path="/drafts" />
-              <Route component={Section} path="/sections" />
               <Route component={Search} path="/search" />
             </Switch>
           )}

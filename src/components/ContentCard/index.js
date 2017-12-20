@@ -16,6 +16,7 @@ const Container = styled.div`
   border: 1px solid ${Colors.card.border};
   margin: 25px 0px;
   width: 100%;
+  cursor: pointer;
 `;
 const ImageContainer = styled.div`
   height: 101px;
@@ -35,17 +36,23 @@ export default class ContentCard extends React.PureComponent {
       draft: PropTypes.bool,
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string
-    })
+    }),
+    onViewContent: PropTypes.func.isRequired
   };
 
   render() {
     let {
-      item: { title, category, created_at, content, likes_count },
+      item: { id, title, category, created_at, content, likes_count },
       style,
-      className
+      className,
+      onViewContent
     } = this.props;
     return (
-      <Container className={`d-flex flex-column ${className}`} style={style}>
+      <Container
+        className={`d-flex flex-column ${className}`}
+        style={style}
+        onClick={() => onViewContent(id)}
+      >
         <ImageContainer>
           <img alt="" src="" style={{ width: "100%", height: "100%" }} />
         </ImageContainer>
@@ -57,7 +64,7 @@ export default class ContentCard extends React.PureComponent {
             category={category}
             createdAt={created_at}
             content={content}
-          />{" "}
+          />
           <div className="d-flex align-self-center">
             <Icon className="ion-heart" size="30" />
             <LightText style={{ ...Fonts.likesCount.sm, marginLeft: 5 }}>
