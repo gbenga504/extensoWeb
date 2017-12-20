@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Report } from "../../components/PopOver";
 import List from "../../components/List";
 import { WarningModal } from "../../components/PopOver";
 import DashboardHeader from "../../components/DashboardHeader";
@@ -14,9 +13,7 @@ class Home extends React.PureComponent {
   state = {
     hasNextPage: true,
     isDeleteWarningVisible: false,
-    warningId: "0",
-    reportDeletionMessage: "",
-    reportDeletionId: Date.now()
+    warningId: "0"
   };
 
   generateHeaderIcon = () => [
@@ -40,16 +37,16 @@ class Home extends React.PureComponent {
       .deletePost(id)
       .then(result => {
         if (result.success === true) {
-          this.setState({
-            reportDeletionId: Date.now(),
-            reportDeletionMessage: "Post was deleted successfully"
+          this.props.route.setReportNotification({
+            id: Date.now(),
+            message: "Post was deleted successfully"
           });
         }
       })
       .catch(error =>
-        this.setState({
-          reportDeletionId: Date.now(),
-          reportDeletionMessage: "Error in deleting the post"
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Error in deleting the post"
         })
       );
   };
@@ -79,12 +76,7 @@ class Home extends React.PureComponent {
         routeTo,
         deletionStatus
       } = this.props,
-      {
-        isDeleteWarningVisible,
-        warningId,
-        reportDeletionId,
-        reportDeletionMessage
-      } = this.state;
+      { isDeleteWarningVisible, warningId } = this.state;
 
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
@@ -122,7 +114,6 @@ class Home extends React.PureComponent {
           onRequestClose={() =>
             this.setState({ isDeleteWarningVisible: false })}
         />
-        <Report id={reportDeletionId} message={reportDeletionMessage} />
       </div>
     );
   }

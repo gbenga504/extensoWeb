@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
+import { Report } from "../components/PopOver";
 import { GeneralBasedUtils } from "../utils";
 import LayoutContainer from "../containers/LayoutContainer";
 import DashboardNavigation from "../components/DashboardNavigation";
@@ -19,13 +21,14 @@ const Container = styled(LayoutContainer)`
   padding: 0;
 `;
 
-export default class MainThemeTemplate extends React.PureComponent {
+class MainThemeTemplate extends React.PureComponent {
   state = {
     expired:
       Date.now() - parseInt(localStorage.getItem("jwt_date_gotten")) > 82800000
   };
 
   render() {
+    let { report } = this.props;
     return (
       <Container>
         <DashboardNavigation
@@ -70,7 +73,16 @@ export default class MainThemeTemplate extends React.PureComponent {
             </Switch>
           )}
         </div>
+        <Report id={report.id} message={report.message} />
       </Container>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    report: state.reportNotification
+  };
+}
+
+export default connect(mapStateToProps)(MainThemeTemplate);
