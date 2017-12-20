@@ -1,0 +1,19 @@
+.report {
+  position: absolute;
+  z-index: 2000000;
+  top: -60px;
+  left: 0px;
+  background: #fff;
+  width: 50%;
+  margin: 0% 25%;
+  height: 40px;
+  transition: top 2s;
+  text-align: center;
+  padding: 5px 0px;
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.reportText {
+  font-size: 15px;
+}

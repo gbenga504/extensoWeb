@@ -1,6 +1,8 @@
 import React from "react";
 
+import { Report } from "../../components/PopOver";
 import List from "../../components/List";
+import { WarningModal } from "../../components/PopOver";
 import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import ContentPadder from "../../containers/ContentPadder";
@@ -10,7 +12,11 @@ import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
 
 class Home extends React.PureComponent {
   state = {
-    hasNextPage: true
+    hasNextPage: true,
+    isDeleteWarningVisible: false,
+    warningId: "0",
+    reportDeletionMessage: "",
+    reportDeletionId: Date.now()
   };
 
   generateHeaderIcon = () => [
@@ -32,9 +38,19 @@ class Home extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        console.log(result);
+        if (result.success === true) {
+          this.setState({
+            reportDeletionId: Date.now(),
+            reportDeletionMessage: "Post was deleted successfully"
+          });
+        }
       })
-      .catch(error => console.log(error));
+      .catch(error =>
+        this.setState({
+          reportDeletionId: Date.now(),
+          reportDeletionMessage: "Error in deleting the post"
+        })
+      );
   };
 
   fetchMore = pageNumber => {
@@ -57,11 +73,18 @@ class Home extends React.PureComponent {
 
   render() {
     let {
-      contents: { loading, isInitialDataSet, error, items },
-      likes,
-      routeTo,
-      deletionStatus
-    } = this.props;
+        contents: { loading, isInitialDataSet, error, items },
+        likes,
+        routeTo,
+        deletionStatus
+      } = this.props,
+      {
+        isDeleteWarningVisible,
+        warningId,
+        reportDeletionId,
+        reportDeletionMessage
+      } = this.state;
+
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
@@ -80,12 +103,24 @@ class Home extends React.PureComponent {
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
-                onDelete={this.deletePost}
+                onDelete={id =>
+                  this.setState({
+                    isDeleteWarningVisible: true,
+                    warningId: id
+                  })}
                 hasNextPage={this.state.hasNextPage}
               />
             </ContentPadder>
           }
         />
+        <WarningModal
+          isVisible={isDeleteWarningVisible}
+          id={warningId}
+          onRequestDelete={this.deletePost}
+          onRequestClose={() =>
+            this.setState({ isDeleteWarningVisible: false })}
+        />
+        <Report id={reportDeletionId} message={reportDeletionMessage} />
       </div>
     );
   }
