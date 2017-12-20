@@ -35,6 +35,7 @@ class Home extends React.PureComponent {
   };
 
   deletePost = id => {
+    this.setState({ isDeleteWarningVisible: false });
     this.props
       .deletePost(id)
       .then(result => {
@@ -103,6 +104,7 @@ class Home extends React.PureComponent {
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
+                onViewContent={id => routeTo("/content/", id)}
                 onDelete={id =>
                   this.setState({
                     isDeleteWarningVisible: true,

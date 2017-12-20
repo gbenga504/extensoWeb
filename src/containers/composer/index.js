@@ -160,7 +160,11 @@ const composer = (method, { props, name, options, skip }) => {
         };
 
         refetchQuery = config => {
-          if (!skip) {
+          let skipping =
+            typeof skip === "boolean"
+              ? skip
+              : typeof skip === "function" ? skip(this.props) : false;
+          if (!skipping) {
             this.setLoadingDataState();
             let params = this.getHttpParams(config);
 
@@ -216,7 +220,11 @@ const composer = (method, { props, name, options, skip }) => {
         };
 
         fetchMore = config => {
-          if (!skip) {
+          let skipping =
+            typeof skip === "boolean"
+              ? skip
+              : typeof skip === "function" ? skip(this.props) : false;
+          if (!skipping) {
             if (config.updateQuery) {
               let variablesConfig = this.getHttpParams(config);
 

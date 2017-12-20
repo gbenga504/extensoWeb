@@ -16,12 +16,12 @@ export default class Form extends React.PureComponent {
     super(props);
     let { data } = props;
     this.state = {
-      uuid: data.id || uuid(),
+      uuid: (data && data.id) || uuid(),
       token: localStorage.getItem("jwt"),
-      bodyHTML: data.content || "",
-      titleHTML: data.title || "",
-      category: data.category || "",
-      tags: data.tags || ""
+      bodyHTML: (data && data.content) || "",
+      titleHTML: (data && data.title) || "",
+      category: (data && data.category) || "",
+      tags: (data && data.tags) || ""
     };
     this.timer = undefined;
   }
@@ -32,13 +32,13 @@ export default class Form extends React.PureComponent {
     onSaveDraft: PropTypes.func.isRequired,
     initFormRef: PropTypes.func.isRequired,
     data: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      category: PropTypes.string.isRequired,
-      tags: PropTypes.arrayOf(PropTypes.string.isRequired),
+      id: PropTypes.string,
+      title: PropTypes.string,
+      content: PropTypes.string,
+      category: PropTypes.string,
+      tags: PropTypes.string,
       draft: PropTypes.bool,
-      created_at: PropTypes.string.isRequired,
+      created_at: PropTypes.string,
       likes_count: PropTypes.string
     })
   };

@@ -21,34 +21,28 @@ class Post extends React.PureComponent {
   static propTypes = {
     content: PropTypes.shape({
       item: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        content: PropTypes.string.isRequired,
-        category: PropTypes.string.isRequired,
-        tags: PropTypes.arrayOf(PropTypes.string.isRequired),
+        id: PropTypes.string,
+        title: PropTypes.string,
+        content: PropTypes.string,
+        category: PropTypes.string,
+        tags: PropTypes.string,
         draft: PropTypes.bool,
-        created_at: PropTypes.string.isRequired,
+        created_at: PropTypes.string,
         likes_count: PropTypes.string
-      }).isRequired
+      })
     })
   };
-
-  componentWillReceiveProps(nextProps) {
-    let { content: { item } } = nextProps;
-    this.setState({ draft: item && item.draft });
-  }
 
   generateHeaderIcon = () => [
     {
       name: "ion-paper-airplane",
       lastIcon: true,
       segmentName: "post",
-      onClick: () => (!this.state.draft ? null : this.savePost(false)),
-      cursorAllowed: !this.state.draft ? false : true
+      onClick: () => this.savePost(false, true)
     }
   ];
 
-  savePost = isDraft => {
+  savePost = (isDraft, shouldMakePost) => {
     this.setState({ draftStatusText: "Saving...", draft: isDraft }, () => {
       setTimeout(() => {
         this.props
@@ -59,7 +53,7 @@ class Post extends React.PureComponent {
               this.setState({ draftStatusText: "Failed To Saved" });
             } else {
               this.setState({ draftStatusText: "Saved" });
-              if (!this.state.draft && message && message.status) {
+              if (shouldMakePost && message && message.status) {
                 this.props.routeToContent(message.data.id);
               }
             }
@@ -71,7 +65,10 @@ class Post extends React.PureComponent {
 
   render() {
     let { draftStatusText, draft } = this.state,
-      { content: { loading, error, item } } = this.props;
+      {
+        content: { loading, error, item },
+        match: { params: { postId } }
+      } = this.props;
     return (
       <div
         className="d-flex flex-column"
@@ -80,8 +77,8 @@ class Post extends React.PureComponent {
         {!draft && this.props.loading && <IndefiniteProgressBar />}
         <DashboardHeader hideSearch iconArray={this.generateHeaderIcon()} />
         <PageContentViewer
-          loading={loading}
-          error={error}
+          loading={loading && !!postId}
+          error={!!error && !!postId}
           renderItem={
             <ContentPadder className="flex-column">
               <Form
@@ -104,6 +101,7 @@ class Post extends React.PureComponent {
 
 const PostWithMutation = composer("connect", {
   name: "post_contents",
+  skip: props => (props.match.params.postId ? false : true),
   options: props => ({
     variables: {
       url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${props.match
@@ -114,7 +112,7 @@ const PostWithMutation = composer("connect", {
     content: {
       loading,
       error,
-      item: result && result.data
+      item: (result && result.message && result.message.data) || {}
     }
   })
 })(

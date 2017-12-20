@@ -7,7 +7,6 @@ import PageContentViewer from "../../containers/PageContentViewer";
 import { RegularText, LightText } from "../../components/AppText";
 import ContentPadder from "../../containers/ContentPadder";
 import Fonts from "../../assets/Fonts";
-import { CircularSpinner } from "../../components/Loaders";
 import ContentCard from "../../components/ContentCard";
 import DashboardHeader from "../../components/DashboardHeader";
 import UserContentInformation from "../../components/UserContentInformation";
@@ -23,7 +22,11 @@ class Content extends React.PureComponent {
       name: "ion-edit",
       lastIcon: false,
       segmentName: "edit",
-      onClick: this.props.routeTo,
+      onClick: () => {
+        this.props.deletionStatus.loading
+          ? () => null
+          : this.props.routeTo(this.props.match.params.postId);
+      },
       cursorAllowed: this.props.deletionStatus.loading ? false : true
     },
     {
@@ -42,11 +45,11 @@ class Content extends React.PureComponent {
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         category: PropTypes.string.isRequired,
-        tags: PropTypes.arrayOf(PropTypes.string.isRequired),
+        tags: PropTypes.string,
         draft: PropTypes.bool,
         created_at: PropTypes.string.isRequired,
         likes_count: PropTypes.string
-      }).isRequired
+      })
     })
   };
 
@@ -64,28 +67,33 @@ class Content extends React.PureComponent {
       });
   };
 
+  createContentInnerHTML = content => ({
+    __html: `${content}...`
+  });
+
   render() {
     let {
-      content: {
-        loading,
-        error,
-        item: { category, created_at, content, title }
-      },
-      otherContents: { result },
-      deletionStatus
-    } = this.props;
+        content: { loading, error, item },
+        otherContents: { result },
+        deletionStatus
+      } = this.props,
+      newItem = item || {},
+      { category, created_at, content, title } = newItem;
 
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.defaults.headerIcon} />
+        <DashboardHeader iconArray={this.generateHeaderIcon()} />
         <PageContentViewer
           loading={loading}
-          error={error}
+          error={!!error}
           renderItem={
             <ContentPadder>
-              <div className="d-flex">
-                <Container className="d-flex flex-column">
+              <div className="d-flex" style={{ width: "100%" }}>
+                <Container
+                  className="d-flex flex-column"
+                  style={{ width: "100%" }}
+                >
                   <UserContentInformation
                     category={category}
                     createdAt={created_at}
@@ -96,23 +104,24 @@ class Content extends React.PureComponent {
                   >
                     {title}
                   </RegularText>
-                  <LightText style={{ ...Fonts.content.body, marginTop: 20 }}>
-                    {content}
-                  </LightText>
+                  <LightText
+                    dangerouslySetInnerHTML={this.createContentInnerHTML(
+                      content
+                    )}
+                    style={{ ...Fonts.content.body, marginTop: 20 }}
+                  />
                   <UserContentInformation
                     hideDetails
                     style={{ marginTop: 50 }}
                   />
                   <CardContainer className="d-flex justify-content-between">
-                    {result ? (
-                      result.map((item, i) => (
-                        <OtherContent key={i} item={item} />
-                      ))
-                    ) : (
-                      <div className="d-flex flex-column align-items-center justify-content-center">
-                        <CircularSpinner size={20} thickness={8} />
-                      </div>
-                    )}
+                    {result &&
+                      result.message.map((item, i) => {
+                        if (parseInt(i) <= 1) {
+                          return <OtherContent key={i} item={item} />;
+                        }
+                        return null;
+                      })}
                   </CardContainer>
                 </Container>
               </div>
@@ -136,7 +145,7 @@ const ContentWithData = composer("connect", {
     content: {
       loading,
       error,
-      item: result && result.data
+      item: result && result.message && result.message.data
     }
   })
 })(
@@ -144,7 +153,7 @@ const ContentWithData = composer("connect", {
     name: "other_contents",
     options: {
       variables: {
-        url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/2"
+        url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/0"
       }
     },
     props: ({ other_contents }) => ({
@@ -160,7 +169,13 @@ const ContentWithData = composer("connect", {
         }
       }),
       props: ({ push }) => ({
-        routeTo: push
+        routeTo: id =>
+          push({
+            goto: `/post/${id}`,
+            variables: {
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${id}`
+            }
+          })
       })
     })(
       composer("post", {

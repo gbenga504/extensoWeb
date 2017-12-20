@@ -41,7 +41,7 @@ export default class DashboardNavigation extends React.PureComponent {
   static defaults = {
     path: [
       { pathName: "/", title: "Home", iconName: "ion-ios-home-outline" },
-      { pathName: "/post", title: "Post", iconName: "ion-ios-compose-outline" },
+      { pathName: "/post/", title: "Post", iconName: "ion-ios-compose-outline" },
       {
         pathName: "/drafts",
         title: "Drafts",

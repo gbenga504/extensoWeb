@@ -39,13 +39,6 @@ export default class MainThemeTemplate extends React.PureComponent {
               <Route
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
-                  return <Home {...newProps} />;
-                }}
-                path="/"
-              />
-              <Route
-                render={props => {
-                  let newProps = { ...props, route: this.props.route };
                   return <Post {...newProps} />;
                 }}
                 path="/post/:postId"
@@ -53,9 +46,23 @@ export default class MainThemeTemplate extends React.PureComponent {
               <Route
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
+                  return <Post {...newProps} />;
+                }}
+                path="/post/"
+              />
+              <Route
+                render={props => {
+                  let newProps = { ...props, route: this.props.route };
                   return <Content {...newProps} />;
                 }}
                 path="/content/:postId"
+              />
+              <Route
+                render={props => {
+                  let newProps = { ...props, route: this.props.route };
+                  return <Home {...newProps} />;
+                }}
+                path="/"
               />
               <Route component={Drafts} path="/drafts" />
               <Route component={Section} path="/sections" />

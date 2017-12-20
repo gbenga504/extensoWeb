@@ -18,7 +18,7 @@ export default class Report extends React.PureComponent {
       this.report.style.top = "20px";
       window.setTimeout(() => {
         this.report.style.top = "-60px";
-      }, 6000);
+      }, 3000);
     }, 1);
   }
 
