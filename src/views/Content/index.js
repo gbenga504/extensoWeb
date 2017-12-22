@@ -32,7 +32,7 @@ class Content extends React.PureComponent {
       lastIcon: false,
       segmentName: "edit",
       onClick: () => {
-        this.props.deletionStatus.loading
+        return this.props.deletionStatus.loading
           ? () => null
           : this.props.routeTo("/post/", this.props.match.params.postId);
       },

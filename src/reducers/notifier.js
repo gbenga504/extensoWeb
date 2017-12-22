@@ -10,3 +10,14 @@ export const reportNotification = (state = {}, action) => {
       break;
   }
 };
+
+export const isSearchDraftBased = (state = {}, action) => {
+  switch (action.type) {
+    case types.SET_CONTENT_ISDRAFT_STATE:
+      return { ...state, isDraft: action.isDraft };
+      break;
+    default:
+      return state;
+      break;
+  }
+};

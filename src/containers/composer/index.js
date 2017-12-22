@@ -12,8 +12,6 @@ import XMLHttp from "./httpRequest";
 import DefiniteProgressBar from "./DefiniteProgressBar";
 
 const composer = (method, { props, name, options, skip }) => {
-  Throwable.initThrowable(method, { name, options });
-
   function decorateClass(WrappedComponent) {
     return connect(state => ({
       progressState: state.dataLoadProgress,
@@ -23,11 +21,17 @@ const composer = (method, { props, name, options, skip }) => {
       class Composer extends React.PureComponent {
         constructor(props) {
           super(props);
+
+          Throwable.initThrowable(method, { name, options, props });
+
           let initialDataSettings =
             method.toUpperCase() === "GET" || method.toUpperCase() === "CONNECT"
               ? { isInitialDataSet: false, loading: true }
               : {};
-          this.state = { [`${name}`]: { ...initialDataSettings } };
+          this.state = {
+            [`${name}`]: { ...initialDataSettings },
+            pageId: Date.now()
+          };
         }
 
         componentDidMount() {
@@ -39,6 +43,7 @@ const composer = (method, { props, name, options, skip }) => {
               typeof options === "function"
                 ? options(this.props).fetchPolicy
                 : options.fetchPolicy || "cache-first";
+
             switch (fetchPolicy) {
               case "network-only":
                 this.refetchQuery(undefined);
@@ -372,12 +377,17 @@ const composer = (method, { props, name, options, skip }) => {
         };
 
         render() {
+          // let Party = props => (
+          //   <WrappedComponent id={this.state.id} {...props} />
+          // );
+
+          let Party = WrappedComponent;
           return [
             <DefiniteProgressBar
               progress={this.props.progressState.progress}
               key={0}
             />,
-            <WrappedComponent key={1} {...this.sanitizePassedProps()} />
+            <Party key={1} {...this.sanitizePassedProps()} />
           ];
         }
       }

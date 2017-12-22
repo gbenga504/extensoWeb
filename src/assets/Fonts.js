@@ -24,7 +24,6 @@ const Fonts = {
   section: {
     select: { fontSize: "14px" }
   },
-  search: { title: { fontSize: "25px" } },
   noNewsText: "30px",
   post: {
     titleBox: { fontSize: "30px", fontFamily: "Circular Medium" },
