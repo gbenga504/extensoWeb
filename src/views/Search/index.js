@@ -107,7 +107,7 @@ class Search extends React.PureComponent {
         <DashboardHeader
           searchValue={this.generateSearchValue()}
           iconArray={this.generateHeaderIcon()}
-          onSearch={value => refetchContent(value)}
+          onSearch={value => refetchContent(value, isSearchDraftBased)}
         />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
@@ -198,14 +198,12 @@ const SearchWithData = composer("connect", {
           }
         });
       },
-      refetchContent: queryParams => {
+      refetchContent: (queryParams, isSearchDraftBased) => {
         let uriQueryParams = encodeURI(queryParams);
         return push({
           goto: `/search/?q=${uriQueryParams}`,
           variables: {
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
-              props.isSearchDraftBased
-            }/0?q=${queryParams}`
+            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/0?q=${queryParams}`
           }
         });
       }
