@@ -69,6 +69,12 @@ class Home extends React.PureComponent {
     });
   };
 
+  search = queryParams => {
+    let { search } = this.props;
+    this.props.route.setIsContentDraftState(false);
+    search(queryParams);
+  };
+
   render() {
     let {
         contents: { loading, isInitialDataSet, error, items },
@@ -81,7 +87,10 @@ class Home extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader
+          iconArray={this.generateHeaderIcon()}
+          onSearch={this.search}
+        />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
           error={
@@ -101,7 +110,8 @@ class Home extends React.PureComponent {
                   this.setState({
                     isDeleteWarningVisible: true,
                     warningId: id
-                  })}
+                  })
+                }
                 hasNextPage={this.state.hasNextPage}
               />
             </ContentPadder>
@@ -112,7 +122,8 @@ class Home extends React.PureComponent {
           id={warningId}
           onRequestDelete={this.deletePost}
           onRequestClose={() =>
-            this.setState({ isDeleteWarningVisible: false })}
+            this.setState({ isDeleteWarningVisible: false })
+          }
         />
       </div>
     );
@@ -158,7 +169,16 @@ const HomeWithData = composer("get", {
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${id}`
             }
-          })
+          }),
+        search: queryParams => {
+          let uriQueryParams = encodeURI(queryParams);
+          return push({
+            goto: `/search/?q=${uriQueryParams}`,
+            variables: {
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/false/0?q=${queryParams}`
+            }
+          });
+        }
       })
     })(
       composer("Post", {

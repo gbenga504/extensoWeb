@@ -81,12 +81,22 @@ class Search extends React.PureComponent {
     refetchContent(isSearchDraftBased);
   };
 
+  generateSearchValue = () => {
+    let pattern = /=[\d\D]{1,}/,
+      queryParams = pattern
+        .exec(this.props.match.params.queryParams)[0]
+        .slice(1),
+      decodedURI = window.decodedURI(queryParams);
+    return decodedURI;
+  };
+
   render() {
     let {
         contents: { loading, isInitialDataSet, error, items },
         routeTo,
         deletionStatus,
-        isSearchDraftBased
+        isSearchDraftBased,
+        refetchContent
       } = this.props,
       { isDeleteWarningVisible, warningId } = this.state,
       category = isSearchDraftBased ? "Draft Category" : "All Categories";
@@ -94,7 +104,11 @@ class Search extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader
+          searchValue={this.generateSearchValue()}
+          iconArray={this.generateHeaderIcon()}
+          onSearch={value => refetchContent(value)}
+        />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
           error={
@@ -118,7 +132,8 @@ class Search extends React.PureComponent {
                   this.setState({
                     isDeleteWarningVisible: true,
                     warningId: id
-                  })}
+                  })
+                }
                 hasNextPage={this.state.hasNextPage}
               />
             </ContentPadder>
@@ -129,7 +144,8 @@ class Search extends React.PureComponent {
           id={warningId}
           onRequestDelete={this.deletePost}
           onRequestClose={() =>
-            this.setState({ isDeleteWarningVisible: false })}
+            this.setState({ isDeleteWarningVisible: false })
+          }
         />
       </div>
     );
@@ -144,11 +160,18 @@ function mapStateToProps(state) {
 
 const SearchWithData = composer("connect", {
   name: "search_content",
-  options: props => ({
-    variables: {
-      url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${props.isSearchDraftBased}/0`
-    }
-  }),
+  options: props => {
+    let pattern = /=[\d\D]{1,}/,
+      queryParams = pattern.exec(props.match.params.queryParams)[0].slice(1),
+      decodedURI = window.decodedURI(queryParams);
+    return {
+      variables: {
+        url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
+          props.isSearchDraftBased
+        }/0?q=${decodedURI}`
+      }
+    };
+  },
   props: ({
     search_content: { fetchMore, result, loading, error, isInitialDataSet }
   }) => ({
@@ -175,11 +198,14 @@ const SearchWithData = composer("connect", {
           }
         });
       },
-      refetchContent: isSearchDraftBased => {
-        push({
-          goto: `/search/`,
+      refetchContent: queryParams => {
+        let uriQueryParams = encodeURI(queryParams);
+        return push({
+          goto: `/search/?q=${uriQueryParams}`,
           variables: {
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/0`
+            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
+              props.isSearchDraftBased
+            }/0?q=${queryParams}`
           }
         });
       }
@@ -187,14 +213,23 @@ const SearchWithData = composer("connect", {
   })(
     composer("Post", {
       name: "delete_post",
-      options: props => ({
-        refetchQueries: [
-          {
-            name: "search_content",
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${props.isSearchDraftBased}/0`
-          }
-        ]
-      }),
+      options: props => {
+        let pattern = /=[\d\D]{1,}/,
+          queryParams = pattern
+            .exec(props.match.params.queryParams)[0]
+            .slice(1),
+          decodedURI = window.decodedURI(queryParams);
+        return {
+          refetchQueries: [
+            {
+              name: "search_content",
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
+                props.isSearchDraftBased
+              }/0?q=${decodedURI}`
+            }
+          ]
+        };
+      },
       props: ({ delete_post: { loading }, mutate }) => ({
         deletionStatus: { loading },
         deletePost: id =>

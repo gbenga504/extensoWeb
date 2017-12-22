@@ -25,9 +25,15 @@ const Section = styled.div`
     background: ${props => Colors.dashboardHeader.hover[props.name]};
   }
 `;
-const SearchBox = Input.extend`height: 100%;`;
+const SearchBox = Input.extend`
+  height: 100%;
+`;
 
 class DashboardHeader extends React.PureComponent {
+  state = {
+    value: ""
+  };
+
   static propTypes = {
     iconArray: PropTypes.arrayOf(
       PropTypes.shape({
@@ -39,10 +45,19 @@ class DashboardHeader extends React.PureComponent {
       })
     ),
     hideSearch: PropTypes.bool,
-    onSearch: PropTypes.func
+    onSearch: PropTypes.func,
+    searchValue: PropTypes.string
   };
 
+  componentDidMount() {
+    let { searchValue } = this.props;
+    if (searchValue) {
+      this.setState({ value: searchValue });
+    }
+  }
+
   search = ev => {
+    this.setState({ value: ev.target.value });
     if (ev.keyCode === 13) {
       let { onSearch } = this.props;
       onSearch && onSearch(ev.target.value);
@@ -66,6 +81,7 @@ class DashboardHeader extends React.PureComponent {
             <SearchBox
               className="d-flex align-self-center"
               type="search"
+              value={this.state.value}
               onKeyUp={this.search}
               placeholder="Search for a post from the categories"
             />
