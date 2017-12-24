@@ -1,3 +1,5 @@
+import httpRequestStatusHandler from "./httpRequestStatusHandler";
+
 export default (method, config, progressCallback = null) => {
   return new Promise((resolve, reject) => {
     let httpRequest = null,
@@ -11,12 +13,16 @@ export default (method, config, progressCallback = null) => {
 
     httpRequest.onreadystatechange = function() {
       try {
-        if (httpRequest.status === 200 && httpRequest.readyState === 4) {
-          let result = JSON.parse(httpRequest.responseText);
-          resolve({ success: true, message: result });
+        if (httpRequest.readyState === 4) {
+          let { type, data } = httpRequestStatusHandler(httpRequest.status);
+          if (type === "ok") {
+            resolve(JSON.parse(httpRequest.responseText));
+          } else {
+            reject(data);
+          }
         }
       } catch (err) {
-        reject({ success: false, message: err });
+        reject({ code: 0, message: "Error occured while parsing the data" });
       }
     };
 
@@ -29,15 +35,8 @@ export default (method, config, progressCallback = null) => {
 
     httpRequest.onerror = function() {
       reject({
-        success: false,
-        message: "Oops, a network error occurred"
-      });
-    };
-
-    httpRequest.onabort = function() {
-      reject({
-        success: false,
-        message: "The request was aborted"
+        code: 0,
+        message: "An unknown error mostly network based occurred "
       });
     };
 
@@ -55,7 +54,7 @@ export default (method, config, progressCallback = null) => {
     );
 
     /**
-     * HIGHLY DANGEROUS AND MESSY ; DO NOT ENGAGE 
+     * HIGHLY DANGEROUS AND MESSY ; DO NOT ENGAGE
      * This is serious monkey patching
      */
     let token = localStorage.getItem("jwt"),

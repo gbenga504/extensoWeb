@@ -25,6 +25,10 @@ class Home extends React.PureComponent {
     }
   ];
 
+  componentWillReceiveProps(nextProps) {
+    console.log("Hey new props", nextProps);
+  }
+
   logout = () => {
     localStorage.removeItem("jwt");
     let { history: { push } } = this.props;
