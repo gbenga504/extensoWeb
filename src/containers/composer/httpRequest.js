@@ -14,11 +14,13 @@ export default (method, config, progressCallback = null) => {
     httpRequest.onreadystatechange = function() {
       try {
         if (httpRequest.readyState === 4) {
-          let { type, data } = httpRequestStatusHandler(httpRequest.status);
+          let { type } = httpRequestStatusHandler(httpRequest.status),
+            result = JSON.parse(httpRequest.responseText);
+
           if (type === "ok") {
-            resolve(JSON.parse(httpRequest.responseText));
+            resolve(result);
           } else {
-            reject(data);
+            reject(result);
           }
         }
       } catch (err) {

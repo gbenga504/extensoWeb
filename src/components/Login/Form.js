@@ -68,27 +68,19 @@ class Form extends React.PureComponent {
       this.props
         .login(this.form)
         .then(result => {
-          let { success, message } = result,
-            { history: { push } } = this.props;
-          if (success === true) {
-            localStorage.setItem("jwt", message);
-            localStorage.setItem("jwt_date_gotten", Date.now());
-            push("/");
-          } else {
-            this.setToolTipVisibility(
-              message,
-              "username",
-              "tooltip-position-top"
-            );
-          }
+          let { history: { push } } = this.props;
+          window.localStorage.setItem("jwt", report);
+          window.localStorage.setItem("jwt_date_gotten", Date.now());
+          push("/");
         })
-        .catch(err =>
+        .catch(err => {
+          console.log(err);
           this.setToolTipVisibility(
             "Oops, a network error occurred",
             "username",
             "tooltip-position-top"
-          )
-        );
+          );
+        });
     } else {
       this.setToolTipVisibility(
         "Oops, check your details",
