@@ -35,12 +35,10 @@ class Drafts extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        if (result.success === true) {
-          this.props.route.setReportNotification({
-            id: Date.now(),
-            message: "Post was deleted successfully"
-          });
-        }
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
       })
       .catch(error =>
         this.props.route.setReportNotification({
@@ -57,13 +55,10 @@ class Drafts extends React.PureComponent {
         url: `https://agro-extenso.herokuapp.com/api/v1/admin/drafts/${pageNumber}`
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (fetchMoreResult.message.length === 0) {
+        if (fetchMoreResult.length === 0) {
           this.setState({ hasNextPage: false });
         }
-        return {
-          ...fetchMoreResult,
-          message: [...previousResult.message, ...fetchMoreResult.message]
-        };
+        return [...previousResult, ...fetchMoreResult];
       }
     });
   };
@@ -82,23 +77,21 @@ class Drafts extends React.PureComponent {
         <DashboardHeader iconArray={this.generateHeaderIcon()} />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
-          error={
-            !isInitialDataSet &&
-            (error === undefined || error.success === false)
-          }
+          error={!isInitialDataSet && error !== undefined}
           renderItem={
             <ContentPadder className="flex-column">
               <List
-                dataArray={items && items.message}
+                dataArray={items}
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
-                onViewContent={id => routeTo("/content/", id)}
+                onViewContent={id => routeTo("/post/", id)}
                 onDelete={id =>
                   this.setState({
                     isDeleteWarningVisible: true,
                     warningId: id
-                  })}
+                  })
+                }
                 hasNextPage={this.state.hasNextPage}
               />
             </ContentPadder>
@@ -109,7 +102,8 @@ class Drafts extends React.PureComponent {
           id={warningId}
           onRequestDelete={this.deletePost}
           onRequestClose={() =>
-            this.setState({ isDeleteWarningVisible: false })}
+            this.setState({ isDeleteWarningVisible: false })
+          }
         />
       </div>
     );

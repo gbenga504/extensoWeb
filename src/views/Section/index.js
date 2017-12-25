@@ -19,6 +19,12 @@ class Section extends React.PureComponent {
     pageURI: window.location.pathname
   };
 
+  componentWillReceiveProps() {
+    if (this.state.pageURI !== window.location.pathname) {
+      this.setState({ pageURI: window.location.pathname, hasNextPage: true });
+    }
+  }
+
   generateHeaderIcon = () => [
     {
       name: "ion-power",
@@ -71,9 +77,12 @@ class Section extends React.PureComponent {
   };
 
   fetchPage = category => {
-    this.setState({ category }, () => {
+    this.setState(prevState => {
       let { refetchContent } = this.props;
-      refetchContent(category);
+      if (prevState.category !== category) {
+        refetchContent(category);
+      }
+      return { category };
     });
   };
 

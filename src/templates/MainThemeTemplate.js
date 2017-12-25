@@ -70,16 +70,9 @@ class MainThemeTemplate extends React.PureComponent {
               <Route
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
-                  return <Home {...newProps} />;
-                }}
-                path="/"
-              />
-              <Route
-                render={props => {
-                  let newProps = { ...props, route: this.props.route };
                   return <Drafts {...newProps} />;
                 }}
-                path="/drafts"
+                path="/drafts/"
               />
               <Route
                 render={props => {
@@ -87,6 +80,13 @@ class MainThemeTemplate extends React.PureComponent {
                   return <Search {...newProps} />;
                 }}
                 path="/search/:queryParams"
+              />
+              <Route
+                render={props => {
+                  let newProps = { ...props, route: this.props.route };
+                  return <Home {...newProps} />;
+                }}
+                path="/"
               />
             </Switch>
           )}

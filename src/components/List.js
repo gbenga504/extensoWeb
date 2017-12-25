@@ -102,7 +102,8 @@ export default class List extends React.PureComponent {
             Write Your First Post !!!
           </BoldText>
         )}
-        {loading && <CircularSpinner size={30} thickness={5} />}
+        {loading &&
+          dataArray.length > 0 && <CircularSpinner size={30} thickness={5} />}
       </div>
     );
   }
