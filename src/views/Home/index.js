@@ -40,14 +40,12 @@ class Home extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        console.log("Action from deleting a post ", result);
         this.props.route.setReportNotification({
           id: Date.now(),
           message: "Post was deleted successfully"
         });
       })
       .catch(error => {
-        console.log("Error from deleting a post ", error);
         this.props.route.setReportNotification({
           id: Date.now(),
           message: "Error in deleting the post"
@@ -62,13 +60,10 @@ class Home extends React.PureComponent {
         url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/${pageNumber}`
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (fetchMoreResult.message.length === 0) {
+        if (fetchMoreResult.length === 0) {
           this.setState({ hasNextPage: false });
         }
-        return {
-          ...fetchMoreResult,
-          message: [...previousResult.message, ...fetchMoreResult.message]
-        };
+        return [...previousResult, ...fetchMoreResult];
       }
     });
   };
@@ -97,10 +92,10 @@ class Home extends React.PureComponent {
         />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
-          error={!isInitialDataSet && error}
+          error={!isInitialDataSet && error !== undefined}
           renderItem={
             <ContentPadder className="flex-column">
-              <Counter items={(likes && likes[0]) || {}} />
+              <Counter items={likes || {}} />
               <List
                 dataArray={items}
                 onLoadMore={this.fetchMore}
@@ -154,7 +149,7 @@ const HomeWithData = composer("get", {
     name: "likes_count",
     options: props => ({
       variables: {
-        url: "https://agro-extenso.herokuapp.com/api/v1/post-count/all/"
+        url: "https://agro-extenso.herokuapp.com/api/v1/post-count"
       }
     }),
     props: ({ likes_count: { result } }) => ({

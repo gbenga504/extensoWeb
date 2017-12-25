@@ -48,14 +48,9 @@ class Post extends React.PureComponent {
         this.props
           .post(this.form)
           .then(result => {
-            let { success, message } = result;
-            if (!success) {
-              this.setState({ draftStatusText: "Failed To Saved" });
-            } else {
-              this.setState({ draftStatusText: "Saved" });
-              if (shouldMakePost && message && message.status) {
-                this.props.routeToContent(message.data.id);
-              }
+            this.setState({ draftStatusText: "Saved" });
+            if (shouldMakePost) {
+              this.props.routeToContent(result.id);
             }
           })
           .catch(err => this.setState({ draftStatusText: "Failed To Saved" }));
@@ -104,15 +99,16 @@ const PostWithMutation = composer("connect", {
   skip: props => (props.match.params.postId ? false : true),
   options: props => ({
     variables: {
-      url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${props.match
-        .params.postId}`
+      url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${
+        props.match.params.postId
+      }`
     }
   }),
   props: ({ post_contents: { loading, error, result } }) => ({
     content: {
       loading,
       error,
-      item: (result && result.message && result.message.data) || {}
+      item: result || {}
     }
   })
 })(

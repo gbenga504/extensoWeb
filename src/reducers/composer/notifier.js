@@ -1,9 +1,9 @@
 import * as types from "../../actions/composer/types";
 
 /**
- * @param {Object} state 
+ * @param {Object} state
  * @param {Object} action
- * @function creates the reducer for the progress load state of each page 
+ * @function creates the reducer for the progress load state of each page
  */
 export const dataLoadProgress = (state = { progress: 0 }, action) => {
   switch (action.type) {
@@ -21,10 +21,7 @@ export const routeDatas = (state = {}, action) => {
       let previousRouteData = state[action.routeName] || {};
       return {
         ...state,
-        [`${action.routeName}`]: {
-          ...previousRouteData,
-          ...action.routeDatas
-        }
+        [`${action.routeName}`]: action.routeDatas
       };
       break;
     default:

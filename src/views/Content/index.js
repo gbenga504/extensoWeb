@@ -13,9 +13,15 @@ import DashboardHeader from "../../components/DashboardHeader";
 import UserContentInformation from "../../components/UserContentInformation";
 import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
 
-const Container = styled.div`padding: 20px 100px;`;
-const CardContainer = styled.div`margin: 100px 0px;`;
-const OtherContent = styled(ContentCard)`margin: 0px 20px;`;
+const Container = styled.div`
+  padding: 20px 100px;
+`;
+const CardContainer = styled.div`
+  margin: 100px 0px;
+`;
+const OtherContent = styled(ContentCard)`
+  margin: 0px 20px;
+`;
 
 class Content extends React.PureComponent {
   constructor(props) {
@@ -67,14 +73,11 @@ class Content extends React.PureComponent {
     this.props
       .deletePost()
       .then(result => {
-        let { message } = result;
-        if (message && message.status === "success") {
-          this.props.route.setReportNotification({
-            id: Date.now(),
-            message: "Post was deleted successfully"
-          });
-          this.props.history.push("/");
-        }
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
+        this.props.history.push("/");
       })
       .catch(error =>
         this.props.route.setReportNotification({
@@ -135,7 +138,7 @@ class Content extends React.PureComponent {
                   />
                   <CardContainer className="d-flex justify-content-between">
                     {result &&
-                      result.message.map((item, i) => {
+                      result.map((item, i) => {
                         if (parseInt(i) <= 1) {
                           return (
                             <OtherContent
@@ -155,7 +158,8 @@ class Content extends React.PureComponent {
                 id={warningId}
                 onRequestDelete={this.deletePost}
                 onRequestClose={() =>
-                  this.setState({ isDeleteWarningVisible: false })}
+                  this.setState({ isDeleteWarningVisible: false })
+                }
               />
             </ContentPadder>
           }
@@ -169,15 +173,16 @@ const ContentWithData = composer("connect", {
   name: "content_data",
   options: props => ({
     variables: {
-      url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${props.match
-        .params.postId}`
+      url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${
+        props.match.params.postId
+      }`
     }
   }),
   props: ({ content_data: { loading, error, result } }) => ({
     content: {
       loading,
       error,
-      item: result && result.message && result.message.data
+      item: result
     }
   })
 })(
@@ -196,8 +201,9 @@ const ContentWithData = composer("connect", {
       name: "push_based_request",
       options: props => ({
         variables: {
-          url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${props
-            .match.params.postId}`
+          url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${
+            props.match.params.postId
+          }`
         }
       }),
       props: ({ push }) => ({
@@ -214,8 +220,9 @@ const ContentWithData = composer("connect", {
         name: "delete_content",
         options: props => ({
           variables: {
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/delete/${props
-              .match.params.postId}`
+            url: `https://agro-extenso.herokuapp.com/api/v1/admin/delete/${
+              props.match.params.postId
+            }`
           },
           refetchQueries: [
             {

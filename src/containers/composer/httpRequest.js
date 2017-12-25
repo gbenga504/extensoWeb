@@ -16,7 +16,6 @@ export default (method, config, progressCallback = null) => {
         if (httpRequest.readyState === 4) {
           let { type } = httpRequestStatusHandler(httpRequest.status),
             result = JSON.parse(httpRequest.responseText);
-
           if (type === "ok") {
             resolve(result);
           } else {

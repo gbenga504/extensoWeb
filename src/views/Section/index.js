@@ -28,14 +28,6 @@ class Section extends React.PureComponent {
     }
   ];
 
-  //AN HACK (SHOULD BE HANDLED BY ROUTER)
-  //TODO ROUTER SHOULD RESET STATE BY REMOUNTING COMPONENT
-  componentWillReceiveProps(nextProps) {
-    if (window.location.pathname !== this.state.pageURI) {
-      this.setState({ hasNextPage: true });
-    }
-  }
-
   logout = () => {
     localStorage.removeItem("jwt");
     let { history: { push } } = this.props;
@@ -47,12 +39,10 @@ class Section extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        if (result.success === true) {
-          this.props.route.setReportNotification({
-            id: Date.now(),
-            message: "Post was deleted successfully"
-          });
-        }
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
       })
       .catch(error =>
         this.props.route.setReportNotification({
@@ -72,13 +62,10 @@ class Section extends React.PureComponent {
         url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${category}/${pageNumber}`
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (fetchMoreResult.message.length === 0) {
+        if (fetchMoreResult.length === 0) {
           this.setState({ hasNextPage: false });
         }
-        return {
-          ...fetchMoreResult,
-          message: [...previousResult.message, ...fetchMoreResult.message]
-        };
+        return [...previousResult, ...fetchMoreResult];
       }
     });
   };
@@ -98,21 +85,17 @@ class Section extends React.PureComponent {
         deletionStatus
       } = this.props,
       { isDeleteWarningVisible, warningId } = this.state;
-
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
         <DashboardHeader iconArray={this.generateHeaderIcon()} />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
-          error={
-            !isInitialDataSet &&
-            (error === undefined || error.success === false)
-          }
+          error={!isInitialDataSet && error !== undefined}
           renderItem={
             <ContentPadder className="flex-column">
-              <Counter items={(likes && likes[0]) || {}} />
-              <div className="d-flex" style={{ margin: "0px 320px" }}>
+              <Counter items={likes || {}} />
+              <div className="d-flex" style={{ margin: "10px 320px" }}>
                 <SelectCategory
                   title={this.state.category}
                   onCategorySelected={this.fetchPage}
@@ -120,7 +103,7 @@ class Section extends React.PureComponent {
               </div>
               <div className="d-flex" style={{ marginTop: 50 }}>
                 <List
-                  dataArray={items && items.message}
+                  dataArray={items}
                   onLoadMore={this.fetchMore}
                   loading={loading}
                   onEdit={id => routeToContent("/post/", id)}
@@ -129,7 +112,8 @@ class Section extends React.PureComponent {
                     this.setState({
                       isDeleteWarningVisible: true,
                       warningId: id
-                    })}
+                    })
+                  }
                   hasNextPage={this.state.hasNextPage}
                 />
               </div>
@@ -141,7 +125,8 @@ class Section extends React.PureComponent {
           id={warningId}
           onRequestDelete={this.deletePost}
           onRequestClose={() =>
-            this.setState({ isDeleteWarningVisible: false })}
+            this.setState({ isDeleteWarningVisible: false })
+          }
         />
       </div>
     );
@@ -152,8 +137,9 @@ const SectionWithData = composer("connect", {
   name: "section_news",
   options: props => ({
     variables: {
-      url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${props.match
-        .params.category}/0`
+      url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${
+        props.match.params.category
+      }/0`
     }
   }),
   props: ({
@@ -172,12 +158,13 @@ const SectionWithData = composer("connect", {
     name: "section_likes_count",
     options: props => ({
       variables: {
-        url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${props.match
-          .params.category}/`
+        url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${
+          props.match.params.category
+        }/`
       }
     }),
     props: ({ section_likes_count: { result } }) => ({
-      likes: result && result.message
+      likes: result
     })
   })(
     composer("push", {
@@ -205,13 +192,15 @@ const SectionWithData = composer("connect", {
           refetchQueries: [
             {
               name: "section_likes_count",
-              url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${props
-                .match.params.category}/`
+              url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${
+                props.match.params.category
+              }/`
             },
             {
               name: "section_news",
-              url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${props
-                .match.params.category}/0`
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${
+                props.match.params.category
+              }/0`
             }
           ]
         }),

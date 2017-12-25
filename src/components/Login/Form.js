@@ -68,19 +68,14 @@ class Form extends React.PureComponent {
       this.props
         .login(this.form)
         .then(result => {
-          console.log("Hey, i am successful in login ", result);
           let { history: { push } } = this.props;
-          window.localStorage.setItem("jwt", report);
+          window.localStorage.setItem("jwt", result);
           window.localStorage.setItem("jwt_date_gotten", Date.now());
           push("/");
         })
         .catch(err => {
-          console.log("Hey i failed in Login, my error is ", err);
-          this.setToolTipVisibility(
-            "Oops, a network error occurred",
-            "username",
-            "tooltip-position-top"
-          );
+          let error = err.message || err;
+          this.setToolTipVisibility(error, "username", "tooltip-position-top");
         });
     } else {
       this.setToolTipVisibility(

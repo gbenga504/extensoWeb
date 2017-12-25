@@ -76,7 +76,11 @@ const composer = (method, { props, name, options, skip }) => {
                 ? nextProps.queryDatas[name]
                 : nextProps.routeDatas[pathname];
 
-          if (nextPropsComparismData) {
+          if (
+            nextPropsComparismData &&
+            (method.toUpperCase() === "CONNECT" ||
+              method.toUpperCase() === "GET")
+          ) {
             if (
               !_.isEqual(nextPropsComparismData, this.state[`${name}`].result)
             ) {
@@ -223,7 +227,7 @@ const composer = (method, { props, name, options, skip }) => {
                   loading: false
                 }
               });
-              return error;
+              return Promise.reject(error);
             });
         };
 
