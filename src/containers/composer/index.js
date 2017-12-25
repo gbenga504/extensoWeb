@@ -1,6 +1,6 @@
 /**
- * @function is a [HOC] that takes the wrapped component along with its 
- * config options to decorate a new component containing the new props 
+ * @function is a [HOC] that takes the wrapped component along with its
+ * config options to decorate a new component containing the new props
  */
 import React from "react";
 import { connect } from "react-redux";
@@ -29,8 +29,7 @@ const composer = (method, { props, name, options, skip }) => {
               ? { isInitialDataSet: false, loading: true }
               : {};
           this.state = {
-            [`${name}`]: { ...initialDataSettings },
-            pageId: Date.now()
+            [`${name}`]: { ...initialDataSettings }
           };
         }
 
@@ -189,7 +188,11 @@ const composer = (method, { props, name, options, skip }) => {
               .then(data => {
                 this.props.route.setQueryDatas(variables.name, data);
               })
-              .catch(error => console.warn(error));
+              .catch(error => {
+                //could be killed in the future, since queries could be fetched any part of the API and an error thrown
+                //here is insignificant
+                console.warn(error);
+              });
           });
         };
 
@@ -377,17 +380,12 @@ const composer = (method, { props, name, options, skip }) => {
         };
 
         render() {
-          // let Party = props => (
-          //   <WrappedComponent id={this.state.id} {...props} />
-          // );
-
-          let Party = WrappedComponent;
           return [
             <DefiniteProgressBar
               progress={this.props.progressState.progress}
               key={0}
             />,
-            <Party key={1} {...this.sanitizePassedProps()} />
+            <WrappedComponent key={1} {...this.sanitizePassedProps()} />
           ];
         }
       }

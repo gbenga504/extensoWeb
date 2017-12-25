@@ -40,19 +40,19 @@ class Home extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        if (result.success === true) {
-          this.props.route.setReportNotification({
-            id: Date.now(),
-            message: "Post was deleted successfully"
-          });
-        }
+        console.log("Action from deleting a post ", result);
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
       })
-      .catch(error =>
+      .catch(error => {
+        console.log("Error from deleting a post ", error);
         this.props.route.setReportNotification({
           id: Date.now(),
           message: "Error in deleting the post"
-        })
-      );
+        });
+      });
   };
 
   fetchMore = pageNumber => {
@@ -97,15 +97,12 @@ class Home extends React.PureComponent {
         />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
-          error={
-            !isInitialDataSet &&
-            (error === undefined || error.success === false)
-          }
+          error={!isInitialDataSet && error}
           renderItem={
             <ContentPadder className="flex-column">
               <Counter items={(likes && likes[0]) || {}} />
               <List
-                dataArray={items && items.message}
+                dataArray={items}
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
@@ -161,7 +158,7 @@ const HomeWithData = composer("get", {
       }
     }),
     props: ({ likes_count: { result } }) => ({
-      likes: result && result.message
+      likes: result
     })
   })(
     composer("push", {
