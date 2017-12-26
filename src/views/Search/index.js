@@ -114,7 +114,11 @@ class Search extends React.PureComponent {
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
-                onViewContent={id => routeTo("/content/", id)}
+                onViewContent={id => {
+                  isSearchDraftBased
+                    ? routeTo("/post/", id)
+                    : routeTo("/content/", id);
+                }}
                 onDelete={id =>
                   this.setState({
                     isDeleteWarningVisible: true,
