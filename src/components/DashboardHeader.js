@@ -27,6 +27,7 @@ const Section = styled.div`
 `;
 const SearchBox = Input.extend`
   height: 100%;
+  font-size: 20px;
 `;
 
 class DashboardHeader extends React.PureComponent {
@@ -57,8 +58,7 @@ class DashboardHeader extends React.PureComponent {
   }
 
   search = ev => {
-    this.setState({ value: ev.target.value });
-    if (ev.keyCode === 13) {
+    if (ev.which === 13 || ev.keyCode === 13) {
       let { onSearch } = this.props;
       onSearch && onSearch(ev.target.value);
     }
@@ -82,7 +82,8 @@ class DashboardHeader extends React.PureComponent {
               className="d-flex align-self-center"
               type="search"
               value={this.state.value}
-              onKeyUp={this.search}
+              onChange={ev => this.setState({ value: ev.target.value })}
+              onKeyPress={this.search}
               placeholder="Search for a post from the categories"
             />
           </div>

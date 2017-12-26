@@ -105,7 +105,7 @@ class Content extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader hideSearch iconArray={this.generateHeaderIcon()} />
         <PageContentViewer
           loading={loading}
           error={!!error}

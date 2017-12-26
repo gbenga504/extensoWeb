@@ -63,6 +63,12 @@ class Drafts extends React.PureComponent {
     });
   };
 
+  search = queryParams => {
+    let { search } = this.props;
+    this.props.route.setIsContentDraftState(true);
+    search(queryParams);
+  };
+
   render() {
     let {
         contents: { loading, isInitialDataSet, error, items },
@@ -74,7 +80,10 @@ class Drafts extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader
+          iconArray={this.generateHeaderIcon()}
+          onSearch={this.search}
+        />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
           error={!isInitialDataSet && error !== undefined}
@@ -132,13 +141,23 @@ const DraftWithData = composer("get", {
   composer("push", {
     name: "content_edit_or_view",
     props: ({ push }) => ({
-      routeTo: (link, id) =>
-        push({
+      routeTo: (link, id) => {
+        return push({
           goto: `${link}${id}`,
           variables: {
             url: `https://agro-extenso.herokuapp.com/api/v1/admin/draft/${id}`
           }
-        })
+        });
+      },
+      search: queryParams => {
+        let uriQueryParams = encodeURI(queryParams);
+        return push({
+          goto: `/search/${uriQueryParams}`,
+          variables: {
+            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/true/0?q=${queryParams}`
+          }
+        });
+      }
     })
   })(
     composer("Post", {

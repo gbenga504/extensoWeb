@@ -76,6 +76,12 @@ class Section extends React.PureComponent {
     });
   };
 
+  search = queryParams => {
+    let { search } = this.props;
+    this.props.route.setIsContentDraftState(false);
+    search(queryParams);
+  };
+
   fetchPage = category => {
     this.setState(prevState => {
       let { refetchContent } = this.props;
@@ -97,7 +103,10 @@ class Section extends React.PureComponent {
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         {deletionStatus.loading && <IndefiniteProgressBar />}
-        <DashboardHeader iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader
+          iconArray={this.generateHeaderIcon()}
+          onSearch={this.search}
+        />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
           error={!isInitialDataSet && error !== undefined}
@@ -179,20 +188,31 @@ const SectionWithData = composer("connect", {
     composer("push", {
       name: "content_edit_or_view",
       props: ({ push }) => ({
-        routeToContent: (link, id) =>
-          push({
+        routeToContent: (link, id) => {
+          return push({
             goto: `${link}${id}`,
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/post/${id}`
             }
-          }),
-        refetchContent: category =>
-          push({
+          });
+        },
+        refetchContent: category => {
+          return push({
             goto: `/sections/${category}`,
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${category}/0`
             }
-          })
+          });
+        },
+        search: queryParams => {
+          let uriQueryParams = encodeURI(queryParams);
+          return push({
+            goto: `/search/${uriQueryParams}`,
+            variables: {
+              url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/false/0?q=${queryParams}`
+            }
+          });
+        }
       })
     })(
       composer("Post", {

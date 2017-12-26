@@ -25,10 +25,6 @@ class Home extends React.PureComponent {
     }
   ];
 
-  componentWillReceiveProps(nextProps) {
-    console.log("Hey new props", nextProps);
-  }
-
   logout = () => {
     localStorage.removeItem("jwt");
     let { history: { push } } = this.props;
@@ -149,7 +145,7 @@ const HomeWithData = composer("get", {
     name: "likes_count",
     options: props => ({
       variables: {
-        url: "https://agro-extenso.herokuapp.com/api/v1/post-count"
+        url: "http://agro-extenso.herokuapp.com/api/v1/post-count/"
       }
     }),
     props: ({ likes_count: { result } }) => ({
@@ -168,8 +164,9 @@ const HomeWithData = composer("get", {
           }),
         search: queryParams => {
           let uriQueryParams = encodeURI(queryParams);
+
           return push({
-            goto: `/search/?q=${uriQueryParams}`,
+            goto: `/search/${uriQueryParams}`,
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/false/0?q=${queryParams}`
             }

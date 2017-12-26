@@ -43,12 +43,10 @@ class Search extends React.PureComponent {
     this.props
       .deletePost(id)
       .then(result => {
-        if (result.success === true) {
-          this.props.route.setReportNotification({
-            id: Date.now(),
-            message: "Post was deleted successfully"
-          });
-        }
+        this.props.route.setReportNotification({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
       })
       .catch(error =>
         this.props.route.setReportNotification({
@@ -65,13 +63,10 @@ class Search extends React.PureComponent {
         url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/${pageNumber}`
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (fetchMoreResult.message.length === 0) {
+        if (fetchMoreResult.length === 0) {
           this.setState({ hasNextPage: false });
         }
-        return {
-          ...fetchMoreResult,
-          message: [...previousResult.message, ...fetchMoreResult.message]
-        };
+        return [...previousResult, ...fetchMoreResult];
       }
     });
   };
@@ -82,11 +77,8 @@ class Search extends React.PureComponent {
   };
 
   generateSearchValue = () => {
-    let pattern = /=[\d\D]{1,}/,
-      queryParams = pattern
-        .exec(this.props.match.params.queryParams)[0]
-        .slice(1),
-      decodedURI = window.decodedURI(queryParams);
+    let queryParams = this.props.match.params.queryParams,
+      decodedURI = window.decodeURI(queryParams);
     return decodedURI;
   };
 
@@ -111,19 +103,14 @@ class Search extends React.PureComponent {
         />
         <PageContentViewer
           loading={!isInitialDataSet && loading}
-          error={
-            !isInitialDataSet &&
-            (error === undefined || error.success === false)
-          }
+          error={!isInitialDataSet && error !== undefined}
           renderItem={
             <ContentPadder className="flex-column">
               <ResultNumberInformer>
-                {`Showing ${items &&
-                  items.message &&
-                  items.message.length} results for "${category}"`}
+                {`Showing ${items && items.length} results for "${category}"`}
               </ResultNumberInformer>
               <List
-                dataArray={items && items.message}
+                dataArray={items}
                 onLoadMore={this.fetchMore}
                 loading={loading}
                 onEdit={id => routeTo("/post/", id)}
@@ -161,9 +148,8 @@ function mapStateToProps(state) {
 const SearchWithData = composer("connect", {
   name: "search_content",
   options: props => {
-    let pattern = /=[\d\D]{1,}/,
-      queryParams = pattern.exec(props.match.params.queryParams)[0].slice(1),
-      decodedURI = window.decodedURI(queryParams);
+    let queryParams = props.match.params.queryParams,
+      decodedURI = window.decodeURI(queryParams);
     return {
       variables: {
         url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
@@ -201,7 +187,7 @@ const SearchWithData = composer("connect", {
       refetchContent: (queryParams, isSearchDraftBased) => {
         let uriQueryParams = encodeURI(queryParams);
         return push({
-          goto: `/search/?q=${uriQueryParams}`,
+          goto: `/search/${uriQueryParams}`,
           variables: {
             url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/0?q=${queryParams}`
           }
@@ -212,11 +198,8 @@ const SearchWithData = composer("connect", {
     composer("Post", {
       name: "delete_post",
       options: props => {
-        let pattern = /=[\d\D]{1,}/,
-          queryParams = pattern
-            .exec(props.match.params.queryParams)[0]
-            .slice(1),
-          decodedURI = window.decodedURI(queryParams);
+        let queryParams = props.match.params.queryParams,
+          decodedURI = window.decodeURI(queryParams);
         return {
           refetchQueries: [
             {
