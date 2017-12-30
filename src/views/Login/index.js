@@ -6,6 +6,7 @@ import LayoutContainer from "../../containers/LayoutContainer";
 import Form from "../../components/Login/Form";
 import Colors from "../../assets/Colors";
 import { RainbowLoader } from "../../components/Loaders";
+import { GeneralBasedUtils } from "../../utils";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.login.backgroundColor};
@@ -23,6 +24,14 @@ export default class Login extends React.PureComponent {
     height: window.innerHeight,
     isLoading: false
   };
+
+  componentDidMount() {
+    console.log(
+      GeneralBasedUtils.formatPostWithHashTags(
+        "i love # #my life as #tatoo and #boli ans he was like #areyoumad #taken"
+      )
+    );
+  }
 
   render() {
     return (
