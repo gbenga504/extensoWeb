@@ -52,9 +52,6 @@ export default class Form extends React.PureComponent {
   saveDraft = () => {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      for (var i = 0; i < 10000; i++) {
-        console.log(i);
-      }
       let { titleHTML, bodyHTML, category } = this.state;
       if (
         titleHTML.trim().length > 0 &&
