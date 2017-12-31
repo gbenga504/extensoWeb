@@ -24,15 +24,7 @@ export default class Login extends React.PureComponent {
     height: window.innerHeight,
     isLoading: false
   };
-
-  componentDidMount() {
-    console.log(
-      GeneralBasedUtils.formatPostWithHashTags(
-        "i love # #my life as #tatoo and #boli ans he was like #areyoumad #taken"
-      )
-    );
-  }
-
+  
   render() {
     return (
       <Container color={Colors.login.themeColor}>

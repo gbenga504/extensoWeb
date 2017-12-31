@@ -27,7 +27,7 @@ const Section = styled.div`
 `;
 const SearchBox = Input.extend`
   height: 100%;
-  font-size: 20px;
+  font-size: 16px;
 `;
 
 class DashboardHeader extends React.PureComponent {

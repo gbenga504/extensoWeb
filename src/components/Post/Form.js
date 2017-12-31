@@ -9,7 +9,9 @@ import SelectCategory from "../SelectCategory";
 import Title from "./Title";
 import Body from "./Body";
 
-const Category = styled(SelectCategory)`margin-left: 50px;`;
+const Category = styled(SelectCategory)`
+  margin-left: 50px;
+`;
 
 export default class Form extends React.PureComponent {
   constructor(props) {
@@ -50,6 +52,9 @@ export default class Form extends React.PureComponent {
   saveDraft = () => {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
+      for (var i = 0; i < 10000; i++) {
+        console.log(i);
+      }
       let { titleHTML, bodyHTML, category } = this.state;
       if (
         titleHTML.trim().length > 0 &&
