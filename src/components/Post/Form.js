@@ -16,56 +16,43 @@ const Category = styled(SelectCategory)`
 export default class Form extends React.PureComponent {
   constructor(props) {
     super(props);
-    let { data } = props;
-    this.state = {
-      uuid: (data && data.id) || uuid(),
-      token: localStorage.getItem("jwt"),
-      bodyHTML: (data && data.content) || "",
-      titleHTML: (data && data.title) || "",
-      category: (data && data.category) || "",
-      tags: (data && data.tags) || ""
-    };
     this.timer = undefined;
   }
 
   static propTypes = {
     draftStatusText: PropTypes.string.isRequired,
-    draft: PropTypes.bool.isRequired,
     onSaveDraft: PropTypes.func.isRequired,
     initFormRef: PropTypes.func.isRequired,
+    onChangeField: PropTypes.func.isRequired,
     data: PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      content: PropTypes.string,
+      uuid: PropTypes.string,
+      token: PropTypes.string,
+      bodyHTML: PropTypes.string,
+      titleHTML: PropTypes.string,
       category: PropTypes.string,
       tags: PropTypes.string,
-      draft: PropTypes.bool,
-      created_at: PropTypes.string,
-      likes_count: PropTypes.string
+      draft: PropTypes.bool
     })
   };
 
   componentDidMount() {
-    this.props.initFormRef(this.form, this.state.uuid);
+    this.props.initFormRef(this.form);
   }
 
   saveDraft = () => {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      let { titleHTML, bodyHTML, category } = this.state;
-      if (
-        titleHTML.trim().length > 0 &&
-        bodyHTML.trim().length > 0 &&
-        category.trim().length > 0
-      ) {
-        this.props.onSaveDraft(true);
-      }
+      this.props.onSaveDraft(true);
     }, 5000);
   };
 
   render() {
-    let { draftStatusText, draft } = this.props,
-      { bodyHTML, titleHTML, category, tags, uuid, token } = this.state;
+    let {
+      draftStatusText,
+      onChangeField,
+      data: { draft, bodyHTML, titleHTML, category, tags, uuid, token }
+    } = this.props;
+
     return (
       <form
         ref={ref => (this.form = ref)}
@@ -76,7 +63,7 @@ export default class Form extends React.PureComponent {
         <div className="d-flex justify-content-between">
           <Category
             title={category}
-            onCategorySelected={category => this.setState({ category })}
+            onCategorySelected={category => onChangeField("category", category)}
           />
           <RegularText
             className="align-self-center"
@@ -88,11 +75,11 @@ export default class Form extends React.PureComponent {
         <Title
           disabled={!(category.trim().length > 0)}
           value={titleHTML}
-          onChange={ev => this.setState({ titleHTML: ev.target.value })}
+          onChange={ev => onChangeField("titleHTML", ev.target.value)}
         />
         <Body
           value={bodyHTML}
-          onChange={text => this.setState({ bodyHTML: text })}
+          onChange={text => onChangeField("bodyHTML", text)}
         />
 
         <input type="hidden" value={token} name="token" />

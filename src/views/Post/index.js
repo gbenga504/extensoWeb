@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import uuid from "uuid";
 
 import PageContentViewer from "../../containers/PageContentViewer";
 import { composer } from "../../containers/composer";
@@ -14,7 +15,15 @@ class Post extends React.PureComponent {
     let { content: { item } } = this.props;
     this.state = {
       draftStatusText: "",
-      draft: (item && item.draft) || true
+      data: {
+        uuid: (item && item.id) || uuid(),
+        token: localStorage.getItem("jwt"),
+        bodyHTML: (item && item.content) || "",
+        titleHTML: (item && item.title) || "",
+        category: (item && item.category) || "",
+        tags: (item && item.tags) || "",
+        draft: (item && item.draft) || true
+      }
     };
   }
 
@@ -33,35 +42,83 @@ class Post extends React.PureComponent {
     })
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.content.item.length > 0) {
+      let { content: { item } } = nextProps;
+      this.setState({
+        data: {
+          ...this.state.data,
+          bodyHTML: item.content,
+          titleHTML: item.title,
+          category: item.category,
+          tags: item.tags,
+          draft: item.draft,
+          uuid: item.id
+        }
+      });
+    }
+  }
+
+  setDataState = (key, value) => {
+    this.setState({
+      data: {
+        ...this.state.data,
+        [`${key}`]: value
+      }
+    });
+  };
+
   generateHeaderIcon = () => [
     {
       name: "ion-paper-airplane",
       lastIcon: true,
       segmentName: "post",
-      onClick: () => this.savePost(false, true)
+      onClick: () => this.verifyPostCorrectness(false, true)
     }
   ];
 
+  verifyPostCorrectness = (isDraft, shouldMakePost) => {
+    let { data: { titleHTML, bodyHTML, category } } = this.state;
+    if (
+      titleHTML.trim().length > 0 &&
+      bodyHTML.trim().length > 0 &&
+      category.trim().length > 0
+    ) {
+      this.savePost(isDraft, shouldMakePost);
+    }
+  };
+
   savePost = (isDraft, shouldMakePost) => {
-    this.setState({ draftStatusText: "Saving...", draft: isDraft }, () => {
-      setTimeout(() => {
-        this.props
-          .post(this.form)
-          .then(result => {
-            this.setState({ draftStatusText: "Saved" });
-            if (shouldMakePost) {
-              this.props.routeToContent(result.id);
-            }
-          })
-          .catch(err => this.setState({ draftStatusText: "Failed To Saved" }));
-      }, 1000);
-    });
+    this.setState(
+      {
+        data: {
+          ...this.state.data,
+          draft: isDraft
+        },
+        draftStatusText: "Saving..."
+      },
+      () => {
+        setTimeout(() => {
+          this.props
+            .post(this.form)
+            .then(result => {
+              this.setState({ draftStatusText: "Saved" });
+              if (shouldMakePost) {
+                this.props.routeToContent(result.id);
+              }
+            })
+            .catch(err =>
+              this.setState({ draftStatusText: "Failed To Saved" })
+            );
+        }, 1000);
+      }
+    );
   };
 
   render() {
-    let { draftStatusText, draft } = this.state,
+    let { draftStatusText, data: { draft } } = this.state,
       {
-        content: { loading, error, item },
+        content: { loading, error },
         match: { params: { postId } }
       } = this.props;
     return (
@@ -78,12 +135,11 @@ class Post extends React.PureComponent {
             <ContentPadder className="flex-column">
               <Form
                 draftStatusText={draftStatusText}
-                draft={draft}
-                data={item}
-                onSaveDraft={this.savePost}
-                initFormRef={(formRef, uuid) => {
+                data={this.state.data}
+                onSaveDraft={this.verifyPostCorrectness}
+                onChangeField={this.setDataState}
+                initFormRef={formRef => {
                   this.form = formRef;
-                  this.postId = uuid;
                 }}
               />
             </ContentPadder>
