@@ -43,7 +43,7 @@ class Post extends React.PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.content.item.length > 0) {
+    if (Object.keys(nextProps.content.item).length > 0) {
       let { content: { item } } = nextProps;
       this.setState({
         data: {
