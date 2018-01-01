@@ -8,6 +8,7 @@ import DashboardHeader from "../../components/DashboardHeader";
 import Form from "../../components/Post/Form";
 import ContentPadder from "../../containers/ContentPadder";
 import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
+import { GeneralBasedUtils } from "../../utils";
 
 class Post extends React.PureComponent {
   constructor(props) {
@@ -89,11 +90,15 @@ class Post extends React.PureComponent {
   };
 
   savePost = (isDraft, shouldMakePost) => {
+    let { data: { bodyHTML } } = this.state;
+    let { tags, body } = GeneralBasedUtils.formatPostWithHashTags(bodyHTML);
     this.setState(
       {
         data: {
           ...this.state.data,
-          draft: isDraft
+          draft: isDraft,
+          bodyHTML: body,
+          tags
         },
         draftStatusText: "Saving..."
       },

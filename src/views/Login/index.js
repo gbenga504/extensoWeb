@@ -6,7 +6,6 @@ import LayoutContainer from "../../containers/LayoutContainer";
 import Form from "../../components/Login/Form";
 import Colors from "../../assets/Colors";
 import { RainbowLoader } from "../../components/Loaders";
-import { GeneralBasedUtils } from "../../utils";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.login.backgroundColor};

@@ -10,7 +10,7 @@ export const GeneralBasedUtils = {
   },
 
   getHasTags: postMessage => {
-    let pattern = /#[a-zA-Z0-9]{1,}/gi,
+    let pattern = /[^">]#[a-zA-Z0-9]{1,}/gi,
       matches = [],
       resultFromMatch = [];
     while ((resultFromMatch = pattern.exec(postMessage))) {
@@ -32,7 +32,9 @@ export const GeneralBasedUtils = {
 
       beginning = postMessage.substring(0, matches[i].index);
       ending = postMessage.substring(matches[i].index + matches[i][0].length);
-      word = `<a href="#" hashTag="${matches[i][0]}">${matches[i][0]}</a>`;
+      word = `<a href="#" hashTag="${matches[i][0].trim()}">${
+        matches[i][0]
+      }</a>`;
 
       postMessage = `${beginning}${word}${ending}`;
     }
