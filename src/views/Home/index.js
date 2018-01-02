@@ -145,7 +145,7 @@ const HomeWithData = composer("get", {
     name: "likes_count",
     options: props => ({
       variables: {
-        url: "http://agro-extenso.herokuapp.com/api/v1/post-count/"
+        url: "https://agro-extenso.herokuapp.com/api/v1/post-count/"
       }
     }),
     props: ({ likes_count: { result } }) => ({
