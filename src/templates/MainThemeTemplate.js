@@ -15,6 +15,7 @@ import Content from "../views/Content";
 import Drafts from "../views/Drafts";
 import Section from "../views/Section";
 import Search from "../views/Search";
+import NotFound from "../views/NotFound";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.defaultThemeColor};
@@ -82,12 +83,14 @@ class MainThemeTemplate extends React.PureComponent {
                 path="/search"
               />
               <Route
+                exact
                 render={props => {
                   let newProps = { ...props, route: this.props.route };
                   return <Home {...newProps} />;
                 }}
                 path="/"
               />
+              <Route component={NotFound} />
             </Switch>
           )}
         </div>
