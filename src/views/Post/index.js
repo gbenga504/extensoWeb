@@ -86,6 +86,12 @@ class Post extends React.PureComponent {
       category.trim().length > 0
     ) {
       this.savePost(isDraft, shouldMakePost);
+    } else {
+      this.props.route.setReportNotification({
+        id: Date.now(),
+        message:
+          "Error tried while making post, check your network settings. Check that category and title are entered"
+      });
     }
   };
 

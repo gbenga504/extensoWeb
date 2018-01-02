@@ -29,13 +29,12 @@ export default (method, config, progressCallback = null) => {
 
     httpRequest.onprogress = function(oEvent) {
       if (oEvent.lengthComputable) {
-        
         let computed = oEvent.loaded / oEvent.total;
         progressCallback && progressCallback(computed);
       }
     };
 
-    httpRequest.onerror = function() {
+    httpRequest.onerror = function(err) {
       reject({
         code: 0,
         message: "An unknown error mostly network based occurred "
