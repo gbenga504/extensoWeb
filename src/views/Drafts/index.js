@@ -151,8 +151,9 @@ const DraftWithData = composer("get", {
       },
       search: queryParams => {
         let uriQueryParams = encodeURI(queryParams);
+        
         return push({
-          goto: `/search/${uriQueryParams}`,
+          goto: `/search/?q=${uriQueryParams}`,
           variables: {
             url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/true/0?q=${queryParams}`
           }
