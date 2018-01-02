@@ -14,7 +14,9 @@ const Button = styled.div`
   padding: 0px 10px;
   background: ${Colors.section.selectCategoryButton};
 `;
-const Title = styled(LightText)`color: ${Colors.section.selectCategoryText};`;
+const Title = styled(LightText)`
+  color: ${Colors.section.selectCategoryText};
+`;
 const DropDown = styled.div`
   background: ${Colors.section.selectCategoryDropdown};
   width: inherit;
@@ -32,7 +34,12 @@ export default class SelectCategory extends React.PureComponent {
   state = { isDropdownVisible: false };
 
   static defaults = {
-    categories: [{ name: "Innovation" }, { name: "Jobs" }, { name: "Home" }]
+    categories: [
+      { name: "Education" },
+      { name: "Informations" },
+      { name: "Opportunities" },
+      { name: "Current Prices" }
+    ]
   };
 
   static propTypes = {
