@@ -41,8 +41,10 @@ class UserContentInformation extends React.PureComponent {
     ]
   };
 
-  permutateReadingTime = () =>
-    Math.floor(parseInt(this.props.content.length) / 150);
+  permutateReadingTime = () => {
+    let readTime = Math.floor(parseInt(this.props.content.length) / 150);
+    return readTime === 0 ? 1 : readTime;
+  };
 
   render() {
     return (
@@ -61,9 +63,7 @@ class UserContentInformation extends React.PureComponent {
           </RegularText>
           {!this.props.hideDetails && (
             <LightText style={Fonts.timePosted.sm}>
-              {`On ${moment(this.props.createdAt).format(
-                "MMMM DD, YYYY"
-              )}`}{" "}
+              {`On ${moment(this.props.createdAt).format("MMMM DD, YYYY")}`}{" "}
               <sup>.</sup> {this.permutateReadingTime()} mins Read
             </LightText>
           )}

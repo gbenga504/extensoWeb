@@ -55,11 +55,9 @@ const composer = (method, { props, name, options, skip }) => {
                 this.refetchQuery(undefined);
                 break;
               default:
-                let { location: { pathname } } = this.props;
-                if (
-                  this.props.queryDatas[name] ||
-                  this.props.routeDatas[pathname]
-                ) {
+                let { location: { pathname, hash, search } } = this.props,
+                  url = `${pathname}${search}${hash}`;
+                if (this.props.queryDatas[name] || this.props.routeDatas[url]) {
                   this.setInitialStateAfterMount();
                 } else {
                   this.refetchQuery(undefined);
@@ -70,11 +68,12 @@ const composer = (method, { props, name, options, skip }) => {
         }
 
         componentWillReceiveProps(nextProps) {
-          let { location: { pathname } } = this.props,
+          let { location: { pathname, hash, search } } = this.props,
+            url = `${pathname}${search}${hash}`,
             nextPropsComparismData =
               method.toUpperCase() === "GET"
                 ? nextProps.queryDatas[name]
-                : nextProps.routeDatas[pathname];
+                : nextProps.routeDatas[url];
 
           if (
             nextPropsComparismData &&
@@ -97,7 +96,8 @@ const composer = (method, { props, name, options, skip }) => {
         }
 
         setInitialStateAfterMount = () => {
-          let { location: { pathname } } = this.props;
+          let { location: { pathname, hash, search } } = this.props,
+            url = `${pathname}${search}${hash}`;
           this.setState({
             [`${name}`]: {
               ...this.state[`${name}`],
@@ -106,7 +106,7 @@ const composer = (method, { props, name, options, skip }) => {
               result:
                 method.toUpperCase() === "GET"
                   ? this.props.queryDatas[name]
-                  : this.props.routeDatas[pathname]
+                  : this.props.routeDatas[url]
             }
           });
         };
@@ -127,8 +127,9 @@ const composer = (method, { props, name, options, skip }) => {
             this.props.route.setQueryDatas(name, data);
           } else if (method.toUpperCase() === "CONNECT") {
             initialDataSettings = { isInitialDataSet: true };
-            let { location: { pathname } } = this.props;
-            this.props.route.setRouteDatas(pathname, data);
+            let { location: { pathname, search, hash } } = this.props,
+              url = `${pathname}${search}${hash}`;
+            this.props.route.setRouteDatas(url, data);
           }
           this.setState(
             {
@@ -249,12 +250,12 @@ const composer = (method, { props, name, options, skip }) => {
                         fetchMoreResult: data
                       }
                     ),
-                    { location: { pathname } } = this.props,
+                    { location: { pathname, search, hash } } = this.props,
+                    url = `${pathname}${search}${hash}`,
                     operationToRun =
                       method.toUpperCase() === "GET"
                         ? () => this.props.route.setQueryDatas(name, newResult)
-                        : () =>
-                            this.props.route.setRouteDatas(pathname, newResult);
+                        : () => this.props.route.setRouteDatas(url, newResult);
 
                   this.setSuccessDataState(newResult, operationToRun);
                 })

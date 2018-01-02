@@ -68,6 +68,19 @@ class Content extends React.PureComponent {
     })
   };
 
+  handleTagSearch = ev => {
+    let { target } = ev,
+      { history: { push }, content: { item: { draft } } } = this.props;
+    if (
+      target.nodeName.toUpperCase() === "A" &&
+      target.hasAttribute("hashTag")
+    ) {
+      ev.preventDefault();
+      this.props.route.setIsContentDraftState(draft);
+      push(`/search/?q=${target.getAttribute("hashTag")}`);
+    }
+  };
+
   deletePost = () => {
     this.setState({ isDeleteWarningVisible: false });
     this.props
@@ -111,7 +124,11 @@ class Content extends React.PureComponent {
           error={!!error}
           renderItem={
             <ContentPadder>
-              <div className="d-flex" style={{ width: "100%" }}>
+              <div
+                className="d-flex"
+                style={{ width: "100%" }}
+                onClick={this.handleTagSearch}
+              >
                 <Container
                   className="d-flex flex-column"
                   style={{ width: "100%" }}

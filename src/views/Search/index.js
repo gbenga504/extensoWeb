@@ -10,6 +10,7 @@ import { RegularText } from "../../components/AppText";
 import ContentPadder from "../../containers/ContentPadder";
 import PageContentViewer from "../../containers/PageContentViewer";
 import IndefiniteProgressBar from "../../components/IndefiniteProgressBar";
+import { GeneralBasedUtils } from "../../utils";
 
 const ResultNumberInformer = styled(RegularText)`
   margin-top: 50px;
@@ -31,6 +32,11 @@ class Search extends React.PureComponent {
       onClick: this.logout
     }
   ];
+
+  componentWillReceiveProps(nextProps) {
+    console.log(this.props.location.pathname);
+    console.log("Hey man ", nextProps);
+  }
 
   logout = () => {
     localStorage.removeItem("jwt");
@@ -57,10 +63,20 @@ class Search extends React.PureComponent {
   };
 
   fetchMore = pageNumber => {
-    let { contents: { fetchMore }, isSearchDraftBased } = this.props;
+    let {
+        contents: { fetchMore },
+        isSearchDraftBased,
+        location: { search }
+      } = this.props,
+      decodedURI = window.decodeURI(search.substring(3)),
+      url =
+        decodedURI.indexOf("#") === -1
+          ? `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/${pageNumber}?q=${decodedURI}`
+          : `https://agro-extenso.herokuapp.com/api/v1/admin/tag/${decodedURI}/${isSearchDraftBased}/${pageNumber}`;
+
     fetchMore({
       variables: {
-        url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/${pageNumber}`
+        url
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (fetchMoreResult.length === 0) {
@@ -71,14 +87,12 @@ class Search extends React.PureComponent {
     });
   };
 
-  fetchPage = () => {
-    let { refetchContent, isSearchDraftBased } = this.props;
-    refetchContent(isSearchDraftBased);
-  };
-
   generateSearchValue = () => {
-    let queryParams = this.props.match.params.queryParams,
-      decodedURI = window.decodeURI(queryParams);
+    let { location: { search, hash } } = this.props,
+      decodedURI =
+        hash.length > 0
+          ? window.decodeURI(hash)
+          : window.decodeURI(search.substring(3));
     return decodedURI;
   };
 
@@ -152,13 +166,27 @@ function mapStateToProps(state) {
 const SearchWithData = composer("connect", {
   name: "search_content",
   options: props => {
-    let queryParams = props.match.params.queryParams,
-      decodedURI = window.decodeURI(queryParams);
+    let decodedURI = undefined,
+      { location: { hash, search } } = props;
+    if (hash.length > 0) {
+      let queryParams = window.decodeURI(hash);
+      decodedURI = GeneralBasedUtils.formaHashTagUrlForSearch(queryParams)
+        .urlParams;
+    } else {
+      let queryParams = search;
+      decodedURI = window.decodeURI(queryParams.substring(3));
+    }
+    let url =
+      decodedURI.indexOf("#") === -1
+        ? `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
+            props.isSearchDraftBased
+          }/0?q=${decodedURI}`
+        : `https://agro-extenso.herokuapp.com/api/v1/admin/tag/${decodedURI}/${
+            props.isSearchDraftBased
+          }/0`;
     return {
       variables: {
-        url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
-          props.isSearchDraftBased
-        }/0?q=${decodedURI}`
+        url
       }
     };
   },
@@ -189,11 +217,21 @@ const SearchWithData = composer("connect", {
         });
       },
       refetchContent: (queryParams, isSearchDraftBased) => {
-        let uriQueryParams = encodeURI(queryParams);
+        let uriQueryParams = window.encodeURI(queryParams),
+          params =
+            queryParams.indexOf("#") === -1
+              ? queryParams
+              : GeneralBasedUtils.formaHashTagUrlForSearch(queryParams)
+                  .urlParams,
+          url =
+            queryParams.indexOf("#") === -1
+              ? `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/0?q=${params}`
+              : `https://agro-extenso.herokuapp.com/api/v1/admin/tag/${params}/${isSearchDraftBased}/0`;
+
         return push({
-          goto: `/search/${uriQueryParams}`,
+          goto: `/search/?q=${uriQueryParams}`,
           variables: {
-            url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${isSearchDraftBased}/0?q=${queryParams}`
+            url
           }
         });
       }
@@ -202,15 +240,29 @@ const SearchWithData = composer("connect", {
     composer("Post", {
       name: "delete_post",
       options: props => {
-        let queryParams = props.match.params.queryParams,
-          decodedURI = window.decodeURI(queryParams);
+        let decodedURI = undefined,
+          { location: { hash, search } } = props;
+        if (hash.length > 0) {
+          let queryParams = window.decodeURI(hash);
+          decodedURI = GeneralBasedUtils.formaHashTagUrlForSearch(queryParams)
+            .urlParams;
+        } else {
+          let queryParams = search;
+          decodedURI = window.decodeURI(queryParams.substring(3));
+        }
+        let url =
+          decodedURI.indexOf("#") === -1
+            ? `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
+                props.isSearchDraftBased
+              }/0?q=${decodedURI}`
+            : `https://agro-extenso.herokuapp.com/api/v1/admin/tag/${decodedURI}/${
+                props.isSearchDraftBased
+              }/0`;
         return {
           refetchQueries: [
             {
               name: "search_content",
-              url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/${
-                props.isSearchDraftBased
-              }/0?q=${decodedURI}`
+              url
             }
           ]
         };

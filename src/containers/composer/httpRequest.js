@@ -29,6 +29,7 @@ export default (method, config, progressCallback = null) => {
 
     httpRequest.onprogress = function(oEvent) {
       if (oEvent.lengthComputable) {
+        
         let computed = oEvent.loaded / oEvent.total;
         progressCallback && progressCallback(computed);
       }

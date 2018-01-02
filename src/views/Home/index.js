@@ -166,7 +166,7 @@ const HomeWithData = composer("get", {
           let uriQueryParams = encodeURI(queryParams);
 
           return push({
-            goto: `/search/${uriQueryParams}`,
+            goto: `/search/?q=${uriQueryParams}`,
             variables: {
               url: `https://agro-extenso.herokuapp.com/api/v1/admin/search/false/0?q=${queryParams}`
             }

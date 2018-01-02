@@ -113,28 +113,29 @@ class Section extends React.PureComponent {
           renderItem={
             <ContentPadder className="flex-column">
               <Counter items={likes || {}} />
-              <div className="d-flex" style={{ margin: "10px 320px" }}>
+              <div
+                className="d-flex"
+                style={{ margin: "10px 320px", marginBottom: "50px" }}
+              >
                 <SelectCategory
                   title={this.state.category}
                   onCategorySelected={this.fetchPage}
                 />
               </div>
-              <div className="d-flex" style={{ marginTop: 50 }}>
-                <List
-                  dataArray={items}
-                  onLoadMore={this.fetchMore}
-                  loading={loading}
-                  onEdit={id => routeToContent("/post/", id)}
-                  onViewContent={id => routeToContent("/content/", id)}
-                  onDelete={id =>
-                    this.setState({
-                      isDeleteWarningVisible: true,
-                      warningId: id
-                    })
-                  }
-                  hasNextPage={this.state.hasNextPage}
-                />
-              </div>
+              <List
+                dataArray={items}
+                onLoadMore={this.fetchMore}
+                loading={loading}
+                onEdit={id => routeToContent("/post/", id)}
+                onViewContent={id => routeToContent("/content/", id)}
+                onDelete={id =>
+                  this.setState({
+                    isDeleteWarningVisible: true,
+                    warningId: id
+                  })
+                }
+                hasNextPage={this.state.hasNextPage}
+              />
             </ContentPadder>
           }
         />

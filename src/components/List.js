@@ -92,15 +92,7 @@ export default class List extends React.PureComponent {
             />
           ))
         ) : (
-          <BoldText
-            style={{
-              color: Colors.noNewsColor,
-              fontSize: Fonts.noNewsText,
-              marginTop: 30
-            }}
-          >
-            Write Your First Post !!!
-          </BoldText>
+          <img src="/images/writing.png" width="500px" height="500px" />
         )}
         {loading &&
           dataArray.length > 0 && <CircularSpinner size={30} thickness={5} />}

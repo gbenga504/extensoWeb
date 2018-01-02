@@ -9,9 +9,8 @@ export const GeneralBasedUtils = {
     return newProps;
   },
 
-  getHasTags: postMessage => {
-    let pattern = /[^">]#[a-zA-Z0-9]{1,}/gi,
-      matches = [],
+  getHasTags: (postMessage, pattern) => {
+    let matches = [],
       resultFromMatch = [];
     while ((resultFromMatch = pattern.exec(postMessage))) {
       matches.push(resultFromMatch);
@@ -20,7 +19,10 @@ export const GeneralBasedUtils = {
   },
 
   formatPostWithHashTags: postMessage => {
-    let matches = GeneralBasedUtils.getHasTags(postMessage),
+    let matches = GeneralBasedUtils.getHasTags(
+        postMessage,
+        /[^">]#[a-zA-Z0-9]{1,}/gi
+      ),
       hashTags = "",
       appender = undefined,
       beginning = "",
@@ -28,16 +30,35 @@ export const GeneralBasedUtils = {
       ending = "";
     for (let i = matches.length - 1; i >= 0; i--) {
       appender = i == 0 ? "" : ",";
-      hashTags += `${matches[i][0]}${appender} `;
+      hashTags += `${matches[i][0].replace("#", "").trim()}${appender} `;
 
       beginning = postMessage.substring(0, matches[i].index);
       ending = postMessage.substring(matches[i].index + matches[i][0].length);
-      word = `<a href="#" hashTag="${matches[i][0].trim()}">${
-        matches[i][0]
-      }</a>`;
+      word = ` <a href="#" hashTag="${matches[i][0].trim()}">${matches[
+        i
+      ][0].trim()}</a>`;
 
       postMessage = `${beginning}${word}${ending}`;
     }
     return { body: postMessage, tags: hashTags };
+  },
+
+  formaHashTagUrlForSearch: hash => {
+    let matches = GeneralBasedUtils.getHasTags(hash, /\s[a-zA-Z]+/gi),
+      beginning = "",
+      word = "",
+      ending = "";
+    if (matches.length === 0) {
+      hash = hash.trim().split(" ").length > 1 ? hash.replace(" ", ",") : hash;
+    } else {
+      for (let i = matches.length - 1; i >= 0; i--) {
+        beginning = hash.substring(0, matches[i].index);
+        ending = hash.substring(matches[i].index + matches[i][0].length);
+        word = `, #${matches[i][0].trim()}`;
+        hash = `${beginning}${word}${ending}`;
+      }
+    }
+
+    return { hash, urlParams: hash.replace("#", "") };
   }
 };

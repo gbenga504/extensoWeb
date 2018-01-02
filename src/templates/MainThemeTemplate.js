@@ -79,7 +79,7 @@ class MainThemeTemplate extends React.PureComponent {
                   let newProps = { ...props, route: this.props.route };
                   return <Search {...newProps} />;
                 }}
-                path="/search/:queryParams"
+                path="/search"
               />
               <Route
                 render={props => {
