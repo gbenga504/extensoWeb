@@ -2,14 +2,17 @@ import * as types from "./types";
 
 /**
  * @param {number} progress
- * @function sets the load progress bar state of each page loading state  
+ * @function sets the load progress bar state of each page loading state
  */
 export const setProgressState = progress => ({
   type: types.SET_PAGE_LOAD_PROGRESS,
   progress
 });
 
-export const completeProgressState = progress => dispatch => {
+export const computeProgressState = (
+  startProgress,
+  endProgress
+) => dispatch => {
   let start = window.performance.now(),
     duration = 1000;
   let animation = requestAnimationFrame(function animate(time) {
@@ -17,12 +20,16 @@ export const completeProgressState = progress => dispatch => {
       return;
     }
     let movement = (time - start) / duration;
-    if (movement >= 1) {
-      movement = 1;
+    if (movement >= endProgress / 100) {
+      movement = endProgress / 100;
       dispatch(setProgressState(movement * 100));
       animation = null;
     } else {
-      dispatch(setProgressState(movement < 0.5 ? progress : movement * 100));
+      dispatch(
+        setProgressState(
+          movement < startProgress / 100 ? startProgress : movement * 100
+        )
+      );
       requestAnimationFrame(animate);
     }
   });

@@ -272,18 +272,20 @@ const composer = (method, { props, name, options, skip }) => {
         push = optionsConfig => {
           let params = this.getHttpParams(optionsConfig);
 
+          this.props.route.computeProgressState(0, 25);
+
           XMLHttp("GET", params, this.calculateProgress)
             .then(result => {
               this.props.route.setRouteDatas(optionsConfig.goto, result);
               setTimeout(() => {
                 setTimeout(
-                  () => this.props.route.completeProgressState(50),
+                  () => this.props.route.computeProgressState(50, 100),
                   10
                 );
                 this.props.history.push(optionsConfig.goto);
               }, 10);
             })
-            .catch(err => null);
+            .catch(err => console.log(err));
         };
 
         buildProps = (customProps, defaultAdditionalProps) => {
