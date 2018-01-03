@@ -52,22 +52,10 @@ export const GeneralBasedUtils = {
     };
   },
 
-  formaHashTagUrlForSearch: hash => {
-    let matches = GeneralBasedUtils.getHasTags(hash, /\s[a-zA-Z]+/gi),
-      beginning = "",
-      word = "",
-      ending = "";
-    if (matches.length === 0) {
-      hash = hash.trim().split(" ").length > 1 ? hash.replace(" ", ",") : hash;
-    } else {
-      for (let i = matches.length - 1; i >= 0; i--) {
-        beginning = hash.substring(0, matches[i].index);
-        ending = hash.substring(matches[i].index + matches[i][0].length);
-        word = `, #${matches[i][0].trim()}`;
-        hash = `${beginning}${word}${ending}`;
-      }
-    }
-
-    return { hash, urlParams: hash.replace("#", "") };
-  }
+  formaHashTagUrlForSearch: hash => ({
+    urlParams: hash
+      .replace("#", "")
+      .trim()
+      .toLowerCase()
+  })
 };
