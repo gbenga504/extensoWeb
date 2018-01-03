@@ -18,19 +18,25 @@ export const GeneralBasedUtils = {
     return matches;
   },
 
+  hashTags: [],
+
   formatPostWithHashTags: postMessage => {
     let matches = GeneralBasedUtils.getHasTags(
         postMessage,
         /[^">]#[a-zA-Z0-9]{1,}/gi
       ),
-      hashTags = "",
       appender = undefined,
       beginning = "",
       word = "",
       ending = "";
     for (let i = matches.length - 1; i >= 0; i--) {
       appender = i == 0 ? "" : ",";
-      hashTags += `${matches[i][0].replace("#", "").trim()}${appender} `;
+      GeneralBasedUtils.hashTags.push(
+        matches[i][0]
+          .replace("#", "")
+          .trim()
+          .toLowerCase()
+      );
 
       beginning = postMessage.substring(0, matches[i].index);
       ending = postMessage.substring(matches[i].index + matches[i][0].length);
@@ -40,7 +46,10 @@ export const GeneralBasedUtils = {
 
       postMessage = `${beginning}${word}${ending}`;
     }
-    return { body: postMessage, tags: hashTags };
+    return {
+      body: postMessage,
+      tags: JSON.stringify(GeneralBasedUtils.hashTags)
+    };
   },
 
   formaHashTagUrlForSearch: hash => {

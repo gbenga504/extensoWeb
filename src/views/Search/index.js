@@ -33,11 +33,6 @@ class Search extends React.PureComponent {
     }
   ];
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props.location.pathname);
-    console.log("Hey man ", nextProps);
-  }
-
   logout = () => {
     localStorage.removeItem("jwt");
     let { history: { push } } = this.props;
