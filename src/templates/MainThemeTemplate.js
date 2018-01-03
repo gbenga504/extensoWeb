@@ -8,6 +8,7 @@ import { GeneralBasedUtils } from "../utils";
 import LayoutContainer from "../containers/LayoutContainer";
 import DashboardNavigation from "../components/DashboardNavigation";
 import Colors from "../assets/Colors";
+import AppFab from "../components/AppFab";
 
 import Home from "../views/Home";
 import Post from "../views/Post";
@@ -95,6 +96,12 @@ class MainThemeTemplate extends React.PureComponent {
           )}
         </div>
         <Report id={report.id} message={report.message} />
+        <AppFab
+          onClick={() =>
+            (window.location.href =
+              "mailto:daveanifowoshe@gmail.com?subject=Feedback on Extenso")
+          }
+        />
       </Container>
     );
   }
