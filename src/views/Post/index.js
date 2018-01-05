@@ -13,7 +13,7 @@ import { GeneralBasedUtils } from "../../utils";
 class Post extends React.PureComponent {
   constructor(props) {
     super(props);
-    let { content: { item } } = this.props;
+    let { content: { item } } = props;
     this.state = {
       draftStatusText: "",
       data: {

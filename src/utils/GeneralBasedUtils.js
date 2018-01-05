@@ -57,5 +57,10 @@ export const GeneralBasedUtils = {
       .replace("#", "")
       .trim()
       .toLowerCase()
-  })
+  }),
+
+  permutateReadingTime: content => {
+    let readTime = Math.floor(parseInt(content.length) / 150);
+    return readTime === 0 ? 1 : readTime;
+  }
 };

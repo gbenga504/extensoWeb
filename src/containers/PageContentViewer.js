@@ -46,11 +46,7 @@ export default class PageContentViewer extends React.PureComponent {
               )
             : error
               ? this.renderLoadingOrError(
-                  <img
-                    src="/images/error.png"
-                    width="500px"
-                    height="500px"
-                  />
+                  <img src="/images/error.png" width="500px" height="500px" />
                 )
               : renderItem}
         </div>

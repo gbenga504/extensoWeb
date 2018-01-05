@@ -6,6 +6,7 @@ import moment from "moment";
 import Colors from "../assets/Colors";
 import Fonts from "../assets/Fonts";
 import { LightText, RegularText } from "./AppText";
+import { GeneralBasedUtils } from "../utils";
 
 const ImageContainer = styled.div`
   width: 36px;
@@ -41,11 +42,6 @@ class UserContentInformation extends React.PureComponent {
     ]
   };
 
-  permutateReadingTime = () => {
-    let readTime = Math.floor(parseInt(this.props.content.length) / 150);
-    return readTime === 0 ? 1 : readTime;
-  };
-
   render() {
     return (
       <div className="d-flex" style={this.props.style}>
@@ -64,7 +60,9 @@ class UserContentInformation extends React.PureComponent {
           {!this.props.hideDetails && (
             <LightText style={Fonts.timePosted.sm}>
               {`On ${moment(this.props.createdAt).format("MMMM DD, YYYY")}`}{" "}
-              <sup>.</sup> {this.permutateReadingTime()} mins Read
+              <sup>.</sup>{" "}
+              {GeneralBasedUtils.permutateReadingTime(this.props.content)} mins
+              Read
             </LightText>
           )}
         </div>
