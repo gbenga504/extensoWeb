@@ -22,9 +22,10 @@ class Post extends React.PureComponent {
         bodyHTML: (item && item.content) || "",
         titleHTML: (item && item.title) || "",
         category: (item && item.category) || "",
-        tags: (item && item.tags) || "",
+        tags: (item && item.tags) || [],
         draft: (item && item.draft) || true
-      }
+      },
+      hasInformationLoaded: false
     };
   }
 
@@ -35,7 +36,7 @@ class Post extends React.PureComponent {
         title: PropTypes.string,
         content: PropTypes.string,
         category: PropTypes.string,
-        tags: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
         draft: PropTypes.bool,
         created_at: PropTypes.string,
         likes_count: PropTypes.string
@@ -44,8 +45,12 @@ class Post extends React.PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (Object.keys(nextProps.content.item).length > 0) {
+    if (
+      Object.keys(nextProps.content.item).length > 0 &&
+      !this.state.hasInformationLoaded
+    ) {
       let { content: { item } } = nextProps;
+      GeneralBasedUtils.setInitialHashTags(item.tags);
       this.setState({
         data: {
           ...this.state.data,
@@ -55,7 +60,8 @@ class Post extends React.PureComponent {
           tags: item.tags,
           draft: item.draft,
           uuid: item.id
-        }
+        },
+        hasInformationLoaded: true
       });
     }
   }

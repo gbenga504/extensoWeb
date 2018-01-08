@@ -16,6 +16,31 @@ export const GeneralBasedUtils = {
     return newProps;
   },
 
+  hashTags: [],
+
+  /**
+   * @param {Array} tags
+   * @function sets the initial has tags for the application based on what has been saved before
+   */
+  setInitialHashTags: tags => {
+    GeneralBasedUtils.hashTags = tags;
+  },
+
+  /**
+   * @param {string} postMessage
+   * @function removes all  tags which are no longer in the text or post message so that tags that are still
+   * there could be inserted correctly
+   */
+  removeNulledHashTags: postMessage => {
+    let { hashTags } = GeneralBasedUtils;
+
+    for (let j = 0; j < hashTags.length; j++) {
+      if (postMessage.indexOf(`#${hashTags[j]}`) === -1) {
+        hashTags.splice(j, 1);
+      }
+    }
+  },
+
   /**
    * @return Array
    * @param {String} postMessage
@@ -30,8 +55,6 @@ export const GeneralBasedUtils = {
     }
     return matches;
   },
-
-  hashTags: [],
 
   /**
    * @return {Object}
@@ -49,14 +72,19 @@ export const GeneralBasedUtils = {
       beginning = "",
       word = "",
       ending = "";
+
+    GeneralBasedUtils.removeNulledHashTags(postMessage);
+
     for (let i = matches.length - 1; i >= 0; i--) {
       appender = i == 0 ? "" : ",";
-      GeneralBasedUtils.hashTags.push(
-        matches[i][0]
-          .replace("#", "")
-          .trim()
-          .toLowerCase()
-      );
+      let value = matches[i][0]
+        .replace("#", "")
+        .trim()
+        .toLowerCase();
+
+      if (GeneralBasedUtils.hashTags.indexOf(value) === -1) {
+        GeneralBasedUtils.hashTags.push(value);
+      }
 
       beginning = postMessage.substring(0, matches[i].index);
       ending = postMessage.substring(matches[i].index + matches[i][0].length);
@@ -68,7 +96,7 @@ export const GeneralBasedUtils = {
     }
     return {
       body: postMessage,
-      tags: JSON.stringify(GeneralBasedUtils.hashTags)
+      tags: GeneralBasedUtils.hashTags
     };
   },
 

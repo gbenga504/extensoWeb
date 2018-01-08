@@ -29,7 +29,7 @@ export default class Form extends React.PureComponent {
       bodyHTML: PropTypes.string,
       titleHTML: PropTypes.string,
       category: PropTypes.string,
-      tags: PropTypes.string,
+      tags: PropTypes.arrayOf(PropTypes.string),
       draft: PropTypes.bool
     })
   };
@@ -87,7 +87,7 @@ export default class Form extends React.PureComponent {
         <input type="hidden" value={titleHTML} name="title" />
         <input type="hidden" value={bodyHTML} name="content" />
         <input type="hidden" value={draft} name="draft" />
-        <input type="hidden" value={tags} name="tags" />
+        <input type="hidden" value={JSON.stringify(tags)} name="tags" />
       </form>
     );
   }

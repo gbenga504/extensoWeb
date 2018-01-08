@@ -60,7 +60,7 @@ class Content extends React.PureComponent {
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         category: PropTypes.string.isRequired,
-        tags: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
         draft: PropTypes.bool,
         created_at: PropTypes.string.isRequired,
         likes_count: PropTypes.string
