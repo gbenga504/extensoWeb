@@ -7,6 +7,7 @@ import { RegularText } from "../AppText";
 import SelectCategory from "../SelectCategory";
 import Title from "./Title";
 import Body from "./Body";
+import { GeneralBasedUtils } from "../../utils/index";
 
 const Category = styled(SelectCategory)`
   margin-left: 50px;
@@ -87,7 +88,11 @@ export default class Form extends React.PureComponent {
         <input type="hidden" value={titleHTML} name="title" />
         <input type="hidden" value={bodyHTML} name="content" />
         <input type="hidden" value={draft} name="draft" />
-        <input type="hidden" value={JSON.stringify(tags)} name="tags" />
+        <input
+          type="hidden"
+          value={GeneralBasedUtils.formatHashTagsToPostgresArrayType(tags)}
+          name="tags"
+        />
       </form>
     );
   }

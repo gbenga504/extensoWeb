@@ -155,6 +155,7 @@ class Section extends React.PureComponent {
 const SectionWithData = composer("connect", {
   name: "section_news",
   options: props => ({
+    fetchPolicy: "cache-and-network",
     variables: {
       url: `https://agro-extenso.herokuapp.com/api/v1/admin/posts/${
         props.match.params.category
@@ -175,6 +176,7 @@ const SectionWithData = composer("connect", {
 })(
   composer("get", {
     name: "section_likes_count",
+    fetchPolicy: "cache-and-network",
     options: props => ({
       variables: {
         url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${

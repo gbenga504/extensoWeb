@@ -26,6 +26,19 @@ export const GeneralBasedUtils = {
     GeneralBasedUtils.hashTags = tags;
   },
 
+  formatHashTagsToPostgresArrayType: tags => {
+    let result = "";
+    if (tags.length !== 0) {
+      result = tags.reduce((acc, value, i) => {
+        i !== tags.length - 1 ? (acc += `${value},`) : (acc += `${value}}`);
+        return acc;
+      }, "{");
+    } else {
+      result = "{}";
+    }
+    return result;
+  },
+
   /**
    * @param {string} postMessage
    * @function removes all  tags which are no longer in the text or post message so that tags that are still

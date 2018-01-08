@@ -122,6 +122,7 @@ class Drafts extends React.PureComponent {
 const DraftWithData = composer("get", {
   name: "drafts",
   options: props => ({
+    fetchPolicy: "cache-and-network",
     variables: {
       url: "https://agro-extenso.herokuapp.com/api/v1/admin/drafts/0"
     }
@@ -151,7 +152,7 @@ const DraftWithData = composer("get", {
       },
       search: queryParams => {
         let uriQueryParams = encodeURI(queryParams);
-        
+
         return push({
           goto: `/search/?q=${uriQueryParams}`,
           variables: {

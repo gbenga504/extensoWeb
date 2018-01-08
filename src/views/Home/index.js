@@ -124,6 +124,7 @@ class Home extends React.PureComponent {
 
 const HomeWithData = composer("get", {
   name: "all_news",
+  fetchPolicy: "cache-and-network",
   options: props => ({
     variables: {
       url: "https://agro-extenso.herokuapp.com/api/v1/admin/posts/all/0"
@@ -143,6 +144,7 @@ const HomeWithData = composer("get", {
 })(
   composer("get", {
     name: "likes_count",
+    fetchPolicy: "cache-and-network",
     options: props => ({
       variables: {
         url: "https://agro-extenso.herokuapp.com/api/v1/post-count/"
