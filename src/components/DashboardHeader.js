@@ -58,9 +58,10 @@ class DashboardHeader extends React.PureComponent {
   }
 
   search = ev => {
-    if (ev.which === 13 || ev.keyCode === 13) {
+    let { which, keyCode, target: { value } } = ev;
+    if ((which === 13 || keyCode === 13) && value.trim().length > 0) {
       let { onSearch } = this.props;
-      onSearch && onSearch(ev.target.value);
+      onSearch && onSearch(value);
     }
   };
 

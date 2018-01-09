@@ -176,8 +176,8 @@ const SectionWithData = composer("connect", {
 })(
   composer("get", {
     name: "section_likes_count",
-    fetchPolicy: "cache-and-network",
     options: props => ({
+      fetchPolicy: "cache-and-network",
       variables: {
         url: `https://agro-extenso.herokuapp.com/api/v1/post-count/${
           props.match.params.category
