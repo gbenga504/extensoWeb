@@ -5,11 +5,16 @@
 import React from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
+import hoistNonReactStatic from "hoist-non-react-statics";
 
 import { Throwable } from "./helpers/throwable";
 import { GeneralBasedUtils } from "../../utils";
 import XMLHttp from "./httpRequest";
 import DefiniteProgressBar from "./DefiniteProgressBar";
+
+function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+}
 
 const composer = (method, { props, name, options, skip }) => {
   function decorateClass(WrappedComponent) {
@@ -19,8 +24,8 @@ const composer = (method, { props, name, options, skip }) => {
       queryDatas: state.queryDatas
     }))(
       class Composer extends React.PureComponent {
-        constructor(props) {
-          super(props);
+        constructor(props, context) {
+          super(props, context);
 
           Throwable.initThrowable(method, { name, options, props });
 
@@ -32,6 +37,8 @@ const composer = (method, { props, name, options, skip }) => {
             [`${name}`]: { ...initialDataSettings }
           };
         }
+
+        static displayName = `Composer(${getDisplayName(WrappedComponent)}`;
 
         componentDidMount() {
           if (
