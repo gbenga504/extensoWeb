@@ -6,6 +6,7 @@
     "moment": "^2.19.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
+    "react-loadable": "^5.3.1",
     "react-medium-editor": "^1.8.1",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
