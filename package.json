@@ -15,7 +15,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "styled-components": "^2.2.3",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "react-composer": "https://github.com/gbenga504/react-composer.git"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,9 +3,13 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import { createLogger } from "redux-logger";
 import thunk from "redux-thunk";
+import ComposerClient from "composer-client";
+import { ComposerProvider } from "react-composer";
 
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
+
+const Client = ComposerClient()
 
 const store = createStore(
   combineReducers({
