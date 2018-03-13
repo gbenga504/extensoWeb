@@ -9,7 +9,7 @@ import { ComposerProvider } from "react-composer";
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
 
-const Client = ComposerClient()
+const Client = ComposerClient({});
 
 const store = createStore(
   combineReducers({
@@ -20,7 +20,9 @@ const store = createStore(
 );
 
 export default () => (
-  <Provider store={store}>
-    <AppRoutes />
-  </Provider>
+  <ComposerProvider client={Client} store={Client.store}>
+    <Provider store={store}>
+      <AppRoutes />
+    </Provider>
+  </ComposerProvider>
 );

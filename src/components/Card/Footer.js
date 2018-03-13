@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Router } from "react-composer";
 
 import Icon from "../Icon";
 import Fonts from "../../assets/Fonts";
@@ -11,12 +12,25 @@ export default class Footer extends React.PureComponent {
     likesCount: PropTypes.string,
     hideLikes: PropTypes.bool,
     id: PropTypes.string.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onNavigate: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onRequestRoute: PropTypes.func.isRequired,
+    routeProgress: PropTypes.number,
+    reduxActions: PropTypes.object.isRequired
   };
 
+  componentWillReceiveProps(nextProps) {
+    let {
+      routeProgress,
+      reduxActions: { setPageHandshakeProgress }
+    } = this.props;
+    if (routeProgress.routeProgress) {
+      setPageHandshakeProgress(nextProps.routeProgress);
+    }
+  }
+
   render() {
-    let { onEdit, onDelete, hideLikes, likesCount, id } = this.props;
+    let { onDelete, hideLikes, likesCount, id, onRequestRoute } = this.props;
     return (
       <div
         className="d-flex justify-content-between align-items-center"
@@ -34,7 +48,7 @@ export default class Footer extends React.PureComponent {
         )}
         <div className="d-flex">
           <Icon
-            onClick={() => onEdit(id)}
+            onClick={onRequestRoute}
             className="ion-edit"
             size="35"
             style={{ cursor: "pointer" }}

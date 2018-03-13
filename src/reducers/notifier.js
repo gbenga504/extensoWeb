@@ -21,3 +21,25 @@ export const isSearchDraftBased = (state = {}, action) => {
       break;
   }
 };
+
+export const isIndefiniteProgressLoading = (state = {}, action) => {
+  switch (action.type) {
+    case types.SET_INDEFINITE_PROGRESS_STATE:
+      return { ...state, loading: action.loading };
+      break;
+    default:
+      return state;
+      break;
+  }
+};
+
+export const pageHandshakeProgress = (state = {}, action) => {
+  switch (action.type) {
+    case types.SET_PAGE_HANDSHAKE_PROGRESS:
+      return { ...state, progress: action.progress };
+      break;
+    default:
+      return state;
+      break;
+  }
+};

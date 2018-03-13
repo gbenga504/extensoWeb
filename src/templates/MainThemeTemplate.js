@@ -9,6 +9,8 @@ import LayoutContainer from "../containers/LayoutContainer";
 import DashboardNavigation from "../components/DashboardNavigation";
 import Colors from "../assets/Colors";
 import AppFab from "../components/AppFab";
+import IndefiniteProgressBar from "../components/IndefiniteProgressBar";
+import DefiniteProgressBar from "../components/DefiniteProgressBar";
 
 import Home from "../views/Home";
 import Post from "../views/Post";
@@ -30,9 +32,15 @@ class MainThemeTemplate extends React.PureComponent {
   };
 
   render() {
-    let { report } = this.props;
+    let {
+      report,
+      isIndefiniteProgressLoading,
+      pageHandshakeProgress
+    } = this.props;
     return (
       <Container>
+        {isIndefiniteProgressLoading.loading && <IndefiniteProgressBar />}
+        <DefiniteProgressBar progress={pageHandshakeProgress.progress} />
         <DashboardNavigation
           {...GeneralBasedUtils.sanitizeProps(this.props, ["route"])}
         />
@@ -109,7 +117,9 @@ class MainThemeTemplate extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    report: state.reportNotification
+    report: state.reportNotification,
+    isIndefiniteProgressLoading: state.isIndefiniteProgressLoading,
+    pageHandshakeProgress: state.pageHandshakeProgress
   };
 }
 

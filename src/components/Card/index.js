@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Router } from "react-composer";
 
 import Colors from "../../assets/Colors";
 import UserContentInformation from "../UserContentInformation";
@@ -33,23 +34,36 @@ export default class Card extends React.PureComponent {
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string
     }).isRequired,
-    onViewContent: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onDelete: PropTypes.func.isRequired,
+    onRequestRoute: PropTypes.func.isRequired,
+    routeProgress: PropTypes.number,
+    onNavigate: PropTypes.func.isRequired,
+    reduxActions: PropTypes.object.isRequired
   };
+
+  componentWillReceiveProps(nextProps) {
+    let {
+      routeProgress,
+      reduxActions: { setPageHandshakeProgress }
+    } = this.props;
+    if (routeProgress.routeProgress) {
+      setPageHandshakeProgress(nextProps.routeProgress);
+    }
+  }
 
   render() {
     let {
       item: { category, created_at, content, title, likes_count, id },
       className,
       style,
-      onViewContent,
-      onEdit,
-      onDelete
+      onDelete,
+      onRequestRoute,
+      onNavigate,
+      reduxActions
     } = this.props;
     return (
       <Container
-        onClick={ev => onViewContent(id)}
+        onClick={onRequestRoute}
         className={`d-flex flex-column ${className}`}
         style={style}
       >
@@ -59,13 +73,26 @@ export default class Card extends React.PureComponent {
           content={content}
         />
         <Body isDisplayImageSet={true} title={title} content={content} />
-        <Footer
-          hideLikes
-          likesCount={likes_count}
-          id={id}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
+        <Router
+          name="write_post_router_link"
+          loader={() => import("../../views/Post")}
+          onRequestRoute={() => onNavigate.push(`/post/${id}`)}
+          resources={[
+            { operation: "getAdminPosts", fetchPolicy: "network-only" }
+          ]}
+        >
+          {(routeState, fetchProgress, push) => (
+            <Footer
+              hideLikes
+              routeProgress={fetchProgress}
+              likesCount={likes_count}
+              id={id}
+              onDelete={onDelete}
+              onRequestRoute={push}
+              reduxActions={reduxActions}
+            />
+          )}
+        </Router>
       </Container>
     );
   }

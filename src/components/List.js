@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { Router } from "react-composer";
 
 import Card from "./Card";
 import { BoldText } from "./AppText";
@@ -12,7 +13,8 @@ export default class List extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageCount: 1
+      pageCount: 1,
+      hasNextPage: true
     };
     this.fetchMoreOnScroll();
   }
@@ -32,10 +34,9 @@ export default class List extends React.PureComponent {
     ),
     onLoadMore: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onViewContent: PropTypes.func,
-    hasNextPage: PropTypes.bool.isRequired,
+    onNavigate: PropTypes.func.isRequired,
+    reduxActions: PropTypes.object.isRequired,
     style: PropTypes.object
   };
 
@@ -56,9 +57,9 @@ export default class List extends React.PureComponent {
         window.scrollY + window.innerHeight >=
         GLOBAL_CONTAINER.scrollHeight
       ) {
-        let { hasNextPage } = this.props;
+        let { hasNextPage } = this.state;
         if (hasNextPage) {
-          this.props.onLoadMore(this.state.pageCount);
+          this.fetchMore(this.state.pageCount);
         } else {
           return;
         }
@@ -66,14 +67,26 @@ export default class List extends React.PureComponent {
     };
   };
 
+  fetchMore = pageNumber => {
+    let { onLoadMore } = this.props;
+    onLoadMore({
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (fetchMoreResult.length === 0) {
+          this.setState({ hasNextPage: false });
+        }
+        return [...previousResult, ...fetchMoreResult];
+      }
+    });
+  };
+
   render() {
     const {
         dataArray,
         style,
         loading,
-        onViewContent,
-        onEdit,
-        onDelete
+        onDelete,
+        onNavigate,
+        reduxActions
       } = this.props,
       styles = style
         ? { padding: "0px 320px", ...this.props.style }
@@ -83,13 +96,27 @@ export default class List extends React.PureComponent {
       <div className="d-flex flex-column align-items-center" style={styles}>
         {dataArray.length > 0 ? (
           dataArray.map((item, i) => (
-            <Card
-              key={i}
-              item={item}
-              onViewContent={onViewContent}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
+            <Router
+              name="content_router_link"
+              loader={() => import("../views/Content")}
+              onRequestRoute={() => onNavigate.push(`/content/${item.id}`)}
+              resources={[
+                { operation: "getAdminPosts", fetchPolicy: "network-only" },
+                { operation: "getAdminPosts", fetchPolicy: "network-only" }
+              ]}
+            >
+              {(routeState, fetchProgress, push) => (
+                <Card
+                  key={i}
+                  item={item}
+                  onDelete={onDelete}
+                  onRequestRoute={push}
+                  routeProgress={fetchProgress}
+                  onNavigate={onNavigate}
+                  reduxActions={reduxActions}
+                />
+              )}
+            </Router>
           ))
         ) : (
           <img src="/images/writing.png" width="500px" height="500px" />

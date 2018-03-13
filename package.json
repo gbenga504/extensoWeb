@@ -5,6 +5,7 @@
   "dependencies": {
     "moment": "^2.19.4",
     "react": "^16.1.1",
+    "react-composer": "https://github.com/gbenga504/react-composer.git",
     "react-dom": "^16.1.1",
     "react-loadable": "^5.3.1",
     "react-medium-editor": "^1.8.1",
@@ -15,8 +16,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "styled-components": "^2.2.3",
-    "uuid": "^3.1.0",
-    "react-composer": "https://github.com/gbenga504/react-composer.git"
+    "uuid": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

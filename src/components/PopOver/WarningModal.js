@@ -14,7 +14,9 @@ const Container = styled.div`
   background: #fff;
   z-index: 2000000;
 `;
-const Item = styled.div`height: 100%;`;
+const Item = styled.div`
+  height: 100%;
+`;
 const Close = Icon.extend`
   position: absolute;
   right: 50px;
@@ -35,44 +37,79 @@ const DeleteButton = Button.extend`
   border: 1px solid #e95656;
 `;
 
-const WarningModal = props => {
-  if (props.isVisible) {
-    return (
-      <Container>
-        <Close
-          onClick={props.onRequestClose}
-          forceColor
-          className="ion-ios-close-empty"
-          size="50px"
-        />
-        <Item className="d-flex align-items-center justify-content-center">
-          <div className="d-flex flex-column">
-            <RegularText>
-              Are you sure you want to delete the post ?
-            </RegularText>
-            <div
-              className="d-flex justify-content-between"
-              style={{ marginTop: 20 }}
-            >
-              <DeleteButton onClick={() => props.onRequestDelete(props.id)}>
-                Delete
-              </DeleteButton>
-              <Button onClick={props.onRequestClose}>Cancel</Button>
-            </div>
-          </div>
-        </Item>
-      </Container>
-    );
+export default class WarningModal extends React.PureComponent {
+  static propTypes = {
+    isVisible: PropTypes.bool.isRequired,
+    id: PropTypes.string,
+    onRequestClose: PropTypes.func.isRequired,
+    onRequestPostDelete: PropTypes.func.isRequired,
+    onRequestGranted: PropTypes.func.isRequired,
+    deletionLoading: PropTypes.bool.isRequired,
+    onRequestLoadingProgressBar: PropTypes.func.isRequired
+  };
+
+  componentWillReceiveProps(nextProps) {
+    let { onRequestLoadingProgressBar } = this.props;
+    if (nextProps.deletionLoading) {
+      onRequestLoadingProgressBar(true);
+    }
   }
 
-  return null;
-};
+  deletePost = () => {
+    let {
+      onRequestClose,
+      onRequestGranted,
+      onRequestPostDelete,
+      onRequestLoadingProgressBar,
+      id
+    } = this.props;
+    onRequestClose();
+    onRequestPostDelete({ url: `admin/delete/${id}` })
+      .then(result => {
+        onRequestGranted({
+          id: Date.now(),
+          message: "Post was deleted successfully"
+        });
+        onRequestLoadingProgressBar(false);
+      })
+      .catch(error => {
+        onRequestGranted({
+          id: Date.now(),
+          message: "Error in deleting the post"
+        });
+        onRequestLoadingProgressBar(false);
+      });
+  };
 
-WarningModal.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  id: PropTypes.string,
-  onRequestClose: PropTypes.func.isRequired,
-  onRequestDelete: PropTypes.func.isRequired
-};
+  render() {
+    let { isVisible, onRequestClose } = this.props;
+    if (isVisible) {
+      return (
+        <Container>
+          <Close
+            onClick={onRequestClose}
+            forceColor
+            className="ion-ios-close-empty"
+            size="50px"
+          />
+          <Item className="d-flex align-items-center justify-content-center">
+            <div className="d-flex flex-column">
+              <RegularText>
+                Are you sure you want to delete the post ?
+              </RegularText>
+              <div
+                className="d-flex justify-content-between"
+                style={{ marginTop: 20 }}
+              >
+                <DeleteButton onClick={this.deletePost}>Delete</DeleteButton>
+                <Button onClick={onRequestClose}>Cancel</Button>
+              </div>
+            </div>
+          </Item>
+        </Container>
+      );
+    }
 
-export default WarningModal;
+    return null;
+  }
+}

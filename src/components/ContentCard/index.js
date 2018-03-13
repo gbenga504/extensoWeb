@@ -37,21 +37,33 @@ export default class ContentCard extends React.PureComponent {
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string
     }),
-    onViewContent: PropTypes.func.isRequired
+    onRequestRoute: PropTypes.func.isRequired,
+    routeProgress: PropTypes.number,
+    reduxActions: PropTypes.object
   };
+
+  componentWillReceiveProps(nextProps) {
+    let {
+      routeProgress,
+      reduxActions: { setPageHandshakeProgress }
+    } = this.props;
+    if (routeProgress.routeProgress) {
+      setPageHandshakeProgress(nextProps.routeProgress);
+    }
+  }
 
   render() {
     let {
       item: { id, title, category, created_at, content, likes_count },
       style,
       className,
-      onViewContent
+      onRequestRoute
     } = this.props;
     return (
       <Container
         className={`d-flex flex-column ${className}`}
         style={style}
-        onClick={() => onViewContent(id)}
+        onClick={onRequestRoute}
       >
         <ImageContainer>
           <img alt="" src="" style={{ width: "100%", height: "100%" }} />

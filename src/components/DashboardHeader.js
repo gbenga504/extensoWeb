@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Router } from "react-composer";
 
 import Colors from "../assets/Colors";
 import Icon from "./Icon";
 import Input from "./Input";
+import { GeneralBasedUtils } from "../utils/index";
 
 const Div = styled.div`
   background: ${Colors.dashboardHeader.background};
@@ -46,8 +48,10 @@ class DashboardHeader extends React.PureComponent {
       })
     ),
     hideSearch: PropTypes.bool,
-    onSearch: PropTypes.func,
-    searchValue: PropTypes.string
+    onNavigate: PropTypes.func,
+    searchValue: PropTypes.string,
+    onSetDraftState: PropTypes.func,
+    isContentDraftBased: PropTypes.bool
   };
 
   componentDidMount() {
@@ -57,15 +61,25 @@ class DashboardHeader extends React.PureComponent {
     }
   }
 
-  search = ev => {
+  search = (ev, push) => {
     let { which, keyCode, target: { value } } = ev;
     if ((which === 13 || keyCode === 13) && value.trim().length > 0) {
-      let { onSearch } = this.props;
-      onSearch && onSearch(value);
+      this.props.onSetDraftState(this.props.isContentDraftBased);
+      push();
     }
   };
 
+  //@Todo, update a state called params with the result of this when the user changes the input field and on component Mount
+  generateQueryParams = () => {
+    let { value } = this.state;
+    return value.indexOf("#") === -1
+      ? value
+      : GeneralBasedUtils.formaHashTagUrlForSearch(value).urlParams;
+  };
+
   render() {
+    let { value } = this.state,
+      { onNavigate } = this.props;
     return (
       <Div className="d-flex">
         {!this.props.hideSearch ? (
@@ -79,14 +93,29 @@ class DashboardHeader extends React.PureComponent {
             >
               <Icon className="ion-ios-search-strong" />
             </Section>
-            <SearchBox
-              className="d-flex align-self-center"
-              type="search"
-              value={this.state.value}
-              onChange={ev => this.setState({ value: ev.target.value })}
-              onKeyPress={this.search}
-              placeholder="Search for a post from the categories"
-            />
+            <Router
+              name="search_router_link"
+              loader={() => import("../views/Search")}
+              onRequestRoute={() =>
+                onNavigate.push(`/search/?q=${window.encodeURI(value)}`)
+              }
+              resources={[
+                { operation: "getAdminPosts", fetchPolicy: "network-only" }
+              ]}
+            >
+              {(routeState, fetchState, push) => {
+                return (
+                  <SearchBox
+                    className="d-flex align-self-center"
+                    type="search"
+                    value={this.state.value}
+                    onChange={ev => this.setState({ value: ev.target.value })}
+                    onKeyPress={ev => this.search(ev, push)}
+                    placeholder="Search for a post from the categories"
+                  />
+                );
+              }}
+            </Router>
           </div>
         ) : (
           <div className="d-flex" style={{ width: "100%" }} />

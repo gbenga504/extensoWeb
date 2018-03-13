@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { composer } from "../../containers/composer";
 import { LoginUtils } from "../../utils";
 import LoginInput from "./LoginInput";
 import Colors from "../../assets/Colors";
@@ -26,7 +25,7 @@ const Password = styled(LoginInput)`
   }
 `;
 
-class Form extends React.PureComponent {
+export default class Form extends React.PureComponent {
   state = {
     username: "",
     password: "",
@@ -37,14 +36,9 @@ class Form extends React.PureComponent {
   };
 
   static propTypes = {
-    isLoading: PropTypes.func
+    loading: PropTypes.bool.isRequired,
+    onRequestLogin: PropTypes.func.isRequired
   };
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.login_post.loading !== nextProps.login_post.loading) {
-      this.props.isLoading(nextProps.login_post.loading);
-    }
-  }
 
   setToolTipVisibility = (
     tooltipMessage,
@@ -65,8 +59,9 @@ class Form extends React.PureComponent {
   login = () => {
     let { username, password } = this.state;
     if (LoginUtils.loginValidation(username, password)) {
+      let data = { username, password };
       this.props
-        .login(this.form)
+        .onRequestLogin({ data })
         .then(result => {
           let { history: { push } } = this.props;
           window.localStorage.setItem("jwt", result);
@@ -93,7 +88,7 @@ class Form extends React.PureComponent {
         tooltipMessage,
         tooltipPosition
       } = this.state,
-      { login_post: { loading } } = this.props;
+      { loading } = this.props;
     return (
       <Container
         className="d-flex flex-column align-items-center justify-content-center"
@@ -127,19 +122,3 @@ class Form extends React.PureComponent {
     );
   }
 }
-
-const LoginWithMutation = composer("POST", {
-  name: "login_post",
-  props: ({ mutate, login_post }) => ({
-    login: formRef =>
-      mutate({
-        variables: {
-          url: "https://agro-extenso.herokuapp.com/api/v1/admin/login",
-          formRef
-        }
-      }),
-    login_post
-  })
-})(Form);
-
-export default LoginWithMutation;
