@@ -13,7 +13,7 @@ export default class List extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageCount: 1,
+      pageCount: 2,
       hasNextPage: true
     };
     this.fetchMoreOnScroll();
@@ -35,14 +35,19 @@ export default class List extends React.PureComponent {
     onLoadMore: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onNavigate: PropTypes.func.isRequired,
+    onNavigate: PropTypes.object.isRequired,
     reduxActions: PropTypes.object.isRequired,
-    style: PropTypes.object
+    style: PropTypes.object,
+    generalCategory: PropTypes.string
   };
 
   componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.dataArray, this.props.dataArray)) {
-      this.setState({ pageCount: this.state.pageCount + 1 });
+    let { generalCategory } = this.props;
+    if (generalCategory != nextProps.generalCategory) {
+      this.setState({
+        pageCount: 2,
+        hasNextPage: true
+      });
     }
   }
 
@@ -68,11 +73,20 @@ export default class List extends React.PureComponent {
   };
 
   fetchMore = pageNumber => {
-    let { onLoadMore } = this.props;
+    let { onLoadMore, generalCategory } = this.props;
     onLoadMore({
+      config: {
+        params: { pageNumber: this.state.pageCount, category: generalCategory }
+      },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (fetchMoreResult.length === 0) {
-          this.setState({ hasNextPage: false });
+          this.setState(prevState => ({
+            hasNextPage: false
+          }));
+        } else {
+          this.setState(prevState => ({
+            pageCount: prevState.pageCount + 1
+          }));
         }
         return [...previousResult, ...fetchMoreResult];
       }
@@ -101,8 +115,14 @@ export default class List extends React.PureComponent {
               loader={() => import("../views/Content")}
               onRequestRoute={() => onNavigate.push(`/content/${item.id}`)}
               resources={[
-                { operation: "getAdminPosts", fetchPolicy: "network-only" },
-                { operation: "getAdminPosts", fetchPolicy: "network-only" }
+                {
+                  operation: "getAdminPosts",
+                  fetchPolicy: "network-only",
+                  config: {
+                    ID: item.id
+                  }
+                },
+                { operation: "getAdminPosts", fetchPolicy: "cache-first" }
               ]}
             >
               {(routeState, fetchProgress, push) => (

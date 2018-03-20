@@ -13,8 +13,8 @@ export default (Section = props => (
     delay={2000}
     timeout={10000}
   >
-    {(Component, props) => {
-      let _props = { ...this.props, ...props };
+    {(Component, passedProps) => {
+      let _props = { ...props, ...passedProps };
       return <Component {..._props} />;
     }}
   </Connector>

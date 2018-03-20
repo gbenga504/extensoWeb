@@ -36,6 +36,7 @@ export default class Home extends React.PureComponent {
           setIsContentDraftState,
           setIndefiniteProgressLoadingState
         },
+        route,
         history
       } = this.props,
       { isDeleteWarningVisible, warningId } = this.state;
@@ -47,19 +48,26 @@ export default class Home extends React.PureComponent {
           onSetDraftState={setIsContentDraftState}
           isContentDraftBased={false}
           iconArray={this.generateHeaderIcon()}
+          reduxActions={route}
         />
-        <Query operation="getAdminPosts">
+        <Query
+          operation="getAdminPosts"
+          options={{ fetchPolicy: "network-only" }}
+        >
           {(queryState, fetchMore, refetchQuery) => {
             let { isInitialDataSet, loading, error, data } = queryState;
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
-                error={!isInitialDataSet && error !== undefined}
+                error={!isInitialDataSet && error}
                 renderItem={
                   <ContentPadder className="flex-column">
                     <Query
                       operation="getPostCount"
-                      config={{ fetchPolicy: "cache-and-network" }}
+                      options={{
+                        fetchPolicy: "network-only",
+                        config: { params: { category: "all" } }
+                      }}
                     >
                       {postCount => <Counter items={postCount.data || {}} />}
                     </Query>
@@ -85,9 +93,13 @@ export default class Home extends React.PureComponent {
         <Mutation
           operation="createDeletePost"
           options={{
+            config: { ID: warningId },
             refetchQueries: [
               { operation: "getAdminPosts" },
-              { operation: "getPostCount" }
+              {
+                operation: "getPostCount",
+                config: { params: { category: "all" } }
+              }
             ]
           }}
         >

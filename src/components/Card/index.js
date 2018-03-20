@@ -46,7 +46,7 @@ export default class Card extends React.PureComponent {
       routeProgress,
       reduxActions: { setPageHandshakeProgress }
     } = this.props;
-    if (routeProgress.routeProgress) {
+    if (nextProps.routeProgress !== routeProgress) {
       setPageHandshakeProgress(nextProps.routeProgress);
     }
   }
@@ -74,11 +74,15 @@ export default class Card extends React.PureComponent {
         />
         <Body isDisplayImageSet={true} title={title} content={content} />
         <Router
-          name="write_post_router_link"
+          name="post_router_link"
           loader={() => import("../../views/Post")}
           onRequestRoute={() => onNavigate.push(`/post/${id}`)}
           resources={[
-            { operation: "getAdminPosts", fetchPolicy: "network-only" }
+            {
+              operation: "getAdminPosts",
+              fetchPolicy: "network-only",
+              config: { ID: id }
+            }
           ]}
         >
           {(routeState, fetchProgress, push) => (

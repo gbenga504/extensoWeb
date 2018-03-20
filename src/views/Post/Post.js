@@ -8,35 +8,51 @@ export default class Post extends React.PureComponent {
     id: undefined
   };
 
-  gotoContentView = (id, push) => {
-    this.setState({ id }, () => push());
-  };
+  componentWillReceiveProps(nextProps) {
+    let { progressCount, route: { setPageHandshakeProgress } } = this.props;
+    if (nextProps.progressCount !== progressCount) {
+      setPageHandshakeProgress(nextProps.progressCount);
+    }
+  }
 
   render() {
-    let { id } = this.state;
+    let { id } = this.state,
+      { match: { params: { postId } } } = this.props;
     return (
-      <Query operation="getAdminPosts">
+      <Query
+        operation="getAdminPosts"
+        options={{ config: { ID: postId } }}
+        skip={postId ? false : true}
+      >
         {(queryState, fetchMore, refetchQuery) => (
           <Mutation operation="createAdminPosts">
             {(postCreationState, mutate) => (
               <Router
-                name="post_router_link"
-                resources={[{ operation: "getAdminPosts" }]}
+                name="content_router_link"
+                resources={[
+                  {
+                    operation: "getAdminPosts",
+                    config: { ID: id },
+                    fetchPolicy: "network-only"
+                  }
+                ]}
                 loader={() => import("../Content")}
-                onRequestRouter={() =>
-                  this.props.history.push(`/content/${id}`)
-                }
+                onRequestRoute={() => this.props.history.push(`/content/${id}`)}
               >
-                {(routeState, fetchState, push) => (
-                  <Container
-                    content={queryState}
-                    routeMatch={this.props.match}
-                    reduxActions={this.props.route}
-                    onCreatePost={mutate}
-                    loading={postCreationState.loading}
-                    onRequestRoute={id => this.gotoContentView(id, push)}
-                  />
-                )}
+                {(routeState, fetchProgress, push) => {
+                  return (
+                    <Container
+                      content={queryState}
+                      routeMatch={this.props.match}
+                      reduxActions={this.props.route}
+                      onCreatePost={mutate}
+                      progress={fetchProgress}
+                      loading={postCreationState.loading}
+                      setPostId={id => this.setState({ id })}
+                      onRequestRoute={push}
+                    />
+                  );
+                }}
               </Router>
             )}
           </Mutation>

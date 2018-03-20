@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Connector } from "react-composer";
+import { Connector, Router } from "react-composer";
 
 let Content = null;
 
@@ -13,9 +13,32 @@ export default (Content = props => (
     delay={2000}
     timeout={10000}
   >
-    {(Component, props) => {
-      let _props = { ...this.props, ...props };
-      return <Component {..._props} />;
+    {(Component, passedProps) => {
+      let _props = { ...props, ...passedProps },
+        { match: { params: { postId } }, history: { push } } = props;
+      return (
+        <Router
+          name="post_router_link"
+          loader={() => import("../Post")}
+          onRequestRoute={() => push(`/post/${postId}`)}
+          resources={[
+            {
+              operation: "getAdminPosts",
+              config: { ID: postId },
+              fetchPolicy: "network-only"
+            }
+          ]}
+        >
+          {(routeState, fetchProgress, push) => {
+            let _newProps = {
+              ..._props,
+              fetchProgress,
+              onRequestEditPost: push
+            };
+            return <Component {..._newProps} />;
+          }}
+        </Router>
+      );
     }}
   </Connector>
 ));

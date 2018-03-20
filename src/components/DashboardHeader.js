@@ -5,8 +5,8 @@ import { Router } from "react-composer";
 
 import Colors from "../assets/Colors";
 import Icon from "./Icon";
-import Input from "./Input";
 import { GeneralBasedUtils } from "../utils/index";
+import DashboardSearchBox from "./DashboardSearchBox";
 
 const Div = styled.div`
   background: ${Colors.dashboardHeader.background};
@@ -27,15 +27,15 @@ const Section = styled.div`
     background: ${props => Colors.dashboardHeader.hover[props.name]};
   }
 `;
-const SearchBox = Input.extend`
-  height: 100%;
-  font-size: 16px;
-`;
 
-class DashboardHeader extends React.PureComponent {
-  state = {
-    value: ""
-  };
+export default class DashboardHeader extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    let { searchValue } = props;
+    this.state = {
+      value: searchValue || ""
+    };
+  }
 
   static propTypes = {
     iconArray: PropTypes.arrayOf(
@@ -48,18 +48,12 @@ class DashboardHeader extends React.PureComponent {
       })
     ),
     hideSearch: PropTypes.bool,
-    onNavigate: PropTypes.func,
+    onNavigate: PropTypes.object,
     searchValue: PropTypes.string,
     onSetDraftState: PropTypes.func,
-    isContentDraftBased: PropTypes.bool
+    isContentDraftBased: PropTypes.bool,
+    reduxActions: PropTypes.object.isRequired
   };
-
-  componentDidMount() {
-    let { searchValue } = this.props;
-    if (searchValue) {
-      this.setState({ value: searchValue });
-    }
-  }
 
   search = (ev, push) => {
     let { which, keyCode, target: { value } } = ev;
@@ -79,7 +73,11 @@ class DashboardHeader extends React.PureComponent {
 
   render() {
     let { value } = this.state,
-      { onNavigate } = this.props;
+      {
+        onNavigate,
+        reduxActions: { setPageHandshakeProgress },
+        isContentDraftBased
+      } = this.props;
     return (
       <Div className="d-flex">
         {!this.props.hideSearch ? (
@@ -100,21 +98,24 @@ class DashboardHeader extends React.PureComponent {
                 onNavigate.push(`/search/?q=${window.encodeURI(value)}`)
               }
               resources={[
-                { operation: "getAdminPosts", fetchPolicy: "network-only" }
+                {
+                  operation: "getAdminPosts",
+                  fetchPolicy: "network-only",
+                  config: { params: { q: value, draft: isContentDraftBased } }
+                }
               ]}
             >
-              {(routeState, fetchState, push) => {
-                return (
-                  <SearchBox
-                    className="d-flex align-self-center"
-                    type="search"
-                    value={this.state.value}
-                    onChange={ev => this.setState({ value: ev.target.value })}
-                    onKeyPress={ev => this.search(ev, push)}
-                    placeholder="Search for a post from the categories"
-                  />
-                );
-              }}
+              {(routeState, fetchProgress, push) => (
+                <DashboardSearchBox
+                  value={value}
+                  fetchProgress={fetchProgress}
+                  sendFetchProgressToRedux={setPageHandshakeProgress}
+                  onTextChange={ev =>
+                    this.setState({ value: ev.target.value.trim() })
+                  }
+                  onKeyPress={ev => this.search(ev, push)}
+                />
+              )}
             </Router>
           </div>
         ) : (
@@ -152,5 +153,3 @@ class DashboardHeader extends React.PureComponent {
     );
   }
 }
-
-export default DashboardHeader;

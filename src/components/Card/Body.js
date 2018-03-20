@@ -19,6 +19,22 @@ const createContentInnerHTML = content => ({
   __html: `${content}...`
 });
 
+class CardBody extends React.PureComponent {
+  static propTypes = {
+    content: PropTypes.string.isRequired
+  };
+
+  render() {
+    return (
+      <LightText
+        onClick={ev => ev.preventDefault()}
+        style={{ ...Fonts.postBody.sm, marginTop: 15 }}
+        dangerouslySetInnerHTML={createContentInnerHTML(this.props.content)}
+      />
+    );
+  }
+}
+
 const Body = props => (
   <Container className="d-flex flex-column">
     {props.isDisplayImageSet && (
@@ -29,10 +45,7 @@ const Body = props => (
     <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
       {props.title}
     </RegularText>
-    <LightText
-      style={{ ...Fonts.postBody.sm, marginTop: 15 }}
-      dangerouslySetInnerHTML={createContentInnerHTML(props.content)}
-    />
+    <CardBody content={props.content} />
   </Container>
 );
 

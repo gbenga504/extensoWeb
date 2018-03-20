@@ -26,7 +26,7 @@ export default class ToolTip extends React.PureComponent {
 
   componentWillUnmount() {
     let tooltip = document.getElementsByClassName("data-tooltip")[0];
-    tooltip.removeChild(this.toolTip);
+    tooltip && tooltip.removeChild(this.toolTip);
   }
 
   render() {

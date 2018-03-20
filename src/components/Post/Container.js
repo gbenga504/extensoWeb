@@ -30,16 +30,18 @@ export default class Post extends React.PureComponent {
 
   static propTypes = {
     content: PropTypes.shape({
-      data: PropTypes.shape({
-        id: PropTypes.string,
-        title: PropTypes.string,
-        content: PropTypes.string,
-        category: PropTypes.string,
-        tags: PropTypes.arrayOf(PropTypes.string),
-        draft: PropTypes.bool,
-        created_at: PropTypes.string,
-        likes_count: PropTypes.string
-      }),
+      data: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string,
+          title: PropTypes.string,
+          content: PropTypes.string,
+          category: PropTypes.string,
+          tags: PropTypes.arrayOf(PropTypes.string),
+          draft: PropTypes.bool,
+          created_at: PropTypes.string,
+          likes_count: PropTypes.string
+        })
+      ),
       loading: PropTypes.bool.isRequired,
       error: PropTypes.any
     }),
@@ -47,25 +49,36 @@ export default class Post extends React.PureComponent {
     onCreatePost: PropTypes.func.isRequired,
     onRequestRoute: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    routeMatch: PropTypes.object.isRequired
+    routeMatch: PropTypes.object.isRequired,
+    setPostId: PropTypes.func.isRequired,
+    progress: PropTypes.number
   };
+
+  componentDidMount() {
+    let { data: { uuid } } = this.state;
+    this.props.setPostId(uuid);
+  }
 
   componentWillReceiveProps(nextProps) {
     let {
-      reduxActions: { setIndefiniteProgressLoadingState },
+      reduxActions: {
+        setIndefiniteProgressLoadingState,
+        setPageHandshakeProgress
+      },
       loading
     } = this.props;
     this.updateStateWithProps(nextProps);
     if (nextProps.loading !== loading) {
       setIndefiniteProgressLoadingState(nextProps.loading);
     }
+
+    if (nextProps.progress !== this.props.progress) {
+      setPageHandshakeProgress(nextProps.progress);
+    }
   }
 
   updateStateWithProps = nextProps => {
-    if (
-      Object.keys(nextProps.content.data).length > 0 &&
-      !this.state.hasInformationLoaded
-    ) {
+    if (nextProps.content.data && !this.state.hasInformationLoaded) {
       let { content: { data } } = nextProps;
       GeneralBasedUtils.setInitialHashTags(data.tags);
       this.setState({
@@ -120,15 +133,30 @@ export default class Post extends React.PureComponent {
   };
 
   makePost = shouldMakePost => {
-    this.props
-      .onCreatePost({ data: { ...this.state.data } })
-      .then(result => {
-        this.setState({ draftStatusText: "Saved" });
-        if (shouldMakePost) {
-          this.props.onRequestRoute(result.id);
-        }
-      })
-      .catch(err => this.setState({ draftStatusText: "Failed To Saved" }));
+    if (!this._count) {
+      let {
+          data: { uuid, token, bodyHTML, titleHTML, category, tags, draft }
+        } = this.state,
+        data = {
+          id: uuid,
+          token,
+          title: titleHTML,
+          content: bodyHTML,
+          category,
+          draft: (!shouldMakePost).toString(),
+          tags
+        };
+      this.props
+        .onCreatePost({ data })
+        .then(result => {
+          this.setState({ draftStatusText: "Saved" });
+          if (shouldMakePost) {
+            this.props.onRequestRoute();
+          }
+        })
+        .catch(err => this.setState({ draftStatusText: "Failed To Saved" }));
+    }
+    if (shouldMakePost) this._count = true;
   };
 
   savePost = (isDraft, shouldMakePost) => {
@@ -152,7 +180,8 @@ export default class Post extends React.PureComponent {
     let { draftStatusText, data: { draft } } = this.state,
       {
         content: { loading, error },
-        routeMatch: { params: { postId } }
+        routeMatch: { params: { postId } },
+        reduxActions
       } = this.props;
 
     return (
@@ -160,7 +189,11 @@ export default class Post extends React.PureComponent {
         className="d-flex flex-column"
         style={{ width: "100%", height: "auto" }}
       >
-        <DashboardHeader hideSearch iconArray={this.generateHeaderIcon()} />
+        <DashboardHeader
+          reduxActions={reduxActions}
+          hideSearch
+          iconArray={this.generateHeaderIcon()}
+        />
         <PageContentViewer
           loading={loading && !!postId}
           error={!!error && !!postId}

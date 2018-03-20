@@ -45,12 +45,19 @@ export default class WarningModal extends React.PureComponent {
     onRequestPostDelete: PropTypes.func.isRequired,
     onRequestGranted: PropTypes.func.isRequired,
     deletionLoading: PropTypes.bool.isRequired,
-    onRequestLoadingProgressBar: PropTypes.func.isRequired
+    onRequestLoadingProgressBar: PropTypes.func.isRequired,
+    onRunOnMount: PropTypes.func,
+    runOnDone: PropTypes.func
   };
 
   componentWillReceiveProps(nextProps) {
-    let { onRequestLoadingProgressBar } = this.props;
-    if (nextProps.deletionLoading) {
+    let {
+      onRequestLoadingProgressBar,
+      onRunOnMount,
+      deletionLoading
+    } = this.props;
+    onRunOnMount && onRunOnMount(deletionLoading);
+    if (nextProps.deletionLoading !== this.props.deletionLoading) {
       onRequestLoadingProgressBar(true);
     }
   }
@@ -59,6 +66,7 @@ export default class WarningModal extends React.PureComponent {
     let {
       onRequestClose,
       onRequestGranted,
+      runOnDone,
       onRequestPostDelete,
       onRequestLoadingProgressBar,
       id
@@ -70,6 +78,7 @@ export default class WarningModal extends React.PureComponent {
           id: Date.now(),
           message: "Post was deleted successfully"
         });
+        runOnDone && runOnDone();
         onRequestLoadingProgressBar(false);
       })
       .catch(error => {

@@ -47,7 +47,7 @@ export default class ContentCard extends React.PureComponent {
       routeProgress,
       reduxActions: { setPageHandshakeProgress }
     } = this.props;
-    if (routeProgress.routeProgress) {
+    if (nextProps.routeProgress !== routeProgress) {
       setPageHandshakeProgress(nextProps.routeProgress);
     }
   }

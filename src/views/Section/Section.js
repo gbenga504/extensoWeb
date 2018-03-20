@@ -10,16 +10,20 @@ import ContentPadder from "../../containers/ContentPadder";
 import Category from "../../components/Section/Category";
 
 export default class Section extends React.PureComponent {
-  state = {
-    isDeleteWarningVisible: false,
-    warningId: "0",
-    category: "",
-    pageURI: window.location.pathname
-  };
+  constructor(props) {
+    super(props);
+    let { match: { params: { category } } } = props;
+    this.state = {
+      isDeleteWarningVisible: false,
+      warningId: "0",
+      category: category || "all"
+    };
+  }
 
-  componentWillReceiveProps() {
-    if (this.state.pageURI !== window.location.pathname) {
-      this.setState({ pageURI: window.location.pathname, hasNextPage: true });
+  componentWillReceiveProps(nextProps) {
+    let { progressCount, route: { setPageHandshakeProgress } } = this.props;
+    if (nextProps.progressCount !== progressCount) {
+      setPageHandshakeProgress(nextProps.progressCount);
     }
   }
 
@@ -39,12 +43,7 @@ export default class Section extends React.PureComponent {
   };
 
   fetchPage = (category, push) => {
-    this.setState(prevState => {
-      if (prevState.category !== category) {
-        push();
-      }
-      return { category };
-    });
+    this.setState({ category }, () => push());
   };
 
   render() {
@@ -55,7 +54,8 @@ export default class Section extends React.PureComponent {
           setIndefiniteProgressLoadingState,
           setPageHandshakeProgress
         },
-        history
+        history,
+        route
       } = this.props,
       { isDeleteWarningVisible, warningId, category } = this.state;
 
@@ -66,19 +66,25 @@ export default class Section extends React.PureComponent {
           onSetDraftState={setIsContentDraftState}
           isContentDraftBased={false}
           iconArray={this.generateHeaderIcon()}
+          reduxActions={route}
         />
-        <Query operation="getAdminPosts">
+        <Query
+          operation="getAdminPosts"
+          options={{ config: { params: { category } } }}
+        >
           {(queryState, fetchMore, refetchQuery) => {
             let { isInitialDataSet, loading, error, data } = queryState;
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
-                error={!isInitialDataSet && error !== undefined}
+                error={!isInitialDataSet && error}
                 renderItem={
                   <ContentPadder className="flex-column">
                     <Query
                       operation="getPostCount"
-                      config={{ fetchPolicy: "cache-and-network" }}
+                      options={{
+                        config: { params: { category } }
+                      }}
                     >
                       {postCount => <Counter items={postCount.data || {}} />}
                     </Query>
@@ -86,35 +92,35 @@ export default class Section extends React.PureComponent {
                       name="section_router_link"
                       loader={() => import("./Section")}
                       onRequestRoute={() =>
-                        history.push(`/section/${category}`)
+                        history.push(`/sections/${category}`)
                       }
                       resources={[
                         {
                           operation: "getAdminPosts",
-                          fetchPolicy: "network-only"
+                          fetchPolicy: "network-only",
+                          config: { params: { category: category } }
                         },
                         {
-                          operation: "getPostCounts",
-                          fetchPolicy: "network-only"
+                          operation: "getPostCount",
+                          fetchPolicy: "network-only",
+                          config: { params: { category: category } }
                         }
                       ]}
                     >
-                      {(routeState, fetchProgress, push) => {
-                        if (fetchProgress > 0)
-                          setPageHandshakeProgress(fetchProgress);
-                          
-                        return (
-                          <Category
-                            category={this.state.category}
-                            onCategorySelected={category =>
-                              this.fetchPage(category, push)
-                            }
-                          />
-                        );
-                      }}
+                      {(routeState, fetchProgress, push) => (
+                        <Category
+                          category={this.state.category}
+                          fetchProgress={fetchProgress}
+                          sendFetchProgressToRedux={setPageHandshakeProgress}
+                          onCategorySelected={category =>
+                            this.fetchPage(category, push)
+                          }
+                        />
+                      )}
                     </Router>
                     <List
                       dataArray={data}
+                      generalCategory={category}
                       onLoadMore={fetchMore}
                       loading={loading}
                       reduxActions={this.props.route}
@@ -136,8 +142,8 @@ export default class Section extends React.PureComponent {
           operation="createDeletePost"
           options={{
             refetchQueries: [
-              { operation: "getAdminPosts" },
-              { operation: "getPostCount" }
+              { operation: "getAdminPosts", config: { params: { category } } },
+              { operation: "getPostCount", config: { params: { category } } }
             ]
           }}
         >

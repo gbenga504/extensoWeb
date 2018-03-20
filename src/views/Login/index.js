@@ -26,7 +26,7 @@ export default class Login extends React.PureComponent {
 
   render() {
     return (
-      <Mutation operation="createAdminLogin">
+      <Mutation operation="createLogin">
         {(loginState, mutate) => {
           let formProps = {
             onRequestLogin: mutate,

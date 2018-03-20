@@ -59,14 +59,17 @@ export default class SelectCategory extends React.PureComponent {
   };
 
   render() {
-    const display = this.state.isDropdownVisible ? "block" : "none";
+    let { isDropdownVisible } = this.state;
+    const display = isDropdownVisible ? "block" : "none";
     return (
       <div
         className={`d-flex flex-column ${this.props.className || ""}`}
         style={{ width: 200, height: "100%" }}
       >
         <Button
-          onClick={() => this.toggleDropdown(this.props.title)}
+          onClick={() =>
+            this.setState({ isDropdownVisible: !isDropdownVisible })
+          }
           className="d-flex justify-content-between align-items-center"
         >
           <Title style={Fonts.section.select}>

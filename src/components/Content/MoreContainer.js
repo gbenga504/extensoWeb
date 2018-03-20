@@ -21,12 +21,19 @@ export default (MoreContainer = props => (
         if (i <= 1) {
           return (
             <Router
+              key={i}
               name="content_router_link"
               loader={() => import("../../views/Content")}
               onRequestRoute={() =>
                 props.onNavigate.push(`/content/${item.id}`)
               }
-              resources={[{ operation: "getAdminPosts" }]}
+              resources={[
+                {
+                  operation: "getAdminPosts",
+                  config: { ID: item.id },
+                  fetchPolicy: "network-only"
+                }
+              ]}
             >
               {(routeState, fetchProgress, push) => (
                 <OtherContent

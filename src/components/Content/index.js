@@ -30,7 +30,8 @@ export class ContentBody extends React.PureComponent {
     reduxActions: PropTypes.object.isRequired,
     routeProgress: PropTypes.number,
     onRequestRoute: PropTypes.func.isRequired,
-    onRequestSearchByTag: PropTypes.func.isRequired
+    onRequestSearchByTag: PropTypes.func.isRequired,
+    draft: PropTypes.bool.isRequired
   };
 
   componentWillReceiveProps(nextProps) {
@@ -38,7 +39,7 @@ export class ContentBody extends React.PureComponent {
       routeProgress,
       reduxActions: { setPageHandshakeProgress }
     } = this.props;
-    if (routeProgress.routeProgress) {
+    if (nextProps.routeProgress !== routeProgress) {
       setPageHandshakeProgress(nextProps.routeProgress);
     }
   }
@@ -50,7 +51,7 @@ export class ContentBody extends React.PureComponent {
   handleTagSearch = ev => {
     let { target } = ev,
       {
-        content: { item: { draft } },
+        draft,
         onRequestSearchByTag,
         onRequestRoute,
         reduxActions: { setIsContentDraftState }
@@ -60,6 +61,8 @@ export class ContentBody extends React.PureComponent {
       target.hasAttribute("hashTag")
     ) {
       ev.preventDefault();
+      //@remove hack
+      draft = draft == "false" ? false : true;
       setIsContentDraftState(draft);
       onRequestSearchByTag(target.getAttribute("hashTag"), onRequestRoute);
     }

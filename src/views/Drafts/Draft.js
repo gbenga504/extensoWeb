@@ -34,7 +34,8 @@ export default class Drafts extends React.PureComponent {
           setIsContentDraftState,
           setReportNotification,
           setIndefiniteProgressLoadingState
-        }
+        },
+        route
       } = this.props,
       { isDeleteWarningVisible, warningId } = this.state;
 
@@ -45,14 +46,21 @@ export default class Drafts extends React.PureComponent {
           onSetDraftState={setIsContentDraftState}
           isContentDraftBased={true}
           iconArray={this.generateHeaderIcon()}
+          reduxActions={route}
         />
-        <Query operation="getAdminPosts">
+        <Query
+          operation="getAdminPosts"
+          options={{
+            fetchPolicy: "network-only",
+            config: { params: { draft: true } }
+          }}
+        >
           {(queryState, fetchMore, refetchQuery) => {
             let { isInitialDataSet, loading, error, data } = queryState;
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
-                error={!isInitialDataSet && error !== undefined}
+                error={!isInitialDataSet && error}
                 renderItem={
                   <ContentPadder className="flex-column">
                     <List

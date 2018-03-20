@@ -21,6 +21,13 @@ class Search extends React.PureComponent {
     warningId: "0"
   };
 
+  componentWillReceiveProps(nextProps) {
+    let { progressCount, route: { setPageHandshakeProgress } } = this.props;
+    if (nextProps.progressCount !== progressCount) {
+      setPageHandshakeProgress(nextProps.progressCount);
+    }
+  }
+
   generateHeaderIcon = () => [
     {
       name: "ion-power",
@@ -64,15 +71,27 @@ class Search extends React.PureComponent {
           iconArray={this.generateHeaderIcon()}
           onSetDraftState={setIsContentDraftState}
           isContentDraftBased={isSearchDraftBased}
+          reduxActions={this.props.route}
           onNavigate={this.props.history}
         />
-        <Query operation="getAdminPosts">
+        <Query
+          operation="getAdminPosts"
+          options={{
+            config: {
+              params: {
+                q: this.generateSearchValue(),
+                draft: isSearchDraftBased
+              }
+            }
+          }}
+        >
           {(queryState, fetchMore, refetchQuery) => {
             let { isInitialDataSet, loading, error, data } = queryState;
+
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
-                error={!isInitialDataSet && error !== undefined}
+                error={!isInitialDataSet && error}
                 renderItem={
                   <ContentPadder className="flex-column">
                     <ResultNumberInformer>
@@ -101,7 +120,13 @@ class Search extends React.PureComponent {
         <Mutation
           operation="createDeletePost"
           options={{
-            refetchQueries: [{ operation: "getAdminPosts" }]
+            refetchQueries: [
+              { operation: "getAdminPosts" },
+              {
+                operation: "getAdminPosts",
+                config: { params: { q: this.generateSearchValue() } }
+              }
+            ]
           }}
         >
           {(deleteState, mutate) => (

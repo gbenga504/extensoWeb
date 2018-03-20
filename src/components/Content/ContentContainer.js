@@ -33,7 +33,7 @@ export default class ContentContainer extends React.PureComponent {
         onNavigate
       } = this.props,
       newItem = data || {},
-      { category, created_at, content, title } = newItem,
+      { category, created_at, content, title, draft } = newItem,
       { searchParam } = this.state;
 
     return (
@@ -52,7 +52,13 @@ export default class ContentContainer extends React.PureComponent {
               onRequestRoute={() =>
                 onNavigate.push(`/search/?q=${searchParam}`)
               }
-              resources={[{ operation: "getAdminPosts" }]}
+              resources={[
+                {
+                  operation: "getAdminPosts",
+                  fetchPolicy: "network-only",
+                  config: { params: { q: searchParam, draft } }
+                }
+              ]}
             >
               {(routeState, fetchProgress, push) => (
                 <ContentBody
@@ -60,6 +66,7 @@ export default class ContentContainer extends React.PureComponent {
                   reduxActions={reduxActions}
                   routeProgress={fetchProgress}
                   onRequestRoute={push}
+                  draft={draft}
                   onRequestSearchByTag={this.setSearchParam}
                 />
               )}
@@ -75,7 +82,6 @@ export default class ContentContainer extends React.PureComponent {
             </Query>
           </Container>
         </div>
-        )}
       </ContentPadder>
     );
   }

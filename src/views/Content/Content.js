@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Query, Mutation } from "react-composer";
 
 import { WarningModal } from "../../components/PopOver";
@@ -16,39 +17,63 @@ export default class Content extends React.PureComponent {
     };
   }
 
+  static propTypes = {
+    fetchProgress: PropTypes.any,
+    onRequestEditPost: PropTypes.func.isRequired
+  };
+
+  componentWillReceiveProps(nextProps) {
+    let {
+      progressCount,
+      fetchProgress,
+      route: { setPageHandshakeProgress }
+    } = this.props;
+    if (nextProps.progressCount !== progressCount) {
+      setPageHandshakeProgress(nextProps.progressCount);
+    }
+
+    if (nextProps.fetchProgress !== fetchProgress) {
+      setPageHandshakeProgress(nextProps.fetchProgress);
+    }
+  }
+
   generateHeaderIcon = () => [
     {
       name: "ion-edit",
       lastIcon: false,
       segmentName: "edit",
       onClick: () => {
-        return this.state.deletionStatus.loading
+        return this.state.deletionLoading
           ? () => null
-          : this.props.routeTo("/post/", this.props.match.params.postId);
+          : this.props.onRequestEditPost();
       },
-      cursorAllowed: this.state.deletionStatus.loading ? false : true
+      cursorAllowed: this.state.deletionLoading ? false : true
     },
     {
       name: "ion-ios-trash",
       lastIcon: true,
       segmentName: "trash",
       onClick: () => this.setState({ isDeleteWarningVisible: true }),
-      cursorAllowed: this.state.deletionStatus.loading ? false : true
+      cursorAllowed: this.state.deletionLoading ? false : true
     }
   ];
 
   render() {
     let {
         history,
+        match: { params: { postId } },
         route: { setReportNotification, setIndefiniteProgressLoadingState },
         route
       } = this.props,
       { isDeleteWarningVisible, warningId } = this.state;
-
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
-        <DashboardHeader hideSearch iconArray={this.generateHeaderIcon()} />
-        <Query operation="getAdminPosts">
+        <DashboardHeader
+          hideSearch
+          iconArray={this.generateHeaderIcon()}
+          reduxActions={route}
+        />
+        <Query operation="getAdminPosts" options={{ config: { ID: postId } }}>
           {(queryState, fetchMore, refetchQuery) => {
             let { loading, error } = queryState;
             return (
@@ -69,26 +94,27 @@ export default class Content extends React.PureComponent {
         <Mutation
           operation="createDeletePost"
           options={{
-            refetchQueries: [{ operation: "getAdminPostsF" }]
+            config: { ID: warningId },
+            refetchQueries: [{ operation: "getAdminPosts" }]
           }}
         >
-          {(deleteState, mutate) => {
-            if (deleteState.loading) this.setState({ deletionLoading: true });
-            else this.setState({ deletionLoading: false });
-            return (
-              <WarningModal
-                isVisible={isDeleteWarningVisible}
-                id={warningId}
-                onRequestPostDelete={mutate}
-                deletionLoading={deleteState.loading}
-                onRequestGranted={setReportNotification}
-                onRequestLoadingProgressBar={setIndefiniteProgressLoadingState}
-                onRequestClose={() =>
-                  this.setState({ isDeleteWarningVisible: false })
-                }
-              />
-            );
-          }}
+          {(deleteState, mutate) => (
+            <WarningModal
+              isVisible={isDeleteWarningVisible}
+              id={warningId}
+              onRequestPostDelete={mutate}
+              deletionLoading={deleteState.loading}
+              onRequestGranted={setReportNotification}
+              onRequestLoadingProgressBar={setIndefiniteProgressLoadingState}
+              onRequestClose={() =>
+                this.setState({ isDeleteWarningVisible: false })
+              }
+              onRunOnMount={deletionLoading =>
+                this.setState({ deletionLoading })
+              }
+              runOnDone={() => (window.location.href = "/")}
+            />
+          )}
         </Mutation>
       </div>
     );

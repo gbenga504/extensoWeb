@@ -8,8 +8,9 @@ import { ComposerProvider } from "react-composer";
 
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
+import config from "./composer.config";
 
-const Client = ComposerClient({});
+const Client = ComposerClient({ ...config });
 
 const store = createStore(
   combineReducers({
