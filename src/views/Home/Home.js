@@ -7,6 +7,7 @@ import DashboardHeader from "../../components/DashboardHeader";
 import Counter from "../../components/Counter";
 import ContentPadder from "../../containers/ContentPadder";
 import PageContentViewer from "../../containers/PageContentViewer";
+import { CircularSpinner } from "../../components/Loaders";
 
 export default class Home extends React.PureComponent {
   state = {

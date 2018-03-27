@@ -101,9 +101,9 @@ export const GeneralBasedUtils = {
 
       beginning = postMessage.substring(0, matches[i].index);
       ending = postMessage.substring(matches[i].index + matches[i][0].length);
-      word = ` <a href="#" hashTag="${matches[i][0].trim()}">${matches[
+      word = ` <a href="${matches[i][0].trim()}" hashTag="${matches[
         i
-      ][0].trim()}</a>`;
+      ][0].trim()}">${matches[i][0].trim()}</a>`;
 
       postMessage = `${beginning}${word}${ending}`;
     }

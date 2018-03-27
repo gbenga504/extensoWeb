@@ -65,6 +65,9 @@ export class ContentBody extends React.PureComponent {
       draft = draft == "false" ? false : true;
       setIsContentDraftState(draft);
       onRequestSearchByTag(target.getAttribute("hashTag"), onRequestRoute);
+    } else {
+      ev.preventDefault();
+      window.open(target.href);
     }
   };
 

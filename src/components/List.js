@@ -106,6 +106,7 @@ export default class List extends React.PureComponent {
         ? { padding: "0px 320px", ...this.props.style }
         : { padding: "0px 320px" };
 
+    console.log("The dataArray is ", dataArray);
     return (
       <div className="d-flex flex-column align-items-center" style={styles}>
         {dataArray.length > 0 ? (
