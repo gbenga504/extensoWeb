@@ -59,9 +59,8 @@ export default class Form extends React.PureComponent {
   login = () => {
     let { username, password } = this.state;
     if (LoginUtils.loginValidation(username, password)) {
-      let data = { username, password };
       this.props
-        .onRequestLogin({ data })
+        .onRequestLogin({ data: new FormData(this.form) })
         .then(result => {
           let { history: { push } } = this.props;
           window.localStorage.setItem("jwt", result);

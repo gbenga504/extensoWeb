@@ -76,7 +76,7 @@ export default class List extends React.PureComponent {
     let { onLoadMore, generalCategory } = this.props;
     onLoadMore({
       config: {
-        params: { pageNumber: this.state.pageCount, category: generalCategory }
+        params: { page: this.state.pageCount, category: generalCategory }
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (fetchMoreResult.length === 0) {
@@ -106,21 +106,24 @@ export default class List extends React.PureComponent {
         ? { padding: "0px 320px", ...this.props.style }
         : { padding: "0px 320px" };
 
-    console.log("The dataArray is ", dataArray);
     return (
       <div className="d-flex flex-column align-items-center" style={styles}>
         {dataArray.length > 0 ? (
           dataArray.map((item, i) => (
             <Router
+              key={i}
               name="content_router_link"
               loader={() => import("../views/Content")}
-              onRequestRoute={() => onNavigate.push(`/content/${item.id}`)}
+              onRequestRoute={() =>
+                onNavigate.push(`/content/${item.id}?draft=${item.draft}`)
+              }
               resources={[
                 {
                   operation: "getAdminPosts",
                   fetchPolicy: "network-only",
                   config: {
-                    ID: item.id
+                    ID: item.id,
+                    params: { draft: item.draft }
                   }
                 },
                 { operation: "getAdminPosts", fetchPolicy: "cache-first" }

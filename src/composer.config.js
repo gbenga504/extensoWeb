@@ -1,5 +1,5 @@
 export default {
-  baseURL: "http://localhost:8000/api/v1/",
+  baseURL: "https://agro-extenso.herokuapp.com/api/v1/",
   nouns: [
     { path: "admin/login", name: "login" },
     { path: "admin/delete", name: "deletePost" },

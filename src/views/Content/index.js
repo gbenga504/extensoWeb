@@ -14,17 +14,25 @@ export default (Content = props => (
     timeout={10000}
   >
     {(Component, passedProps) => {
+      console.log("The props is ", props);
+      console.log("The passed props is ", passedProps);
+
       let _props = { ...props, ...passedProps },
-        { match: { params: { postId } }, history: { push } } = props;
+        {
+          match: { params: { postId } },
+          history: { push, location: { search } }
+        } = props,
+        _search = search.match(/=[a-z]+/)[0].slice(1),
+        _draft = _search == "false" ? false : true;
       return (
         <Router
           name="post_router_link"
           loader={() => import("../Post")}
-          onRequestRoute={() => push(`/post/${postId}`)}
+          onRequestRoute={() => push(`/post/${postId}?draft=${_draft}`)}
           resources={[
             {
               operation: "getAdminPosts",
-              config: { ID: postId },
+              config: { ID: postId, params: { draft: _draft } },
               fetchPolicy: "network-only"
             }
           ]}

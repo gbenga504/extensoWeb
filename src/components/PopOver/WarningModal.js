@@ -45,7 +45,7 @@ export default class WarningModal extends React.PureComponent {
     onRequestPostDelete: PropTypes.func.isRequired,
     onRequestGranted: PropTypes.func.isRequired,
     deletionLoading: PropTypes.bool.isRequired,
-    onRequestLoadingProgressBar: PropTypes.func.isRequired,
+    onRequestLoadingProgressBar: PropTypes.func,
     onRunOnMount: PropTypes.func,
     runOnDone: PropTypes.func
   };
@@ -72,7 +72,9 @@ export default class WarningModal extends React.PureComponent {
       id
     } = this.props;
     onRequestClose();
-    onRequestPostDelete({ url: `admin/delete/${id}` })
+    let formData = new FormData();
+    formData.append("token", window.localStorage.getItem("jwt"));
+    onRequestPostDelete({ data: formData })
       .then(result => {
         onRequestGranted({
           id: Date.now(),

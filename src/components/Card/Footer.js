@@ -12,7 +12,7 @@ export default class Footer extends React.PureComponent {
     likesCount: PropTypes.string,
     hideLikes: PropTypes.bool,
     id: PropTypes.string.isRequired,
-    onNavigate: PropTypes.func.isRequired,
+    onNavigate: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onRequestRoute: PropTypes.func.isRequired,
     routeProgress: PropTypes.number,

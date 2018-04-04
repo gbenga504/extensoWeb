@@ -63,9 +63,12 @@ export default class Content extends React.PureComponent {
         history,
         match: { params: { postId } },
         route: { setReportNotification, setIndefiniteProgressLoadingState },
-        route
+        route,
+        history: { location: { search } }
       } = this.props,
-      { isDeleteWarningVisible, warningId } = this.state;
+      { isDeleteWarningVisible, warningId } = this.state,
+      _search = search.match(/=[a-z]+/)[0].slice(1),
+      _draft = _search == "false" ? false : true;
     return (
       <div className="d-flex flex-column" style={{ width: "100%" }}>
         <DashboardHeader
@@ -73,7 +76,10 @@ export default class Content extends React.PureComponent {
           iconArray={this.generateHeaderIcon()}
           reduxActions={route}
         />
-        <Query operation="getAdminPosts" options={{ config: { ID: postId } }}>
+        <Query
+          operation="getAdminPosts"
+          options={{ config: { ID: postId, params: { draft: _draft } } }}
+        >
           {(queryState, fetchMore, refetchQuery) => {
             let { loading, error } = queryState;
             return (

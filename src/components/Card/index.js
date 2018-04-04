@@ -53,7 +53,7 @@ export default class Card extends React.PureComponent {
 
   render() {
     let {
-      item: { category, created_at, content, title, likes_count, id },
+      item: { category, created_at, content, title, likes_count, id, draft },
       className,
       style,
       onDelete,
@@ -76,12 +76,12 @@ export default class Card extends React.PureComponent {
         <Router
           name="post_router_link"
           loader={() => import("../../views/Post")}
-          onRequestRoute={() => onNavigate.push(`/post/${id}`)}
+          onRequestRoute={() => onNavigate.push(`/post/${id}?draft=${draft}`)}
           resources={[
             {
               operation: "getAdminPosts",
               fetchPolicy: "network-only",
-              config: { ID: id }
+              config: { ID: id, params: { draft } }
             }
           ]}
         >

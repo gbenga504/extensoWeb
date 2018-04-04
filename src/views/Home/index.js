@@ -1,6 +1,8 @@
 import React from "react";
 import { Connector } from "react-composer";
 
+import { CircularSpinner } from "../../components/Loaders";
+
 let Home = null;
 
 export default (Home = props => (

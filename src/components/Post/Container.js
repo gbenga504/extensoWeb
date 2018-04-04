@@ -30,18 +30,16 @@ export default class Post extends React.PureComponent {
 
   static propTypes = {
     content: PropTypes.shape({
-      data: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string,
-          title: PropTypes.string,
-          content: PropTypes.string,
-          category: PropTypes.string,
-          tags: PropTypes.arrayOf(PropTypes.string),
-          draft: PropTypes.bool,
-          created_at: PropTypes.string,
-          likes_count: PropTypes.string
-        })
-      ),
+      data: PropTypes.shape({
+        id: PropTypes.string,
+        title: PropTypes.string,
+        content: PropTypes.string,
+        category: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
+        draft: PropTypes.bool,
+        created_at: PropTypes.string,
+        likes_count: PropTypes.string
+      }),
       loading: PropTypes.bool.isRequired,
       error: PropTypes.any
     }),
@@ -134,20 +132,8 @@ export default class Post extends React.PureComponent {
 
   makePost = shouldMakePost => {
     if (!this._count) {
-      let {
-          data: { uuid, token, bodyHTML, titleHTML, category, tags, draft }
-        } = this.state,
-        data = {
-          id: uuid,
-          token,
-          title: titleHTML,
-          content: bodyHTML,
-          category,
-          draft: (!shouldMakePost).toString(),
-          tags
-        };
       this.props
-        .onCreatePost({ data })
+        .onCreatePost({ data: new FormData(this.form) })
         .then(result => {
           this.setState({ draftStatusText: "Saved" });
           if (shouldMakePost) {

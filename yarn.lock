@@ -1447,7 +1447,7 @@ commondir@^1.0.1:
 
 "composer-client@https://github.com/kayslay/composer-client.git":
   version "1.0.0"
-  resolved "https://github.com/kayslay/composer-client.git#62b9a771ed7cb8f2ba3574879b92e0620555c2da"
+  resolved "https://github.com/kayslay/composer-client.git#c3d2d622d0fa938d40e65a800dce4a0c342cb713"
   dependencies:
     axios "^0.17.1"
     camelcase "^4.1.0"
@@ -5193,7 +5193,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
 
 "react-composer@https://github.com/gbenga504/react-composer.git":
   version "1.0.0"
-  resolved "https://github.com/gbenga504/react-composer.git#570a2ab5caba0b5c45881fe2df62dca7e942616a"
+  resolved "https://github.com/gbenga504/react-composer.git#57fd76d59f3d0dedfbd1e8740af3822d38bb7edb"
   dependencies:
     composer-client "https://github.com/kayslay/composer-client.git"
     create-react-context "^0.1.6"

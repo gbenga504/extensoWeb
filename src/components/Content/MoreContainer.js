@@ -54,6 +54,6 @@ export default (MoreContainer = props => (
 
 MoreContainer.propTypes = {
   data: PropTypes.any,
-  onNavigate: PropTypes.func.isRequired,
+  onNavigate: PropTypes.object.isRequired,
   reduxActions: PropTypes.object.isRequired
 };

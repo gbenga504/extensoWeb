@@ -62,7 +62,7 @@ export class ContentBody extends React.PureComponent {
     ) {
       ev.preventDefault();
       //@remove hack
-      draft = draft == "false" ? false : true;
+      draft = draft == false ? false : true;
       setIsContentDraftState(draft);
       onRequestSearchByTag(target.getAttribute("hashTag"), onRequestRoute);
     } else {

@@ -23,7 +23,7 @@ export default class PageContentViewer extends React.PureComponent {
   renderLoadingOrError = component => (
     <div
       className="d-flex justify-content-center align-items-center"
-      style={{ height: "100%" }}
+      style={{ height: window.innerHeight }}
     >
       {component}
     </div>
