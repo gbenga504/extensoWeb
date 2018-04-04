@@ -25,12 +25,12 @@ export default (MoreContainer = props => (
               name="content_router_link"
               loader={() => import("../../views/Content")}
               onRequestRoute={() =>
-                props.onNavigate.push(`/content/${item.id}`)
+                props.onNavigate.push(`/content/${item.id}?draft=${item.draft}`)
               }
               resources={[
                 {
                   operation: "getAdminPosts",
-                  config: { ID: item.id },
+                  config: { ID: item.id, params: { draft: item.draft } },
                   fetchPolicy: "network-only"
                 }
               ]}

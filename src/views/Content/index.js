@@ -14,9 +14,6 @@ export default (Content = props => (
     timeout={10000}
   >
     {(Component, passedProps) => {
-      console.log("The props is ", props);
-      console.log("The passed props is ", passedProps);
-
       let _props = { ...props, ...passedProps },
         {
           match: { params: { postId } },
