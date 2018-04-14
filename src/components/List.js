@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { Router } from "react-composer";
+import { Router } from "react-kunyora";
 
 import Card from "./Card";
 import { BoldText } from "./AppText";

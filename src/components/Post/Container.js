@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid";
-import { Query } from "react-composer";
+import { Query } from "react-kunyora";
 
 import PageContentViewer from "../../containers/PageContentViewer";
 import DashboardHeader from "../DashboardHeader";

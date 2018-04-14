@@ -1449,14 +1449,6 @@ commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
 
-"composer-client@https://github.com/kayslay/composer-client.git":
-  version "1.0.0"
-  resolved "https://github.com/kayslay/composer-client.git#c3d2d622d0fa938d40e65a800dce4a0c342cb713"
-  dependencies:
-    axios "^0.17.1"
-    camelcase "^4.1.0"
-    invariant "^2.2.2"
-
 compressible@~2.0.11:
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.12.tgz#c59a5c99db76767e9876500e271ef63b3493bd66"
@@ -3935,6 +3927,14 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
+"kunyora@https://github.com/kunyora/kunyora.git":
+  version "1.0.0"
+  resolved "https://github.com/kunyora/kunyora.git#b53cc5f9181fbc04a667ec7eb2d1ad8639d9136b"
+  dependencies:
+    axios "^0.17.1"
+    camelcase "^4.1.0"
+    invariant "^2.2.2"
+
 latest-version@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/latest-version/-/latest-version-2.0.0.tgz#56f8d6139620847b8017f8f1f4d78e211324168b"
@@ -5235,17 +5235,6 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-"react-composer@https://github.com/gbenga504/react-composer.git":
-  version "1.0.0"
-  resolved "https://github.com/gbenga504/react-composer.git#57fd76d59f3d0dedfbd1e8740af3822d38bb7edb"
-  dependencies:
-    composer-client "https://github.com/kayslay/composer-client.git"
-    create-react-context "^0.1.6"
-    immutable "^3.8.2"
-    invariant "^2.2.2"
-    lodash "^4.17.4"
-    prop-types "^15.6.0"
-
 react-dev-utils@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-4.2.1.tgz#9f2763e7bafa1a1b9c52254d2a479deec280f111"
@@ -5281,6 +5270,17 @@ react-dom@^16.1.1:
 react-error-overlay@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-3.0.0.tgz#c2bc8f4d91f1375b3dad6d75265d51cd5eeaf655"
+
+"react-kunyora@https://github.com/kunyora/react-kunyora.git":
+  version "0.1.0"
+  resolved "https://github.com/kunyora/react-kunyora.git#635a5c747c18ef89235d3e8564e29bd8da4d710f"
+  dependencies:
+    create-react-context "^0.1.6"
+    immutable "^3.8.2"
+    invariant "^2.2.2"
+    kunyora "https://github.com/kunyora/kunyora.git"
+    lodash "^4.17.4"
+    prop-types "^15.6.0"
 
 react-loadable@^5.3.1:
   version "5.3.1"

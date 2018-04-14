@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Router } from "react-composer";
+import { Router } from "react-kunyora";
 
 import Icon from "../Icon";
 import Fonts from "../../assets/Fonts";

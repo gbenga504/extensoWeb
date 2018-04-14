@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Connector, Router } from "react-composer";
+import { Connector, Router } from "react-kunyora";
 
 let Content = null;
 

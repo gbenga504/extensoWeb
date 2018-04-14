@@ -1,5 +1,5 @@
 import React from "react";
-import { Query, Router, Mutation } from "react-composer";
+import { Query, Router, Mutation } from "react-kunyora";
 
 import Container from "../../components/Post/Container";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Router, Query } from "react-composer";
+import { Router, Query } from "react-kunyora";
 import styled from "styled-components";
 
 import ContentPadder from "../../containers/ContentPadder";

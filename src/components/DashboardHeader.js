@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Router } from "react-composer";
+import { Router } from "react-kunyora";
 
 import Colors from "../assets/Colors";
 import Icon from "./Icon";

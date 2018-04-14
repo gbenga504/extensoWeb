@@ -1,5 +1,5 @@
 import React from "react";
-import { Connector } from "react-composer";
+import { Connector } from "react-kunyora";
 
 import { CircularSpinner } from "../../components/Loaders";
 

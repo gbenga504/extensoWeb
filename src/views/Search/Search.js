@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Mutation, Query } from "react-composer";
+import { Mutation, Query } from "react-kunyora";
 
 import List from "../../components/List";
 import { WarningModal } from "../../components/PopOver";

@@ -6,7 +6,7 @@ import LayoutContainer from "../../containers/LayoutContainer";
 import Form from "../../components/Login/Form";
 import Colors from "../../assets/Colors";
 import { RainbowLoader } from "../../components/Loaders";
-import { Mutation } from "react-composer";
+import { Mutation } from "react-kunyora";
 
 const Container = styled(LayoutContainer)`
   background: ${Colors.login.backgroundColor};

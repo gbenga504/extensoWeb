@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Query, Mutation } from "react-composer";
+import { Query, Mutation } from "react-kunyora";
 
 import { WarningModal } from "../../components/PopOver";
 import PageContentViewer from "../../containers/PageContentViewer";

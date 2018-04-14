@@ -3,14 +3,14 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import { createLogger } from "redux-logger";
 import thunk from "redux-thunk";
-import ComposerClient from "composer-client";
-import { ComposerProvider } from "react-composer";
+import KunyoraClient from "kunyora";
+import { KunyoraProvider } from "react-kunyora";
 
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
 import config from "./composer.config";
 
-const Client = ComposerClient({ ...config });
+const Client = KunyoraClient({ ...config });
 
 const store = createStore(
   combineReducers({
@@ -21,9 +21,9 @@ const store = createStore(
 );
 
 export default () => (
-  <ComposerProvider client={Client} store={Client.store}>
+  <KunyoraProvider client={Client} store={Client.store}>
     <Provider store={store}>
       <AppRoutes />
     </Provider>
-  </ComposerProvider>
+  </KunyoraProvider>
 );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Mutation, Query, Router } from "react-composer";
+import { Mutation, Query, Router } from "react-kunyora";
 
 import List from "../../components/List";
 import { WarningModal } from "../../components/PopOver";
