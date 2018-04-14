@@ -1,10 +1,11 @@
-.medium-editor-placeholder:after {
-  content: attr(data-placeholder) !important;
-  font-style: normal !important;
-  position: absolute;
-  left: -50px !important;
-  top: 0;
-  white-space: pre;
-  padding: inherit;
-  margin: inherit;
+.md-RichEditor-root {
+  background: #fff;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 5px 2px;
+  position: relative;
+  line-height: 1.4em;
+  width: 100%;
+  min-height: 335px;
+  height: auto;
 }

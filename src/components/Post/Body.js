@@ -1,81 +1,57 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
-import Editor from "react-medium-editor";
-import "medium-editor/dist/css/medium-editor.css";
-import "medium-editor/dist/css/themes/default.css";
+import { convertToRaw } from "draft-js";
+import { Editor, createEditorState } from "medium-draft";
+import mediumDraftExporter from "medium-draft/lib/exporter";
+import mediumDraftImporter from "medium-draft/lib/importer";
 
+import CustomImageSideButton from "./CustomImageSideButton";
 import Colors from "../../assets/Colors";
 import Fonts from "../../assets/Fonts";
+import "medium-draft/lib/index.css";
 import "./extenso-editor.css";
-import Icon from "../Icon";
 
-const ImageSelector = styled.div`
-  position: absolute;
-  margin-left: 0px;
-  width: 40px;
-  height: 40px;
-`;
-const IconSelectButton = Icon.extend`
-  position: absolute;
-  top: -10px;
-  left: 0px;
-  z-index: 400;
-  cursor: pointer;
-`;
-const Input = styled.input`
-  width: inherit;
-  z-index: 1000;
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: inherit;
-`;
-const ExtensoEditor = styled(Editor)`
-  height: auto;
-  width: 100%;
-  padding-top: 5px;
-  border: 1px solid ${Colors.postInputBorder};
-  padding-left: 12px;
-  margin-bottom: 30px;
-  outline: none;
-  margin-left: 50px;
-  background: ${Colors.postBackground};
-`;
+export default class Body extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    // createEditorState(convertToRaw(mediumDraftImporter(this.props.value)))
+    this.state = {
+      editorState: createEditorState(this.props.value)
+    };
+  }
 
-const Body = props => (
-  <div className="d-flex" style={{ marginTop: 40 }}>
-    <ImageSelector>
-      <Input type="file" />
-      <IconSelectButton className="ion-ios-plus-outline" size="40px" />
-    </ImageSelector>
-    <ExtensoEditor
-      tag="p"
-      options={{
-        toolbar: {
-          buttons: [
-            "bold",
-            "italic",
-            "underline",
-            "anchor",
-            "h2",
-            "h3",
-            "quote"
-          ]
-        }
-      }}
-      style={{ ...Fonts.post.postBox, minHeight: 335 }}
-      className="postBox"
-      data-placeholder="Write your post"
-      onChange={props.onChange}
-      text={props.value || ""}
-    />
-  </div>
-);
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired
+  };
 
-Body.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired
-};
+  sideButtons = [
+    {
+      title: "Image",
+      component: CustomImageSideButton
+    }
+  ];
 
-export default Body;
+  componentDidMount() {
+    this.editor.focus();
+  }
+
+  onChange = editorState => {
+    this.setState({ editorState });
+    this.props.onChange(mediumDraftExporter(editorState.getCurrentContent()));
+  };
+
+  render() {
+    let { editorState } = this.state;
+    return (
+      <div className="d-flex" style={{ marginTop: 40, marginLeft: 50 }}>
+        <Editor
+          ref={ref => (this.editor = ref)}
+          editorState={editorState}
+          onChange={this.onChange}
+          sideButtons={this.sideButtons}
+        />
+      </div>
+    );
+  }
+}
