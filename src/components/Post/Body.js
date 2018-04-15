@@ -14,23 +14,28 @@ import "./extenso-editor.css";
 export default class Body extends React.PureComponent {
   constructor(props) {
     super(props);
-    // createEditorState(convertToRaw(mediumDraftImporter(this.props.value)))
     this.state = {
-      editorState: createEditorState(this.props.value)
+      editorState: createEditorState(
+        convertToRaw(mediumDraftImporter(this.props.value))
+      )
     };
   }
 
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired
+    value: PropTypes.string.isRequired,
+    setReportNotification: PropTypes.func.isRequired
   };
 
-  sideButtons = [
-    {
-      title: "Image",
-      component: CustomImageSideButton
-    }
-  ];
+  sideButtons = () => {
+    let _props = { setReportNotification: this.props.setReportNotification };
+    return [
+      {
+        title: "Image",
+        component: props => <CustomImageSideButton {...props} {..._props} />
+      }
+    ];
+  };
 
   componentDidMount() {
     this.editor.focus();
@@ -49,7 +54,7 @@ export default class Body extends React.PureComponent {
           ref={ref => (this.editor = ref)}
           editorState={editorState}
           onChange={this.onChange}
-          sideButtons={this.sideButtons}
+          sideButtons={this.sideButtons()}
         />
       </div>
     );

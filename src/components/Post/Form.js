@@ -32,7 +32,8 @@ export default class Form extends React.PureComponent {
       category: PropTypes.string,
       tags: PropTypes.arrayOf(PropTypes.string),
       draft: PropTypes.bool
-    })
+    }),
+    setReportNotification: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -49,6 +50,7 @@ export default class Form extends React.PureComponent {
   render() {
     let {
       draftStatusText,
+      setReportNotification,
       onChangeField,
       data: { draft, bodyHTML, titleHTML, category, tags, uuid, token }
     } = this.props;
@@ -80,6 +82,7 @@ export default class Form extends React.PureComponent {
         <Body
           value={bodyHTML}
           onChange={text => onChangeField("bodyHTML", text)}
+          setReportNotification={setReportNotification}
         />
 
         <input type="hidden" value={token} name="token" />

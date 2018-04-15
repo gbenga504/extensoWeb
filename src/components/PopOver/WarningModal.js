@@ -78,6 +78,7 @@ export default class WarningModal extends React.PureComponent {
       .then(result => {
         onRequestGranted({
           id: Date.now(),
+          type: "success",
           message: "Post was deleted successfully"
         });
         runOnDone && runOnDone();
@@ -86,6 +87,7 @@ export default class WarningModal extends React.PureComponent {
       .catch(error => {
         onRequestGranted({
           id: Date.now(),
+          type: "success",
           message: "Error in deleting the post"
         });
         onRequestLoadingProgressBar(false);

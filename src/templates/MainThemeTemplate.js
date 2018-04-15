@@ -103,7 +103,7 @@ class MainThemeTemplate extends React.PureComponent {
             </Switch>
           )}
         </div>
-        <Report id={report.id} message={report.message} />
+        <Report id={report.id} message={report.message} type={report.type} />
         <AppFab
           onClick={() =>
             (window.location.href =

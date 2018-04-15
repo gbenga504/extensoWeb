@@ -124,6 +124,7 @@ export default class Post extends React.PureComponent {
     } else {
       setReportNotification({
         id: Date.now(),
+        type: "error",
         message:
           "Error tried while making post, check your network settings. Check that category and title are entered"
       });
@@ -167,7 +168,8 @@ export default class Post extends React.PureComponent {
       {
         content: { loading, error },
         routeMatch: { params: { postId } },
-        reduxActions
+        reduxActions,
+        reduxActions: { setReportNotification }
       } = this.props;
 
     return (
@@ -193,6 +195,7 @@ export default class Post extends React.PureComponent {
                 initFormRef={formRef => {
                   this.form = formRef;
                 }}
+                setReportNotification={setReportNotification}
               />
             </ContentPadder>
           }
