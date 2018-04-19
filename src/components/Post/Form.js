@@ -24,6 +24,7 @@ export default class Form extends React.PureComponent {
     onSaveDraft: PropTypes.func.isRequired,
     initFormRef: PropTypes.func.isRequired,
     onChangeField: PropTypes.func.isRequired,
+    editorState: PropTypes.any.isRequired,
     data: PropTypes.shape({
       uuid: PropTypes.string,
       token: PropTypes.string,
@@ -31,28 +32,37 @@ export default class Form extends React.PureComponent {
       titleHTML: PropTypes.string,
       category: PropTypes.string,
       tags: PropTypes.arrayOf(PropTypes.string),
-      draft: PropTypes.bool
+      draft: PropTypes.bool,
+      displaySrc: PropTypes.string
     }),
-    setReportNotification: PropTypes.func.isRequired
+    setReportNotification: PropTypes.func.isRequired,
+    onUpdatePostImages: PropTypes.func.isRequired,
+    onUpdateEditorState: PropTypes.func.isRequired
   };
 
   componentDidMount() {
     this.props.initFormRef(this.form);
   }
 
-  saveDraft = () => {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.props.onSaveDraft(true);
-    }, 5000);
-  };
-
   render() {
     let {
       draftStatusText,
       setReportNotification,
       onChangeField,
-      data: { draft, bodyHTML, titleHTML, category, tags, uuid, token }
+      onUpdatePostImages,
+      onUpdateEditorState,
+      onSaveDraft,
+      editorState,
+      data: {
+        draft,
+        bodyHTML,
+        titleHTML,
+        category,
+        tags,
+        uuid,
+        displaySrc,
+        token
+      }
     } = this.props;
 
     return (
@@ -80,17 +90,19 @@ export default class Form extends React.PureComponent {
           onChange={ev => onChangeField("titleHTML", ev.target.value)}
         />
         <Body
-          value={bodyHTML}
-          onChange={text => onChangeField("bodyHTML", text)}
+          editorState={editorState}
+          onChange={editorState => onUpdateEditorState(editorState)}
           setReportNotification={setReportNotification}
+          onUpdatePostImages={onUpdatePostImages}
+          onSaveDraft={onSaveDraft}
         />
-
         <input type="hidden" value={token} name="token" />
         <input type="hidden" value={uuid} name="id" />
         <input type="hidden" value={category} name="category" />
         <input type="hidden" value={titleHTML} name="title" />
         <input type="hidden" value={bodyHTML} name="content" />
         <input type="hidden" value={draft} name="draft" />
+        <inout type="hidden" value={displaySrc} name="src" />
         <input
           type="hidden"
           value={GeneralBasedUtils.formatHashTagsToPostgresArrayType(tags)}

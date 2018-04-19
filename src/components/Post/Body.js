@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { convertToRaw } from "draft-js";
-import { Editor, createEditorState } from "medium-draft";
-import mediumDraftExporter from "medium-draft/lib/exporter";
-import mediumDraftImporter from "medium-draft/lib/importer";
+import { Editor } from "medium-draft";
+import { getDefaultKeyBinding, KeyBindingUtil } from "draft-js";
 
 import CustomImageSideButton from "./CustomImageSideButton";
 import Colors from "../../assets/Colors";
@@ -12,23 +10,20 @@ import "medium-draft/lib/index.css";
 import "./extenso-editor.css";
 
 export default class Body extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editorState: createEditorState(
-        convertToRaw(mediumDraftImporter(this.props.value))
-      )
-    };
-  }
-
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired,
-    setReportNotification: PropTypes.func.isRequired
+    onSaveDraft: PropTypes.func.isRequired,
+    editorState: PropTypes.any.isRequired,
+    setReportNotification: PropTypes.func.isRequired,
+    onUpdatePostImages: PropTypes.func.isRequired
   };
 
   sideButtons = () => {
-    let _props = { setReportNotification: this.props.setReportNotification };
+    let { onUpdatePostImages } = this.props,
+      _props = {
+        setReportNotification: this.props.setReportNotification,
+        onUpdatePostImages
+      };
     return [
       {
         title: "Image",
@@ -37,24 +32,38 @@ export default class Body extends React.PureComponent {
     ];
   };
 
-  componentDidMount() {
-    this.editor.focus();
-  }
-
   onChange = editorState => {
-    this.setState({ editorState });
-    this.props.onChange(mediumDraftExporter(editorState.getCurrentContent()));
+    this.props.onChange(editorState);
+  };
+
+  keyBindingFn = e => {
+    const { hasCommandModifier } = KeyBindingUtil;
+    if (e.keyCode === 83 && hasCommandModifier(e)) {
+      return "myeditor-save";
+    }
+    return getDefaultKeyBinding(e);
+  };
+
+  handleKeyCommand = command => {
+    if (command === "myeditor-save") {
+      // Perform a request to save the contents
+      this.props.onSaveDraft(true, false);
+      return "handled";
+    }
+    return "not-handled";
   };
 
   render() {
-    let { editorState } = this.state;
+    let { editorState } = this.props;
     return (
       <div className="d-flex" style={{ marginTop: 40, marginLeft: 50 }}>
         <Editor
-          ref={ref => (this.editor = ref)}
           editorState={editorState}
           onChange={this.onChange}
           sideButtons={this.sideButtons()}
+          handleKeyCommand={this.handleKeyCommand}
+          keyBindingFn={this.keyBindingFn}
+          placeholder="Write your post"
         />
       </div>
     );

@@ -13,7 +13,8 @@ import PropTypes from "prop-types";
 
 export default class CustomImageSideButton extends ImageSideButton {
   static propTypes = {
-    setReportNotification: PropTypes.func.isRequired
+    setReportNotification: PropTypes.func.isRequired,
+    onUpdatePostImages: PropTypes.func.isRequired
   };
 
   getAddedImageKey = () => {
@@ -36,12 +37,20 @@ export default class CustomImageSideButton extends ImageSideButton {
   };
 
   onChange(e) {
-    const file = e.target.files[0];
+    let {
+        setReportNotification,
+        setEditorState,
+        onUpdatePostImages,
+        getEditorState,
+        close
+      } = this.props,
+      file = e.target.files[0];
+
     if (file.type.indexOf("image/") !== -1) {
-      this.props.setEditorState(
-        addNewBlock(this.props.getEditorState(), Block.IMAGE, {
+      setEditorState(
+        addNewBlock(getEditorState(), Block.IMAGE, {
           src: URL.createObjectURL(file),
-          className: "gbenga"
+          className: "uploaded-image"
         })
       );
 
@@ -55,11 +64,14 @@ export default class CustomImageSideButton extends ImageSideButton {
         .then(response => {
           const data = response.data;
           const fileURL = data.secure_url;
-          this.props.setEditorState(
+
+          //update the array of uploaded images array
+          onUpdatePostImages(data);
+
+          setEditorState(
             updateDataOfBlock(
-              this.props.getEditorState(),
-              this.props
-                .getEditorState()
+              getEditorState(),
+              getEditorState()
                 .getCurrentContent()
                 .getBlockForKey(this.key),
               {
@@ -71,22 +83,17 @@ export default class CustomImageSideButton extends ImageSideButton {
           );
         })
         .catch(err => {
-          this.props.setReportNotification({
+          setReportNotification({
             id: Date.now(),
             message: "Could not upload image",
             type: "error"
           });
 
-          this.props.setEditorState(
-            resetBlockWithType(
-              this.props.getEditorState(),
-              undefined,
-              undefined,
-              this.key
-            )
+          setEditorState(
+            resetBlockWithType(getEditorState(), undefined, undefined, this.key)
           );
         });
     }
-    this.props.close();
+    close();
   }
 }
