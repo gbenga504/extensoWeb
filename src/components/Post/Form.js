@@ -102,7 +102,7 @@ export default class Form extends React.PureComponent {
         <input type="hidden" value={titleHTML} name="title" />
         <input type="hidden" value={bodyHTML} name="content" />
         <input type="hidden" value={draft} name="draft" />
-        <inout type="hidden" value={displaySrc} name="src" />
+        <input type="hidden" value={displaySrc} name="src" />
         <input
           type="hidden"
           value={GeneralBasedUtils.formatHashTagsToPostgresArrayType(tags)}

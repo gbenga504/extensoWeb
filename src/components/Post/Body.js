@@ -18,6 +18,10 @@ export default class Body extends React.PureComponent {
     onUpdatePostImages: PropTypes.func.isRequired
   };
 
+  componentDidMount() {
+    this.editor.focus();
+  }
+
   sideButtons = () => {
     let { onUpdatePostImages } = this.props,
       _props = {
@@ -60,6 +64,7 @@ export default class Body extends React.PureComponent {
         <Editor
           editorState={editorState}
           onChange={this.onChange}
+          ref={ref => (this.editor = ref)}
           sideButtons={this.sideButtons()}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.keyBindingFn}

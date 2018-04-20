@@ -37,6 +37,7 @@ export default class Post extends React.PureComponent {
       hasInformationLoaded: false,
       postImages: []
     };
+    document.body.style.backgroundColor = "#fff";
   }
 
   static propTypes = {
@@ -193,9 +194,14 @@ export default class Post extends React.PureComponent {
         editorState: createEditorState(convertToRaw(mediumDraftImporter(body))),
         draftStatusText: "Saving..."
       },
-     
+
       () => this.makePost(shouldMakePost)
     );
+  };
+
+  deleteUnusedPostImages = () => {
+    let { postImages } = this.state;
+    this.props.reduxActions.deleteImages(postImages);
   };
 
   onUpdatePostImages = image => {
@@ -222,7 +228,7 @@ export default class Post extends React.PureComponent {
     return (
       <div
         className="d-flex flex-column"
-        style={{ width: "100%", height: "auto" }}
+        style={{ width: "100%", height: "auto", background: "#fff" }}
       >
         <DashboardHeader
           reduxActions={reduxActions}
