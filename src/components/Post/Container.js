@@ -184,6 +184,7 @@ export default class Post extends React.PureComponent {
     let { tags, body, displaySrc } = GeneralBasedUtils.formatPostWithHashTags(
       bodyHTML
     );
+
     this.setState(
       {
         data: {
@@ -193,7 +194,6 @@ export default class Post extends React.PureComponent {
           displaySrc,
           tags
         },
-        editorState: createEditorState(convertToRaw(mediumDraftImporter(body))),
         draftStatusText: "Saving..."
       },
 
