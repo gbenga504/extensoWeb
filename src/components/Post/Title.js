@@ -4,47 +4,39 @@ import PropTypes from "prop-types";
 import Input from "../Input";
 import Colors from "../../assets/Colors";
 import Fonts from "../../assets/Fonts";
-import { ToolTip } from "../PopOver";
 
 const TitleBox = Input.extend`
   height: 50px;
   border: 1px solid ${Colors.postInputBorder};
   margin-top: 40px;
   margin-left: 50px;
+  font-weight: 600;
 
   &::-webkit-input-placeholder {
-    color: #bdbdbd;
+    color: #b3b3b1;
   }
 
   &::-moz-placeholder {
-    color: #bdbdbd;
+    color: #b3b3b1;
   }
 
   &::-ms-input-placeholder {
-    color: #bdbdbd;
+    color: #b3b3b1;
   }
 
   &:-moz-placeholder {
-    color: #bdbdbd;
+    color: #b3b3b1;
   }
 `;
 
 const Title = props => (
-  <div className="d-flex data-tooltip">
-    <TitleBox
-      disabled={props.disabled}
-      value={props.value}
-      onChange={props.onChange}
-      style={Fonts.post.titleBox}
-      placeholder="Enter the title of your post"
-    />
-    {props.disabled && (
-      <ToolTip
-        dataPosition="tooltip-position-bottom"
-        title="Choose a Category"
-      />
-    )}
-  </div>
+  <TitleBox
+    disabled={props.disabled}
+    value={props.value}
+    onChange={props.onChange}
+    style={Fonts.post.titleBox}
+    placeholder={props.disabled ? "Select a category " : "Title"}
+  />
 );
 
 Title.propTypes = {

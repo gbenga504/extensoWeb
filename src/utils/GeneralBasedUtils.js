@@ -81,7 +81,7 @@ export const GeneralBasedUtils = {
         postMessage,
         /[^">]#[a-zA-Z0-9]{1,}/gi
       ),
-      srcPattern = /src="([a-zA-Z0-9\.]+)?"/gi,
+      srcPattern = /src="([a-zA-Z0-9\.\-\:\/]+)?"/gi,
       appender = undefined,
       beginning = "",
       word = "",
@@ -110,10 +110,13 @@ export const GeneralBasedUtils = {
     }
     let postThumbnail = srcPattern.exec(postMessage),
       _thumbnail = (postThumbnail && postThumbnail[0]) || "";
+
+    let displaySrc = _thumbnail.replace(/src=/, "").replace(/'|"/gi, "");
+
     return {
       body: postMessage,
       tags: GeneralBasedUtils.hashTags,
-      displaySrc: _thumbnail.replace(/src=/, "").replace("'", "")
+      displaySrc
     };
   },
 

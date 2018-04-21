@@ -32,7 +32,8 @@ export default class Card extends React.PureComponent {
       tags: PropTypes.string,
       draft: PropTypes.bool,
       created_at: PropTypes.string.isRequired,
-      likes_count: PropTypes.string
+      likes_count: PropTypes.string,
+      src: PropTypes.string
     }).isRequired,
     onDelete: PropTypes.func.isRequired,
     onRequestRoute: PropTypes.func.isRequired,
@@ -53,7 +54,16 @@ export default class Card extends React.PureComponent {
 
   render() {
     let {
-      item: { category, created_at, content, title, likes_count, id, draft },
+      item: {
+        category,
+        created_at,
+        content,
+        title,
+        src,
+        likes_count,
+        id,
+        draft
+      },
       className,
       style,
       onDelete,
@@ -72,7 +82,12 @@ export default class Card extends React.PureComponent {
           createdAt={created_at}
           content={content}
         />
-        <Body isDisplayImageSet={true} title={title} content={content} />
+        <Body
+          isDisplayImageSet={true}
+          src={src}
+          title={title}
+          content={content}
+        />
         <Router
           name="post_router_link"
           loader={() => import("../../views/Post")}

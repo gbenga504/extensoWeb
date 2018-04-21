@@ -39,7 +39,11 @@ const Body = props => (
   <Container className="d-flex flex-column">
     {props.isDisplayImageSet && (
       <ImageContainer>
-        <img alt="" src="" style={{ width: "100%", height: "100%" }} />
+        <img
+          alt="Image Avatar for Post"
+          src={props.src || ""}
+          style={{ width: "100%", height: "100%" }}
+        />
       </ImageContainer>
     )}
     <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
@@ -52,7 +56,8 @@ const Body = props => (
 Body.propTypes = {
   isDisplayImageSet: PropTypes.bool,
   title: PropTypes.string,
-  content: PropTypes.string
+  content: PropTypes.string,
+  src: PropTypes.string
 };
 
 export default Body;

@@ -172,7 +172,9 @@ export default class Post extends React.PureComponent {
             this.props.onRequestRoute();
           }
         })
-        .catch(err => this.setState({ draftStatusText: "Failed To Saved" }));
+        .catch(err =>
+          this.setState({ draftStatusText: "Could not save post" })
+        );
     }
     if (shouldMakePost) this._count = true;
   };

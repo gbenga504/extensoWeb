@@ -29,7 +29,8 @@ export default class List extends React.PureComponent {
         tags: PropTypes.arrayOf(PropTypes.string),
         draft: PropTypes.bool,
         created_at: PropTypes.string.isRequired,
-        likes_count: PropTypes.string
+        likes_count: PropTypes.string,
+        src: PropTypes.string
       }).isRequired
     ),
     onLoadMore: PropTypes.func.isRequired,

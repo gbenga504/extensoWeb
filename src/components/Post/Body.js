@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Editor } from "medium-draft";
 import { getDefaultKeyBinding, KeyBindingUtil } from "draft-js";
 
@@ -8,6 +9,14 @@ import Colors from "../../assets/Colors";
 import Fonts from "../../assets/Fonts";
 import "medium-draft/lib/index.css";
 import "./extenso-editor.css";
+import "medium-draft/lib/image.css";
+
+const Container = styled.div`
+  margin-top: 40px;
+  margin-left: 50px;
+  width: 100%px;
+  font-size: 21px;
+`;
 
 export default class Body extends React.PureComponent {
   static propTypes = {
@@ -60,7 +69,7 @@ export default class Body extends React.PureComponent {
   render() {
     let { editorState } = this.props;
     return (
-      <div className="d-flex" style={{ marginTop: 40, marginLeft: 50 }}>
+      <Container className="d-flex">
         <Editor
           editorState={editorState}
           onChange={this.onChange}
@@ -69,8 +78,9 @@ export default class Body extends React.PureComponent {
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.keyBindingFn}
           placeholder="Write your post"
+          style={{ fontSize: 20 }}
         />
-      </div>
+      </Container>
     );
   }
 }

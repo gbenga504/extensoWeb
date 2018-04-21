@@ -35,7 +35,8 @@ export default class ContentCard extends React.PureComponent {
       tags: PropTypes.arrayOf(PropTypes.string.isRequired),
       draft: PropTypes.bool,
       created_at: PropTypes.string.isRequired,
-      likes_count: PropTypes.string
+      likes_count: PropTypes.string,
+      src: PropTypes.string
     }),
     onRequestRoute: PropTypes.func.isRequired,
     routeProgress: PropTypes.number,
@@ -54,7 +55,7 @@ export default class ContentCard extends React.PureComponent {
 
   render() {
     let {
-      item: { id, title, category, created_at, content, likes_count },
+      item: { id, title, category, src, created_at, content, likes_count },
       style,
       className,
       onRequestRoute
@@ -66,7 +67,11 @@ export default class ContentCard extends React.PureComponent {
         onClick={onRequestRoute}
       >
         <ImageContainer>
-          <img alt="" src="" style={{ width: "100%", height: "100%" }} />
+          <img
+            alt="Image Avatar for Post"
+            src={this.props.src || ""}
+            style={{ width: "100%", height: "100%" }}
+          />
         </ImageContainer>
         <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
           {title}
