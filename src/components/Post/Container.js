@@ -207,8 +207,9 @@ export default class Post extends React.PureComponent {
   };
 
   onUpdatePostImages = image => {
+    let {postImages} = this.state;
     this.setState({
-      postImages: [...this.postImages, image]
+      postImages: [...postImages, image]
     });
   };
 

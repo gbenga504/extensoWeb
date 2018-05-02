@@ -89,9 +89,9 @@ export default class CustomImageSideButton extends ImageSideButton {
             type: "error"
           });
 
-          // setEditorState(
-          //   resetBlockWithType(getEditorState(), undefined, undefined, this.key)
-          // );
+          setEditorState(
+            resetBlockWithType(getEditorState(), undefined, undefined, this.key)
+          );
         });
     }
     close();
