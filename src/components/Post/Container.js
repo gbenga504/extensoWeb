@@ -156,6 +156,9 @@ export default class Post extends React.PureComponent {
       {
         reduxActions: { setReportNotification }
       } = this.props;
+
+    category = category || "Education";
+    
     if (
       titleHTML.trim().length > 0 &&
       bodyHTML.trim().length > 0 &&

@@ -79,7 +79,8 @@ export const GeneralBasedUtils = {
   formatPostWithHashTags: postMessage => {
     let matches = GeneralBasedUtils.getHasTags(
         postMessage,
-        /[^">]#[a-zA-Z0-9]{1,}/gi
+        //(FIX) : this regular expression is buggy in case we have words starting with > from the editorState
+        /[^&]#[a-zA-Z0-9]{1,}\s?/gi
       ),
       srcPattern = /publicid="([a-zA-Z0-9\.\-\:\/]+)?"/gi,
       appender = undefined,

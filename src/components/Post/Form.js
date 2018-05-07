@@ -65,6 +65,9 @@ export default class Form extends React.PureComponent {
       }
     } = this.props;
 
+    //PATCH
+    category = category || "Education";
+
     return (
       <form
         ref={ref => (this.form = ref)}

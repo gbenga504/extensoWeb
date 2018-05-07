@@ -71,6 +71,7 @@ export default class Card extends React.PureComponent {
       onNavigate,
       reduxActions
     } = this.props;
+
     return (
       <Container
         onClick={onRequestRoute}
