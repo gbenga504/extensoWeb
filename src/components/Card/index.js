@@ -5,6 +5,7 @@ import { Router } from "react-kunyora";
 
 import Colors from "../../assets/Colors";
 import UserContentInformation from "../UserContentInformation";
+import Body from "./Body";
 import Footer from "./Footer";
 
 const Container = styled.div`
@@ -79,6 +80,12 @@ export default class Card extends React.PureComponent {
         <UserContentInformation
           category={category}
           createdAt={created_at}
+          content={content}
+        />
+        <Body
+          isDisplayImageSet={true}
+          src={src}
+          title={title}
           content={content}
         />
         <Router

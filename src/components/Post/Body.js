@@ -9,7 +9,7 @@ import Colors from "../../assets/Colors";
 import Fonts from "../../assets/Fonts";
 import "medium-draft/lib/index.css";
 import "./extenso-editor.css";
-import "medium-draft/lib/image.css";
+// import "medium-draft/lib/image.css";
 
 const Container = styled.div`
   margin-top: 40px;

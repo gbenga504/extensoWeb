@@ -16,7 +16,9 @@ import { GeneralBasedUtils } from "../../utils";
 export default class Post extends React.PureComponent {
   constructor(props) {
     super(props);
-    let { content: { data } } = props,
+    let {
+        content: { data }
+      } = props,
       bodyHTML = (data && data.content) || "";
     this.state = {
       draftStatusText: "",
@@ -66,7 +68,9 @@ export default class Post extends React.PureComponent {
   };
 
   componentDidMount() {
-    let { data: { uuid } } = this.state;
+    let {
+      data: { uuid }
+    } = this.state;
     this.props.setPostId(uuid);
   }
 
@@ -90,7 +94,9 @@ export default class Post extends React.PureComponent {
 
   updateStateWithProps = nextProps => {
     if (nextProps.content.data && !this.state.hasInformationLoaded) {
-      let { content: { data } } = nextProps,
+      let {
+          content: { data }
+        } = nextProps,
         bodyHTML = data.content;
       GeneralBasedUtils.setInitialHashTags(data.tags);
       this.setState({
@@ -144,8 +150,12 @@ export default class Post extends React.PureComponent {
   };
 
   verifyPostCorrectness = (isDraft, shouldMakePost) => {
-    let { data: { titleHTML, bodyHTML, category } } = this.state,
-      { reduxActions: { setReportNotification } } = this.props;
+    let {
+        data: { titleHTML, bodyHTML, category }
+      } = this.state,
+      {
+        reduxActions: { setReportNotification }
+      } = this.props;
     if (
       titleHTML.trim().length > 0 &&
       bodyHTML.trim().length > 0 &&
@@ -180,7 +190,9 @@ export default class Post extends React.PureComponent {
   };
 
   savePost = (isDraft, shouldMakePost) => {
-    let { data: { bodyHTML } } = this.state;
+    let {
+      data: { bodyHTML }
+    } = this.state;
     let { tags, body, displaySrc } = GeneralBasedUtils.formatPostWithHashTags(
       bodyHTML
     );
@@ -207,7 +219,7 @@ export default class Post extends React.PureComponent {
   };
 
   onUpdatePostImages = image => {
-    let {postImages} = this.state;
+    let { postImages } = this.state;
     this.setState({
       postImages: [...postImages, image]
     });
@@ -220,10 +232,16 @@ export default class Post extends React.PureComponent {
   };
 
   render() {
-    let { draftStatusText, data: { draft }, editorState } = this.state,
+    let {
+        draftStatusText,
+        data: { draft },
+        editorState
+      } = this.state,
       {
         content: { loading, error },
-        routeMatch: { params: { postId } },
+        routeMatch: {
+          params: { postId }
+        },
         reduxActions,
         reduxActions: { setReportNotification }
       } = this.props;

@@ -16,7 +16,7 @@ export default class Report extends React.PureComponent {
 
   componentDidUpdate() {
     window.setTimeout(() => {
-      this.report.style.top = "20px";
+      this.report.style.top = "0px";
       window.setTimeout(() => {
         this.report.style.top = "-60px";
       }, 3000);
@@ -25,7 +25,7 @@ export default class Report extends React.PureComponent {
 
   render() {
     let { message, type } = this.props,
-      background = type == "error" ? "#cc5454" : "#4caf50";
+      background = type == "error" ? "#cc5454" : "#616161";
     return (
       <div
         className="report"

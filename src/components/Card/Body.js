@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Image } from "cloudinary-react";
 
-import { RegularText, LightText } from "../AppText";
+import { RegularText } from "../AppText";
 import Colors from "../../assets/Colors";
 import Fonts from "../../assets/Fonts";
 
@@ -11,53 +12,55 @@ const Container = styled.div`
   border-bottom: 1px solid ${Colors.card.postBorder};
 `;
 const ImageContainer = styled.div`
-  height: 300px;
+  height: 100px;
   background: ${Colors.card.imageContainer};
 `;
 
-const createContentInnerHTML = content => ({
-  __html: `${content}...`
-});
-
-class CardBody extends React.PureComponent {
-  static propTypes = {
-    content: PropTypes.string.isRequired
+class Body extends React.PureComponent {
+  state = {
+    shouldDisplayThumbnail: false
   };
 
+  static propTypes = {
+    isDisplayImageSet: PropTypes.bool,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    src: PropTypes.string
+  };
+
+  componentDidMount() {
+    this.setState({
+      shouldDisplayThumbnail: true
+    });
+  }
+
   render() {
+    let { isDisplayImageSet, title, src } = this.props;
     return (
-      <LightText
-        onClick={ev => ev.preventDefault()}
-        style={{ ...Fonts.postBody.sm, marginTop: 15 }}
-        dangerouslySetInnerHTML={createContentInnerHTML(this.props.content)}
-      />
+      <Container
+        className="d-flex flex-column"
+        innerRef={ref => (this.containerBoundingBox = ref)}
+      >
+        {isDisplayImageSet && (
+          <ImageContainer>
+            {this.state.shouldDisplayThumbnail && (
+              <Image
+                cloudName="gbenga504"
+                publicId={src}
+                gravity="center"
+                width={this.containerBoundingBox.getBoundingClientRect().width}
+                height="100"
+                crop="crop"
+              />
+            )}
+          </ImageContainer>
+        )}
+        <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
+          {title}
+        </RegularText>
+      </Container>
     );
   }
 }
-
-const Body = props => (
-  <Container className="d-flex flex-column">
-    {props.isDisplayImageSet && (
-      <ImageContainer>
-        <img
-          alt="Image Avatar for Post"
-          src={props.src || ""}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </ImageContainer>
-    )}
-    <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
-      {props.title}
-    </RegularText>
-    <CardBody content={props.content} />
-  </Container>
-);
-
-Body.propTypes = {
-  isDisplayImageSet: PropTypes.bool,
-  title: PropTypes.string,
-  content: PropTypes.string,
-  src: PropTypes.string
-};
 
 export default Body;

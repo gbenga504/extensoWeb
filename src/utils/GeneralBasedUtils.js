@@ -81,7 +81,7 @@ export const GeneralBasedUtils = {
         postMessage,
         /[^">]#[a-zA-Z0-9]{1,}/gi
       ),
-      srcPattern = /src="([a-zA-Z0-9\.\-\:\/]+)?"/gi,
+      srcPattern = /publicid="([a-zA-Z0-9\.\-\:\/]+)?"/gi,
       appender = undefined,
       beginning = "",
       word = "",
@@ -108,10 +108,11 @@ export const GeneralBasedUtils = {
 
       postMessage = `${beginning}${word}${ending}`;
     }
+
     let postThumbnail = srcPattern.exec(postMessage),
       _thumbnail = (postThumbnail && postThumbnail[0]) || "";
 
-    let displaySrc = _thumbnail.replace(/src=/, "").replace(/'|"/gi, "");
+    let displaySrc = _thumbnail.replace(/publicid=/, "").replace(/'|"/gi, "");
 
     return {
       body: postMessage,

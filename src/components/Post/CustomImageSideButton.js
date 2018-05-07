@@ -64,6 +64,7 @@ export default class CustomImageSideButton extends ImageSideButton {
         .then(response => {
           const data = response.data;
           const fileURL = data.secure_url;
+          const publicid = data.public_id;
 
           //update the array of uploaded images array
           onUpdatePostImages(data);
@@ -76,7 +77,7 @@ export default class CustomImageSideButton extends ImageSideButton {
                 .getBlockForKey(this.key),
               {
                 className: "extenso-img",
-                publicuri: data.public_uri,
+                publicid,
                 src: fileURL
               }
             )
