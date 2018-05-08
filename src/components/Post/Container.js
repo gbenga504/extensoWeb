@@ -158,7 +158,7 @@ export default class Post extends React.PureComponent {
       } = this.props;
 
     category = category || "Education";
-    
+
     if (
       titleHTML.trim().length > 0 &&
       bodyHTML.trim().length > 0 &&
@@ -206,7 +206,10 @@ export default class Post extends React.PureComponent {
           ...this.state.data,
           draft: isDraft,
           bodyHTML: body,
-          displaySrc,
+          displaySrc:
+            displaySrc !== "undefined"
+              ? displaySrc
+              : this.state.data.displaySrc,
           tags
         },
         draftStatusText: "Saving..."

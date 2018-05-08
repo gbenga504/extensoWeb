@@ -1,9 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import UserContentInformation from "../UserContentInformation";
 import { RegularText, LightText } from "../AppText";
 import Fonts from "../../assets/Fonts";
+import "./content.css";
+
+const Title = styled.h1`
+  margin-top: 20px;
+  font-family: Circular Bold;
+`;
 
 export const ContentTop = props => [
   <UserContentInformation
@@ -12,9 +19,7 @@ export const ContentTop = props => [
     createdAt={props.createdAt}
     content={props.content}
   />,
-  <RegularText key={1} style={{ ...Fonts.content.title, marginTop: 20 }}>
-    {props.title}
-  </RegularText>
+  <Title key={1}>{props.title}</Title>
 ];
 
 ContentTop.propTypes = {

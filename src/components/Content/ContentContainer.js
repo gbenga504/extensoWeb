@@ -8,7 +8,7 @@ import { ContentTop, ContentBody } from "../Content";
 import MoreContainer from "../../components/Content/MoreContainer";
 
 const Container = styled.div`
-  padding: 20px 100px;
+  padding: 20px 320px;
 `;
 
 export default class ContentContainer extends React.PureComponent {
@@ -38,10 +38,11 @@ export default class ContentContainer extends React.PureComponent {
 
     return (
       <ContentPadder>
-        <div className="d-flex" style={{ width: "100%" }}>
+        <div className="d-flex" style={{ width: "100%", background: "#fff" }}>
           <Container className="d-flex flex-column" style={{ width: "100%" }}>
+            {/* PATCH category patch */}
             <ContentTop
-              category={category}
+              category={category || "Education"}
               createdAt={created_at}
               content={content}
               title={title}

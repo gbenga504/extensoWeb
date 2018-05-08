@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Image } from "cloudinary-react";
 
 import { RegularText, LightText } from "../AppText";
 import Colors from "../../assets/Colors";
@@ -24,6 +25,10 @@ const ImageContainer = styled.div`
 `;
 
 export default class ContentCard extends React.PureComponent {
+  state = {
+    shouldDisplayThumbnail: false
+  };
+
   static PropTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
@@ -42,6 +47,12 @@ export default class ContentCard extends React.PureComponent {
     routeProgress: PropTypes.number,
     reduxActions: PropTypes.object
   };
+
+  componentDidMount() {
+    this.setState({
+      shouldDisplayThumbnail: true
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     let {
@@ -65,13 +76,19 @@ export default class ContentCard extends React.PureComponent {
         className={`d-flex flex-column ${className}`}
         style={style}
         onClick={onRequestRoute}
+        innerRef={ref => (this.containerBoundingBox = ref)}
       >
         <ImageContainer>
-          <img
-            alt="Image Avatar for Post"
-            src={this.props.src || ""}
-            style={{ width: "100%", height: "100%" }}
-          />
+          {this.state.shouldDisplayThumbnail && (
+            <Image
+              cloudName="gbenga504"
+              publicId={src}
+              gravity="center"
+              width={this.containerBoundingBox.getBoundingClientRect().width}
+              height="101"
+              crop="crop"
+            />
+          )}
         </ImageContainer>
         <RegularText style={{ ...Fonts.title.sm, marginTop: 10 }}>
           {title}
