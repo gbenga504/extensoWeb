@@ -56,11 +56,13 @@ export default class CustomImageSideButton extends ImageSideButton {
 
       this.getAddedImageKey();
 
-      axios
-        .post(
-          "https://api.cloudinary.com/v1_1/gbenga504/image/upload",
-          this.composeFormData(file)
-        )
+      //FIX : Run a cron job when user attempts to save the post when an image is in flight
+      axios({
+        baseURL: "https://api.cloudinary.com/v1_1/gbenga504/image/upload",
+        data: this.composeFormData(file),
+        method: "post",
+        timeout: 10000
+      })
         .then(response => {
           const data = response.data;
           const fileURL = data.secure_url;
