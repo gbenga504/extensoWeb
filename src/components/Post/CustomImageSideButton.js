@@ -61,7 +61,7 @@ export default class CustomImageSideButton extends ImageSideButton {
         baseURL: "https://api.cloudinary.com/v1_1/gbenga504/image/upload",
         data: this.composeFormData(file),
         method: "post",
-        timeout: 10000
+        timeout: 100000
       })
         .then(response => {
           const data = response.data;

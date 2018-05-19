@@ -200,6 +200,8 @@ export default class Post extends React.PureComponent {
       bodyHTML
     );
 
+    console.log("The body is ", body);
+
     this.setState(
       {
         data: {

@@ -40,9 +40,8 @@ export default class ContentContainer extends React.PureComponent {
       <ContentPadder>
         <div className="d-flex" style={{ width: "100%", background: "#fff" }}>
           <Container className="d-flex flex-column" style={{ width: "100%" }}>
-            {/* PATCH category patch */}
             <ContentTop
-              category={category || "Education"}
+              category={category}
               createdAt={created_at}
               content={content}
               title={title}
