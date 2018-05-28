@@ -8,7 +8,7 @@ import { KunyoraProvider } from "react-kunyora";
 
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
-import config from "./composer.config";
+import config from "./kunyora.config";
 
 const Client = KunyoraClient({ ...config });
 
