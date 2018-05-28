@@ -27,7 +27,7 @@ export default class Card extends React.PureComponent {
     items: PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
+      short_content: PropTypes.string.isRequired,
       category: PropTypes.string,
       tags: PropTypes.string,
       draft: PropTypes.bool,
@@ -57,7 +57,7 @@ export default class Card extends React.PureComponent {
       item: {
         category,
         created_at,
-        content,
+        short_content,
         title,
         src,
         likes_count,
@@ -81,13 +81,13 @@ export default class Card extends React.PureComponent {
         <UserContentInformation
           category={category}
           createdAt={created_at}
-          content={content}
+          content={short_content}
         />
         <Body
           isDisplayImageSet={true}
           src={src}
           title={title}
-          content={content}
+          content={short_content}
         />
         <Router
           name="post_router_link"

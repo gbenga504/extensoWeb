@@ -24,7 +24,7 @@ export default class List extends React.PureComponent {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
-        content: PropTypes.string.isRequired,
+        short_content: PropTypes.string.isRequired,
         category: PropTypes.string,
         tags: PropTypes.arrayOf(PropTypes.string),
         draft: PropTypes.bool,

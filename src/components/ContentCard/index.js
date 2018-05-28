@@ -35,7 +35,7 @@ export default class ContentCard extends React.PureComponent {
     item: PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
+      short_content: PropTypes.string.isRequired,
       category: PropTypes.string.isRequired,
       tags: PropTypes.arrayOf(PropTypes.string.isRequired),
       draft: PropTypes.bool,
@@ -66,7 +66,7 @@ export default class ContentCard extends React.PureComponent {
 
   render() {
     let {
-      item: { id, title, category, src, created_at, content, likes_count },
+      item: { id, title, category, src, created_at, short_content, likes_count },
       style,
       className,
       onRequestRoute
@@ -97,7 +97,7 @@ export default class ContentCard extends React.PureComponent {
           <UserContentInformation
             category={category}
             createdAt={created_at}
-            content={content}
+            content={short_content}
           />
           <div className="d-flex align-self-center">
             <Icon className="ion-heart" size="30" />

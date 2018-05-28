@@ -5,6 +5,7 @@ import { createLogger } from "redux-logger";
 import thunk from "redux-thunk";
 import KunyoraClient from "kunyora";
 import { KunyoraProvider } from "react-kunyora";
+import uuid from "uuid/v1";
 
 import AppRoutes from "./Routes";
 import { appReducer } from "./reducers";
