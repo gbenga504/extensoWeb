@@ -63,14 +63,14 @@ export class ContentBody extends React.PureComponent {
       } = this.props;
     if (
       target.nodeName.toUpperCase() === "A" &&
-      target.hasAttribute("hashTag")
+      /^#/.test(target.getAttribute("href"))
     ) {
       ev.preventDefault();
       //@remove hack
       draft = draft == false ? false : true;
       setIsContentDraftState(draft);
       onRequestSearchByTag(target.getAttribute("hashTag"), onRequestRoute);
-    } else {
+    } else if (target.nodeName.toUpperCase() === "A") {
       ev.preventDefault();
       window.open(target.href);
     }
