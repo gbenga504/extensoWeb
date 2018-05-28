@@ -5,7 +5,7 @@
   "dependencies": {
     "cloudinary-react": "^1.0.6",
     "draft-convert": "^2.0.1",
-    "medium-draft": "^0.5.6",
+    "medium-draft": "https://github.com/gbenga504/medium-draft.git",
     "moment": "^2.19.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
