@@ -17,6 +17,7 @@ let MoreContainer = null;
 export default (MoreContainer = props => (
   <CardContainer className="d-flex justify-content-between">
     {props.data &&
+      props.data.length &&
       props.data.map((item, i) => {
         if (i <= 1) {
           return (

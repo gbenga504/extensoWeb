@@ -20,7 +20,7 @@ const Container = styled.div`
 `;
 
 export default class Card extends React.PureComponent {
-  static PropTypes = {
+  static propTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
     hideLikes: PropTypes.bool,
@@ -34,11 +34,11 @@ export default class Card extends React.PureComponent {
       created_at: PropTypes.string.isRequired,
       likes_count: PropTypes.string,
       src: PropTypes.string
-    }).isRequired,
+    }),
     onDelete: PropTypes.func.isRequired,
     onRequestRoute: PropTypes.func.isRequired,
     routeProgress: PropTypes.number,
-    onNavigate: PropTypes.func.isRequired,
+    onNavigate: PropTypes.object,
     reduxActions: PropTypes.object.isRequired
   };
 
@@ -73,11 +73,7 @@ export default class Card extends React.PureComponent {
     } = this.props;
 
     return (
-      <Container
-        onClick={onRequestRoute}
-        className={`d-flex flex-column ${className}`}
-        style={style}
-      >
+      <Container className={`d-flex flex-column ${className}`} style={style}>
         <UserContentInformation
           category={category}
           createdAt={created_at}

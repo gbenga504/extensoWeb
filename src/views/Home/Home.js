@@ -26,7 +26,9 @@ export default class Home extends React.PureComponent {
 
   logout = () => {
     localStorage.removeItem("jwt");
-    let { history: { push } } = this.props;
+    let {
+      history: { push }
+    } = this.props;
     push("/login");
   };
 
@@ -56,7 +58,9 @@ export default class Home extends React.PureComponent {
           options={{ fetchPolicy: "network-only" }}
         >
           {(queryState, fetchMore, refetchQuery) => {
-            let { isInitialDataSet, loading, error, data } = queryState;
+            //@PATCH : Check to see that data is only sent once from react-kunyora
+            let { isInitialDataSet, loading, error, data } = queryState,
+              _data = data && data.length != undefined ? data : [];
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
@@ -73,7 +77,7 @@ export default class Home extends React.PureComponent {
                       {postCount => <Counter items={postCount.data || {}} />}
                     </Query>
                     <List
-                      dataArray={data}
+                      dataArray={_data}
                       onLoadMore={fetchMore}
                       loading={loading}
                       reduxActions={this.props.route}
