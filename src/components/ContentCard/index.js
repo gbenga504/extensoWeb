@@ -29,7 +29,7 @@ export default class ContentCard extends React.PureComponent {
     shouldDisplayThumbnail: false
   };
 
-  static PropTypes = {
+  static propTypes = {
     style: PropTypes.object,
     className: PropTypes.string,
     item: PropTypes.shape({
@@ -66,7 +66,15 @@ export default class ContentCard extends React.PureComponent {
 
   render() {
     let {
-      item: { id, title, category, src, created_at, short_content, likes_count },
+      item: {
+        id,
+        title,
+        category,
+        src,
+        created_at,
+        short_content,
+        likes_count
+      },
       style,
       className,
       onRequestRoute

@@ -73,7 +73,11 @@ export default class Card extends React.PureComponent {
     } = this.props;
 
     return (
-      <Container className={`d-flex flex-column ${className}`} style={style}>
+      <Container
+        onClick={onRequestRoute}
+        className={`d-flex flex-column ${className}`}
+        style={style}
+      >
         <UserContentInformation
           category={category}
           createdAt={created_at}

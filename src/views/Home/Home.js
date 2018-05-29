@@ -61,6 +61,7 @@ export default class Home extends React.PureComponent {
             //@PATCH : Check to see that data is only sent once from react-kunyora
             let { isInitialDataSet, loading, error, data } = queryState,
               _data = data && data.length != undefined ? data : [];
+
             return (
               <PageContentViewer
                 loading={!isInitialDataSet && loading}
